@@ -384,7 +384,7 @@ Main Agent
 - Agents that do "everything"
 - Circular dependencies
 
-![Too many agents anti-pattern](images/too-many-agents-anti-pattern.png)
+![Too many agents anti-pattern](images/week5-too-many-agents-anti-pattern.png)
 
 *Don't be this person. "Whimsy-injector.md" is not a real agent you need.*
 

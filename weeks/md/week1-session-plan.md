@@ -72,7 +72,7 @@ The job market reflects this shift. GTM engineering jobs grew 205% year-over-yea
 
 Even the creator of Claude Code is surprised by how people use it.
 
-![Boris Cherny tweet about Claude Code non-technical use cases](images/boris-cherny-claude-code-non-technical.png)
+![Boris Cherny tweet about Claude Code non-technical use cases](images/week1-boris-cherny-claude-code-non-technical.png)
 
 Boris Cherny, who created Claude Code as a side project in September 2024, notes that people are using it for "all sorts of things from coding, to devops, to research, to non-technical use cases."
 
