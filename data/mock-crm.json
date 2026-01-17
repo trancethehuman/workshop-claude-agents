@@ -1,0 +1,23 @@
+{
+  "contacts": [
+    {"id": "c001", "name": "John Smith", "email": "john.smith@acme.com", "company_id": "comp001", "title": "VP of Engineering", "phone": "+1-555-0101"},
+    {"id": "c002", "name": "Sarah Johnson", "email": "sarah.j@globaltech.io", "company_id": "comp002", "title": "CTO", "phone": "+1-555-0102"},
+    {"id": "c003", "name": "Emily Chen", "email": "echen@healthfirst.com", "company_id": "comp003", "title": "Head of IT", "phone": "+1-555-0103"},
+    {"id": "c004", "name": "Jennifer Martinez", "email": "jmartinez@greenenergy.com", "company_id": "comp004", "title": "Sustainability Lead", "phone": "+1-555-0104"},
+    {"id": "c005", "name": "Rachel Garcia", "email": "rgarcia@mediagroup.com", "company_id": "comp005", "title": "CMO", "phone": "+1-555-0105"}
+  ],
+  "companies": [
+    {"id": "comp001", "name": "Acme Corp", "industry": "Technology", "size": 250, "website": "https://acme.com"},
+    {"id": "comp002", "name": "GlobalTech Inc", "industry": "Technology", "size": 1200, "website": "https://globaltech.io"},
+    {"id": "comp003", "name": "HealthFirst Solutions", "industry": "Healthcare", "size": 800, "website": "https://healthfirst.com"},
+    {"id": "comp004", "name": "GreenEnergy Co", "industry": "Energy", "size": 350, "website": "https://greenenergy.com"},
+    {"id": "comp005", "name": "MediaGroup Digital", "industry": "Media", "size": 300, "website": "https://mediagroup.com"}
+  ],
+  "activities": [
+    {"id": "a001", "contact_id": "c001", "type": "email", "date": "2024-03-28", "subject": "Re: Contract Review", "outcome": "Waiting on legal"},
+    {"id": "a002", "contact_id": "c001", "type": "call", "date": "2024-03-20", "subject": "Pricing discussion", "outcome": "CFO approved"},
+    {"id": "a003", "contact_id": "c003", "type": "meeting", "date": "2024-03-25", "subject": "Demo prep call", "outcome": "Scheduled for 4/1"},
+    {"id": "a004", "contact_id": "c004", "type": "email", "date": "2024-03-28", "subject": "Proposal follow-up", "outcome": "In legal review"},
+    {"id": "a005", "contact_id": "c005", "type": "meeting", "date": "2024-03-26", "subject": "Technical deep dive", "outcome": "Positive, next steps TBD"}
+  ]
+}

@@ -1,0 +1,99 @@
+[
+  {
+    "id": "deal_001",
+    "company": "Acme Corp",
+    "contact": "John Smith",
+    "value": 75000,
+    "stage": "Negotiation",
+    "probability": 70,
+    "created_date": "2024-01-20",
+    "expected_close": "2024-04-15",
+    "last_activity": "2024-03-28",
+    "days_in_stage": 14,
+    "notes": [
+      {"date": "2024-03-28", "note": "Legal reviewing contract"},
+      {"date": "2024-03-15", "note": "Pricing approved by their CFO"},
+      {"date": "2024-03-01", "note": "Sent proposal"}
+    ],
+    "competitors": ["CompetitorA"],
+    "champion": "John Smith",
+    "decision_maker": "CTO - Mark Johnson"
+  },
+  {
+    "id": "deal_002",
+    "company": "HealthFirst Solutions",
+    "contact": "Emily Chen",
+    "value": 120000,
+    "stage": "Demo",
+    "probability": 40,
+    "created_date": "2024-02-15",
+    "expected_close": "2024-05-30",
+    "last_activity": "2024-03-25",
+    "days_in_stage": 5,
+    "notes": [
+      {"date": "2024-03-25", "note": "Demo scheduled for April 1"},
+      {"date": "2024-03-10", "note": "Technical requirements gathered"}
+    ],
+    "competitors": ["CompetitorB", "CompetitorC"],
+    "champion": "Emily Chen",
+    "decision_maker": "Unknown"
+  },
+  {
+    "id": "deal_003",
+    "company": "GreenEnergy Co",
+    "contact": "Jennifer Martinez",
+    "value": 95000,
+    "stage": "Proposal",
+    "probability": 60,
+    "created_date": "2024-03-01",
+    "expected_close": "2024-04-30",
+    "last_activity": "2024-03-28",
+    "days_in_stage": 7,
+    "notes": [
+      {"date": "2024-03-28", "note": "Legal reviewing, expect response next week"},
+      {"date": "2024-03-21", "note": "Proposal sent with sustainability focus"},
+      {"date": "2024-03-15", "note": "Great demo, they loved the reporting"}
+    ],
+    "competitors": [],
+    "champion": "Jennifer Martinez",
+    "decision_maker": "CEO - Tom Green"
+  },
+  {
+    "id": "deal_004",
+    "company": "MediaGroup Digital",
+    "contact": "Rachel Garcia",
+    "value": 45000,
+    "stage": "Demo",
+    "probability": 50,
+    "created_date": "2024-03-12",
+    "expected_close": "2024-05-15",
+    "last_activity": "2024-03-26",
+    "days_in_stage": 10,
+    "notes": [
+      {"date": "2024-03-26", "note": "Second demo with technical team"},
+      {"date": "2024-03-20", "note": "Initial demo went well, they want deeper dive"}
+    ],
+    "competitors": ["CompetitorA"],
+    "champion": "Rachel Garcia",
+    "decision_maker": "Rachel Garcia (CMO)"
+  },
+  {
+    "id": "deal_005",
+    "company": "TravelEase Booking",
+    "contact": "Steven Walker",
+    "value": 85000,
+    "stage": "Discovery",
+    "probability": 25,
+    "created_date": "2024-03-22",
+    "expected_close": "2024-06-30",
+    "last_activity": "2024-03-29",
+    "days_in_stage": 7,
+    "notes": [
+      {"date": "2024-03-29", "note": "Demo scheduled for April 5"},
+      {"date": "2024-03-25", "note": "Discussed integration requirements - complex but doable"}
+    ],
+    "competitors": ["CompetitorC"],
+    "champion": "Steven Walker",
+    "decision_maker": "VP Engineering - Unknown name"
+  }
+]
