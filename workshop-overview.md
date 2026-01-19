@@ -1,8 +1,8 @@
-# Building AI Agents with Claude Code & Agent SDK
+# Build general-purpose AI Agents to do Data Science and Data Analytics for you
 
 **Format:** 8-week workshop series, 3 hours per session
 **Delivery:** Virtual (Zoom)
-**Language:** TypeScript
+**Languages:** TypeScript and Python
 
 ---
 
@@ -18,7 +18,7 @@ This hands-on workshop takes you from zero to production-ready AI agents. By the
 | 2 | Tool Calling | Agent that uses Bash, Read, Write tools |
 | 3 | MCP Integration | Connect external services (Gmail, Notion, GitHub) |
 | 4 | Agent Skills | Reusable SKILL.md files for your domain |
-| 5 | Sub-agents | Multi-agent workflows with Task tool |
+| 5 | Context Engineering | Sub-agents, RAG, and memory patterns |
 | 6 | Agent SDK | Headless agents in TypeScript |
 | 7 | Evals | Golden dataset testing for quality |
 | 8 | Demos | Present your capstone project |

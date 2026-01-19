@@ -25,7 +25,7 @@
 ```
 ┌──────────────────────────────────────────────────────┐
 │                                                      │
-│   INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE   │
+│   INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE    │
 │              ↑                              │        │
 │              └──────────────────────────────┘        │
 │                    (repeat until done)               │

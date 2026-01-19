@@ -23,7 +23,7 @@ Every time Claude uses a tool, it follows this loop:
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                                                             │
-│   THINK → SELECT TOOL → EXECUTE → OBSERVE → THINK AGAIN    │
+│   THINK → SELECT TOOL → EXECUTE → OBSERVE → THINK AGAIN     │
 │                                          ↑         │        │
 │                                          └─────────┘        │
 │                                       (repeat until done)   │
@@ -123,6 +123,58 @@ Claude reads your request and matches it to available tools:
 | "How many rows have status 'closed'?" | Need to filter and count | Bash (`grep "closed" \| wc -l`) |
 | "Sort leads by score" | Need to reorder data | Bash (`sort -t',' -k3 -rn`) |
 
+### AI-Assisted SQL and Data Warehouse Querying
+
+One of the most powerful applications of AI agents is querying structured data. Whether you're working with a SQL database, data warehouse, or CSV files, Claude can translate your business questions into precise queries.
+
+**From natural language to SQL:**
+
+| Business Question | Claude Generates |
+|-------------------|------------------|
+| "Top 10 customers by revenue" | `SELECT customer_name, SUM(revenue) FROM sales GROUP BY customer_name ORDER BY SUM(revenue) DESC LIMIT 10` |
+| "Month-over-month growth rate" | `SELECT month, revenue, LAG(revenue) OVER (ORDER BY month) as prev, (revenue - LAG(revenue) OVER (ORDER BY month)) / LAG(revenue) OVER (ORDER BY month) * 100 as growth_pct FROM monthly_sales` |
+| "Deals stuck in pipeline > 30 days" | `SELECT * FROM deals WHERE stage != 'Closed' AND DATEDIFF(NOW(), created_at) > 30` |
+
+**Working with data warehouses:**
+
+When your data lives in Snowflake, BigQuery, Redshift, or another warehouse, the same principle applies. Claude can:
+- Write complex analytical queries with window functions
+- Generate CTEs for multi-step transformations
+- Create aggregations across dimensions
+- Handle time-series analysis and cohort queries
+
+**Best practices for AI-assisted querying:**
+
+1. **Validate AI-generated queries** - Always review before running on production data
+2. **Start with sample data** - Test queries on a subset first
+3. **Optimize for cost** - Warehouse queries can be expensive; ask Claude to limit results
+4. **Iterate conversationally** - "Now filter that to only Technology industry"
+
+**Example workflow:**
+
+```
+User: "How many leads came from each source last quarter?"
+
+Claude's process:
+1. Understand the schema (Read or ask)
+2. Write the SQL query
+3. Execute via Bash (sqlite3, psql, or export tool)
+4. Present results in a formatted table
+5. Offer follow-up analysis
+```
+
+**Hands-on in this workshop:**
+
+This repo includes `data/sample-sales.db`, a SQLite database with:
+- `customers` - 50 companies with industry, size, revenue
+- `deals` - 100 deals with stages, values, owners
+- `activities` - 500+ activity records
+
+Claude can query this directly:
+```bash
+sqlite3 data/sample-sales.db "SELECT stage, SUM(value) FROM deals GROUP BY stage"
+```
+
 ### Bash vs. Other Approaches
 
 Why not just use RAG (retrieval augmented generation) or vector search?
@@ -131,15 +183,22 @@ Why not just use RAG (retrieval augmented generation) or vector search?
 |----------|--------------|---------|
 | **Prompt stuffing** | Load everything into context | Hits token limits fast |
 | **Vector search** | Find semantically similar chunks | Imprecise for structured data |
+| **SQL + AI** | Translate questions to queries | Precise, scalable, production-ready |
 | **Bash + filesystem** | Exact pattern matching, on-demand | Precise, efficient, debuggable |
 
-When you need "all deals over $50K in Q4", vector search might return similar-sounding content. Bash gives you exactly what you asked for:
+When you need "all deals over $50K in Q4", vector search might return similar-sounding content. SQL gives you exactly what you asked for:
+
+```sql
+SELECT * FROM deals WHERE value > 50000 AND quarter = 'Q4-2024';
+```
+
+Or with Bash on a CSV:
 
 ```bash
 grep "2024-Q4" deals.csv | awk -F',' '$3 > 50000'
 ```
 
-Claude knows how to write these commands. Let it.
+Claude knows how to write these commands and queries. Let it.
 
 ### Demo: Watch Claude Work
 
@@ -208,11 +267,38 @@ Notice: Claude may use **Bash** to run calculations.
 
 Notice: Claude reads multiple files and synthesizes.
 
+**Exercise 5: SQL Database Querying (10 min)**
+
+This repo includes a SQLite database at `data/sample-sales.db` with realistic sales data.
+
+**Schema:**
+- `customers` - 50 companies with industry, size, revenue, region
+- `deals` - 100 deals with value, stage, probability, owner
+- `activities` - ~500 activity records (emails, calls, meetings)
+
+```
+> Connect to the sample-sales.db SQLite database and answer these questions:
+> 1. What's the total pipeline value by stage?
+> 2. Which sales rep has the highest win rate?
+> 3. What's the average deal size by industry?
+> 4. Show me deals over $50K that have been stuck in Negotiation for more than 30 days
+```
+
+Notice: Claude writes and executes SQL queries using the `sqlite3` command via Bash. This is exactly how you'd query a data warehouse, just with a local database.
+
+**Try follow-up questions:**
+```
+> Now join the activities table and tell me which deals have gone cold (no activity in 14+ days)
+```
+
+This demonstrates how AI-assisted querying works: you ask business questions, Claude translates to SQL, executes, and presents results.
+
 ### Discussion Questions
 
 1. Which tools did Claude use for each task?
 2. Did Claude ever use multiple tools in sequence?
 3. How did Claude handle the analysis - code or reasoning?
+4. How would the SQL approach differ if this data was in a real data warehouse?
 
 ---
 

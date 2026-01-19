@@ -510,6 +510,192 @@ Score leads based on the rubric in [scoring-rubric.md](references/scoring-rubric
 
 ---
 
+## Bonus: Data Visualization Skill (Optional Lab Extension)
+
+### Building a Visualization Generator Skill
+
+Skills can include scripts that Claude executes. This is powerful for data visualization, where you want consistent chart styles and formats.
+
+**Create the skill structure:**
+
+```bash
+mkdir -p .claude/skills/data-visualizer/scripts
+```
+
+**Create `SKILL.md`:**
+
+```markdown
+---
+name: data-visualizer
+description: Generate charts and visualizations from data files. Use when asked to visualize data, create charts, plot trends, or build graphs. Supports bar charts, line charts, scatter plots, and pie charts.
+allowed-tools: Read, Bash, Write
+---
+
+# Data Visualizer
+
+Generate professional visualizations from CSV or JSON data.
+
+## Supported Chart Types
+
+| Type | Use When |
+|------|----------|
+| Bar chart | Comparing categories |
+| Line chart | Showing trends over time |
+| Scatter plot | Showing correlations |
+| Pie chart | Showing proportions |
+
+## Process
+
+1. Read the data file
+2. Identify the best chart type for the question
+3. Run the visualization script with appropriate parameters
+4. Save the output image to `output/charts/`
+
+## Execution
+
+Use the Python script in `scripts/visualize.py`:
+
+\`\`\`bash
+python .claude/skills/data-visualizer/scripts/visualize.py \
+  --input data.csv \
+  --chart-type bar \
+  --x-column category \
+  --y-column value \
+  --title "My Chart" \
+  --output output/charts/chart.png
+\`\`\`
+
+## Chart Selection Guide
+
+- "Compare X across categories" → Bar chart
+- "Show trend over time" → Line chart
+- "Correlation between X and Y" → Scatter plot
+- "Distribution/proportion" → Pie chart
+```
+
+**Create `scripts/visualize.py`:**
+
+```python
+#!/usr/bin/env python3
+"""
+Data visualization script for the data-visualizer skill.
+Generates charts from CSV data using matplotlib.
+"""
+
+import argparse
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend
+
+def create_bar_chart(df, x_col, y_col, title, output):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df[x_col], df[y_col], color='steelblue')
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title(title)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.savefig(output, dpi=150)
+    print(f"Chart saved to {output}")
+
+def create_line_chart(df, x_col, y_col, title, output):
+    plt.figure(figsize=(10, 6))
+    plt.plot(df[x_col], df[y_col], marker='o', color='steelblue')
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title(title)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.savefig(output, dpi=150)
+    print(f"Chart saved to {output}")
+
+def create_scatter_plot(df, x_col, y_col, title, output):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(df[x_col], df[y_col], alpha=0.6, color='steelblue')
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(output, dpi=150)
+    print(f"Chart saved to {output}")
+
+def create_pie_chart(df, label_col, value_col, title, output):
+    plt.figure(figsize=(10, 8))
+    plt.pie(df[value_col], labels=df[label_col], autopct='%1.1f%%')
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(output, dpi=150)
+    print(f"Chart saved to {output}")
+
+def main():
+    parser = argparse.ArgumentParser(description='Generate charts from CSV data')
+    parser.add_argument('--input', required=True, help='Input CSV file')
+    parser.add_argument('--chart-type', required=True,
+                        choices=['bar', 'line', 'scatter', 'pie'])
+    parser.add_argument('--x-column', required=True, help='X-axis column')
+    parser.add_argument('--y-column', required=True, help='Y-axis column')
+    parser.add_argument('--title', default='Chart', help='Chart title')
+    parser.add_argument('--output', default='chart.png', help='Output file')
+
+    args = parser.parse_args()
+
+    df = pd.read_csv(args.input)
+
+    chart_functions = {
+        'bar': create_bar_chart,
+        'line': create_line_chart,
+        'scatter': create_scatter_plot,
+        'pie': create_pie_chart
+    }
+
+    chart_functions[args.chart_type](
+        df, args.x_column, args.y_column, args.title, args.output
+    )
+
+if __name__ == '__main__':
+    main()
+```
+
+**Test the skill:**
+
+```
+> Visualize the lead scores by industry from sample-leads.csv as a bar chart
+```
+
+### Creating Interactive Dashboards
+
+For dashboards that users can interact with in a browser, Claude can generate HTML, CSS, and JavaScript.
+
+**When to use this approach:**
+- Stakeholders want a visual interface
+- Data needs to be presented in multiple views
+- You want filtering, sorting, or drill-down capabilities
+
+**Example prompt:**
+
+```
+> Create an HTML dashboard that displays:
+> 1. Lead count by industry (bar chart)
+> 2. Lead score distribution (histogram)
+> 3. A filterable table of all leads
+>
+> Use Chart.js for the charts. Make it look professional.
+> Save to output/dashboard/index.html
+```
+
+Claude will generate a complete HTML file with embedded CSS and JavaScript using Chart.js or similar libraries. Open the file in a browser to see your dashboard.
+
+**Key points:**
+- Claude writes the HTML/CSS/JS, not a framework app
+- Works offline, no build step needed
+- Easy to customize and iterate
+- Can be hosted as a static site
+
+This approach bridges the gap between quick analysis and production dashboards.
+
+---
+
 ## Wrap-Up (15 min)
 
 ### Key Takeaways
@@ -527,12 +713,12 @@ Build two skills that encode expertise from your domain. Each skill should captu
 
 | Domain | Example Skills |
 |--------|---------------|
-| GTM/Sales | Lead scorer, email writer, company researcher |
+| GTM/Sales | Lead scorer, email writer, company researcher, pipeline forecaster |
 | Developer Tools | Code reviewer, documentation generator, PR summarizer |
 | Content/Marketing | Content brief writer, SEO analyzer, repurposing guide |
 | Customer Support | Ticket classifier, response drafter, escalation checker |
 | Operations | Invoice processor, compliance checker, report formatter |
-| Data Analytics | Data profiler, anomaly detector, visualization generator |
+| Data Analytics | Data profiler, anomaly detector, visualization generator, dashboard builder |
 
 **For each skill:**
 - Clear trigger description (when should it activate?)

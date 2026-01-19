@@ -2,9 +2,10 @@
 
 ## Session Goals
 - Understand the Claude Agent SDK architecture
-- Use the `query()` function to run agents in TypeScript
+- Use the `query()` function to run agents in TypeScript and Python
 - Build headless agents for automation
 - Handle sessions, permissions, and error recovery
+- Deploy agents in sandboxed environments with Daytona
 
 ---
 
@@ -48,8 +49,9 @@ Claude Code is interactive. Great for developers. But for production:
 
 ### The `query()` Function
 
-The core of the SDK. One function to run an agent:
+The core of the SDK. One function to run an agent. Available in both TypeScript and Python:
 
+**TypeScript:**
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
@@ -63,6 +65,27 @@ const result = await query({
 
 console.log(result.text);
 ```
+
+**Python:**
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+async def main():
+    async for message in query(
+        prompt="Research Acme Corp and summarize findings",
+        options=ClaudeAgentOptions(
+            max_turns=10,
+            system_prompt="You are a research analyst..."
+        )
+    ):
+        if hasattr(message, "result"):
+            print(message.result)
+
+asyncio.run(main())
+```
+
+**Key difference:** Python uses async iterators and streams by default, while TypeScript can await the final result directly.
 
 ### Key Parameters
 
@@ -215,6 +238,7 @@ External MCP servers (GitHub, Notion, PostgreSQL) are great for standardized, re
 
 Live demo: Run a simple agent programmatically.
 
+**TypeScript:**
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
@@ -232,16 +256,36 @@ async function main() {
 main();
 ```
 
+**Python:**
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+async def main():
+    async for message in query(
+        prompt="What files are in the current directory?",
+        options=ClaudeAgentOptions(
+            max_turns=3,
+            allowed_tools=["Bash", "Glob"]
+        )
+    ):
+        if hasattr(message, "result"):
+            print(message.result)
+
+asyncio.run(main())
+```
+
 ---
 
 ## Block 2: Lab 1 - Your First SDK Agent (30 min)
 
 ### Task: Build a File Analyzer Agent
 
-Create an agent that analyzes CSV files and produces reports.
+Create an agent that analyzes CSV files and produces reports. Choose TypeScript or Python based on your preference.
 
 **Step 1:** Set up the project:
 
+**TypeScript:**
 ```bash
 mkdir agents/file-analyzer
 cd agents/file-analyzer
@@ -250,7 +294,18 @@ npm install @anthropic-ai/claude-agent-sdk typescript ts-node zod
 npx tsc --init
 ```
 
-**Step 2:** Create `src/index.ts`:
+**Python:**
+```bash
+mkdir agents/file-analyzer
+cd agents/file-analyzer
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install claude-agent-sdk pandas
+```
+
+**Step 2:** Create the agent code:
+
+**TypeScript (`src/index.ts`):**
 
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
@@ -293,10 +348,61 @@ analyzeFile('../data/sample-leads.csv')
   });
 ```
 
+**Python (`analyzer.py`):**
+
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+async def analyze_file(file_path: str) -> dict:
+    """Analyze a CSV file and return structured results."""
+    tool_calls = 0
+    result_text = ""
+
+    prompt = f"""Analyze the CSV file at {file_path}. Provide:
+    1. Number of rows and columns
+    2. Column names and data types
+    3. Summary statistics for numeric columns
+    4. Any data quality issues you notice"""
+
+    async for message in query(
+        prompt=prompt,
+        options=ClaudeAgentOptions(
+            max_turns=5,
+            allowed_tools=["Read", "Bash", "Glob"]
+        )
+    ):
+        if message.type == "tool_use":
+            tool_calls += 1
+            print(f"Tool called: {message.name}")
+        if hasattr(message, "result"):
+            result_text = message.result
+
+    return {
+        "text": result_text,
+        "tool_calls": tool_calls
+    }
+
+async def main():
+    result = await analyze_file('../data/sample-leads.csv')
+    print('\n=== Analysis Result ===\n')
+    print(result["text"])
+    print(f'\nTotal tool calls: {result["tool_calls"]}')
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 **Step 3:** Run the agent:
 
+**TypeScript:**
 ```bash
 npx ts-node src/index.ts
+```
+
+**Python:**
+```bash
+python analyzer.py
 ```
 
 ### Success Criteria
@@ -676,15 +782,395 @@ Return only a number 0-100.`,
 
 ---
 
+## Block 5: Sandboxed Execution with Daytona (Bonus)
+
+### Why Sandboxing Matters
+
+Running agents in production means running code that Claude generates. This creates risks:
+- Agents might execute destructive commands
+- File system access could affect other processes
+- Runaway loops could consume resources
+- Untrusted data could lead to code injection
+
+**Sandboxing solves this** by isolating agent execution in controlled environments.
+
+### What is Daytona?
+
+Daytona provides secure sandboxes where AI agents can safely execute code. Key features:
+
+| Feature | Benefit |
+|---------|---------|
+| **Isolated filesystems** | Agents can't access host files |
+| **Resource limits** | CPU, memory, and time constraints |
+| **Code execution** | Run Python, TypeScript, bash safely |
+| **File upload/download** | Move data in and out of sandbox |
+| **Preview URLs** | Expose ports for web apps running in sandbox |
+| **API access** | Programmatic control from your app |
+
+### Setting Up Daytona
+
+**Step 1:** Get an API key from [daytona.io](https://daytona.io)
+
+**Step 2:** Install the SDK:
+
+**Python:**
+```bash
+pip install daytona-sdk
+```
+
+**TypeScript:**
+```bash
+npm install @daytonaio/sdk
+```
+
+### Core Daytona Concepts
+
+**Creating a Sandbox:**
+
+**Python:**
+```python
+from daytona_sdk import Daytona
+
+daytona = Daytona()  # Uses DAYTONA_API_KEY env var
+sandbox = daytona.create()  # Creates a Python sandbox by default
+```
+
+**TypeScript:**
+```typescript
+import { Daytona } from "@daytonaio/sdk";
+
+const daytona = new Daytona();  // Uses DAYTONA_API_KEY env var
+const sandbox = await daytona.create({ language: "python" });
+```
+
+### Executing Code Directly
+
+The `code_run()` method executes code directly in the sandbox:
+
+**Python:**
+```python
+# Execute Python code directly
+response = sandbox.process.code_run("""
+import pandas as pd
+df = pd.read_csv('/workspace/leads.csv')
+print(f"Rows: {len(df)}")
+print(df.describe())
+""")
+print(response.result)
+```
+
+**TypeScript:**
+```typescript
+// Execute Python code directly
+const response = await sandbox.process.codeRun(`
+import pandas as pd
+df = pd.read_csv('/workspace/leads.csv')
+print(f"Rows: {len(df)}")
+print(df.describe())
+`);
+console.log(response.result);
+```
+
+### File Operations
+
+**Upload and download files:**
+
+**Python:**
+```python
+# Upload a file to the sandbox
+sandbox.fs.upload_file("/local/path/leads.csv", "/workspace/leads.csv")
+
+# Download results from sandbox
+sandbox.fs.download_file("/workspace/output/report.json", "/local/output/report.json")
+```
+
+**TypeScript:**
+```typescript
+// Upload a file to the sandbox
+await sandbox.fs.uploadFile("/local/path/leads.csv", "/workspace/leads.csv");
+
+// Download results from sandbox
+await sandbox.fs.downloadFile("/workspace/output/report.json", "/local/output/report.json");
+```
+
+### Preview URLs for Web Applications
+
+If your agent builds a dashboard or web app in the sandbox:
+
+**Python:**
+```python
+# Get a public URL for a port in the sandbox
+preview_url = sandbox.get_preview_link(3000)
+print(f"View dashboard at: {preview_url}")
+```
+
+**TypeScript:**
+```typescript
+// Get a public URL for a port in the sandbox
+const previewUrl = sandbox.getPreviewLink(3000);
+console.log(`View dashboard at: ${previewUrl}`);
+```
+
+### Session-Based Execution
+
+For long-running processes or stateful operations:
+
+**Python:**
+```python
+# Create a persistent session
+session = sandbox.process.create_session("data-analysis")
+
+# Execute commands in the session
+sandbox.process.execute_session_command(
+    session_id="data-analysis",
+    command="cd /workspace && python setup.py"
+)
+
+# Run more commands with preserved state
+sandbox.process.execute_session_command(
+    session_id="data-analysis",
+    command="python analyze.py --verbose"
+)
+```
+
+### Integrating Claude with Daytona
+
+The power of Daytona comes from having Claude generate code, then executing it safely:
+
+**Python example:**
+```python
+import anthropic
+from daytona_sdk import Daytona
+
+# Initialize both SDKs
+client = anthropic.Anthropic()
+daytona = Daytona()
+sandbox = daytona.create()
+
+# Upload data to sandbox
+sandbox.fs.upload_file("sample-leads.csv", "/workspace/leads.csv")
+
+# Have Claude generate analysis code
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{
+        "role": "user",
+        "content": """Write Python code to:
+        1. Load /workspace/leads.csv
+        2. Calculate conversion rates by source
+        3. Print a summary table
+
+        Use pandas. Only output the Python code, no explanations."""
+    }]
+)
+
+# Extract the generated code
+code = message.content[0].text
+
+# Execute Claude's code in the sandbox
+response = sandbox.process.code_run(code)
+print("Analysis Results:")
+print(response.result)
+
+# Cleanup
+sandbox.delete()
+```
+
+**TypeScript example:**
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+import { Daytona } from "@daytonaio/sdk";
+
+async function analyzeWithClaude() {
+  const client = new Anthropic();
+  const daytona = new Daytona();
+  const sandbox = await daytona.create({ language: "python" });
+
+  // Upload data
+  await sandbox.fs.uploadFile("sample-leads.csv", "/workspace/leads.csv");
+
+  // Have Claude generate analysis code
+  const message = await client.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 1024,
+    messages: [{
+      role: "user",
+      content: `Write Python code to:
+        1. Load /workspace/leads.csv
+        2. Calculate conversion rates by source
+        3. Print a summary table
+
+        Use pandas. Only output the Python code, no explanations.`
+    }]
+  });
+
+  // Execute Claude's code in the sandbox
+  const code = message.content[0].type === "text" ? message.content[0].text : "";
+  const response = await sandbox.process.codeRun(code);
+  console.log("Analysis Results:");
+  console.log(response.result);
+
+  // Cleanup
+  await sandbox.delete();
+}
+```
+
+### Running Agent SDK with Daytona
+
+Combine the Agent SDK with Daytona for full agentic workflows in a sandbox:
+
+**Python:**
+```python
+import asyncio
+from daytona_sdk import Daytona
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+async def run_sandboxed_agent(task: str, data_file: str):
+    """Run an agent in a Daytona sandbox with file access."""
+
+    daytona = Daytona()
+    sandbox = daytona.create()
+
+    try:
+        # Upload data file to sandbox
+        sandbox.fs.upload_file(data_file, f"/workspace/{data_file}")
+
+        # Run the agent with sandbox execution
+        async for message in query(
+            prompt=f"""
+            You are running in a sandboxed environment.
+            Working directory: /workspace
+            Data file: /workspace/{data_file}
+
+            Task: {task}
+
+            Execute any analysis code directly. The environment has Python
+            with pandas, numpy, and matplotlib installed.
+            """,
+            options=ClaudeAgentOptions(
+                allowed_tools=["Read", "Write", "Bash"],
+                permission_mode="bypassPermissions"  # Safe because sandboxed
+            )
+        ):
+            if hasattr(message, "result"):
+                print(message.result)
+
+        # Download results
+        sandbox.fs.download_file("/workspace/output/results.json", "./results.json")
+
+    finally:
+        sandbox.delete()
+
+asyncio.run(run_sandboxed_agent(
+    task="Analyze the leads data and generate summary statistics",
+    data_file="sample-leads.csv"
+))
+```
+
+**TypeScript:**
+```typescript
+import { Daytona } from "@daytonaio/sdk";
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+async function runSandboxedAgent(task: string, dataFile: string) {
+  const daytona = new Daytona();
+  const sandbox = await daytona.create({ language: "python" });
+
+  try {
+    // Upload data file
+    await sandbox.fs.uploadFile(dataFile, `/workspace/${dataFile}`);
+
+    // Run the agent
+    for await (const message of query({
+      prompt: `
+        You are running in a sandboxed environment.
+        Working directory: /workspace
+        Data file: /workspace/${dataFile}
+
+        Task: ${task}
+
+        Execute any analysis code directly.
+      `,
+      options: {
+        allowedTools: ["Read", "Write", "Bash"],
+        permissionMode: "bypassPermissions"
+      }
+    })) {
+      if ("result" in message) {
+        console.log(message.result);
+      }
+    }
+
+    // Download results
+    await sandbox.fs.downloadFile("/workspace/output/results.json", "./results.json");
+
+  } finally {
+    await sandbox.delete();
+  }
+}
+```
+
+### Sandboxing Patterns
+
+**Pattern 1: Batch Processing**
+```
+For each data file:
+1. Create sandbox
+2. Upload file
+3. Run agent analysis
+4. Download results
+5. Delete sandbox
+```
+
+**Pattern 2: Long-Running Agent**
+```
+1. Create persistent sandbox
+2. Upload all data files
+3. Run multiple agent tasks
+4. Stream results back
+5. Delete sandbox when done
+```
+
+**Pattern 3: User-Triggered Analysis**
+```
+1. User uploads file to your app
+2. Create sandbox for this user
+3. Run agent on their data
+4. Return results
+5. Cleanup after timeout
+```
+
+### When to Use Sandboxing
+
+| Scenario | Sandbox? | Why |
+|----------|----------|-----|
+| Development/testing | No | Direct execution is faster |
+| Internal automation | Maybe | Depends on trust level |
+| User-provided data | Yes | Can't trust user input |
+| Production pipelines | Yes | Defense in depth |
+| Code generation tasks | Yes | Always sandbox generated code |
+
+### Exercise: Run Your Enricher in a Sandbox
+
+1. Sign up for a Daytona free tier account
+2. Modify your lead enricher to run in a sandbox
+3. Upload sample-leads.csv to the sandbox
+4. Run the enrichment agent
+5. Download the enriched results
+
+---
+
 ## Wrap-Up (15 min)
 
 ### Key Takeaways
 
-1. **`query()` is the core** - One function to run agents programmatically
+1. **`query()` is the core** - One function to run agents programmatically (TypeScript or Python)
 2. **Sessions preserve context** - Use for multi-step workflows
 3. **Stream for UX** - Show progress on long tasks
 4. **Permissions matter** - Control what agents can do in production
 5. **Handle errors** - Agents fail; build resilient systems
+6. **Sandbox production agents** - Use Daytona for safe code execution in containerized environments
 
 ### Homework
 
@@ -726,10 +1212,11 @@ Week 7: Evals - Building dashboards to track agent performance and iterate until
 ### Environment Setup
 
 Participants need:
-- Node.js 18+
-- npm or yarn
+- Node.js 18+ (for TypeScript) OR Python 3.9+ (for Python)
+- npm/yarn or pip
 - Anthropic API key
-- TypeScript knowledge (basic)
+- TypeScript or Python knowledge (basic)
+- Optional: Daytona API key for sandboxing lab
 
 ### Timing Adjustments
 

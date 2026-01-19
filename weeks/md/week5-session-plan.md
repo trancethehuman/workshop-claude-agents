@@ -1,10 +1,11 @@
-# Week 5: Sub-agents - Orchestrating Specialized Agents
+# Week 5: Context Engineering - Sub-agents and RAG
 
 ## Session Goals
 - Understand sub-agent architecture and use cases
 - Use the Task tool to spawn specialized agents
 - Define custom agents with focused capabilities
 - Build multi-agent workflows for GTM pipelines
+- Connect to vector databases for retrieval-augmented generation
 
 ---
 
@@ -36,14 +37,14 @@ When a sub-agent runs:
 ```
 Without sub-agents:
 ┌────────────────────────────────────────────────────────────────┐
-│ Main Agent Context                                              │
-│ - Task: Research 10 companies                                   │
-│ - WebSearch result for Company 1 (500 tokens)                   │
-│ - WebFetch page content (2000 tokens)                           │
-│ - Analysis reasoning (300 tokens)                               │
-│ - WebSearch result for Company 2 (500 tokens)                   │
-│ - WebFetch page content (2000 tokens)                           │
-│ - ... context explodes ...                                      │
+│ Main Agent Context                                             │
+│ - Task: Research 10 companies                                  │
+│ - WebSearch result for Company 1 (500 tokens)                  │
+│ - WebFetch page content (2000 tokens)                          │
+│ - Analysis reasoning (300 tokens)                              │
+│ - WebSearch result for Company 2 (500 tokens)                  │
+│ - WebFetch page content (2000 tokens)                          │
+│ - ... context explodes ...                                     │
 └────────────────────────────────────────────────────────────────┘
 
 With sub-agents:
@@ -413,6 +414,46 @@ When sub-agents fail:
 > If enrichment fails for a company, note it as "Research Failed" and continue with the next lead.
 ```
 
+### Context, Memory, and Retrieval
+
+Sub-agents are powerful, but what happens when you need agents to work with large knowledge bases? This is where **retrieval-augmented generation (RAG)** comes in.
+
+**The evolution:**
+- RAG started as "embed documents, find similar chunks, stuff into prompt"
+- Modern agents treat retrieval as just another tool
+- Claude can decide when to search, what to search for, and how to use results
+
+**RAG vs Agentic Search:**
+
+| Traditional RAG | Agentic Search |
+|-----------------|----------------|
+| Fixed retrieval pipeline | Agent decides when to retrieve |
+| Same query for all questions | Agent reformulates queries |
+| Top-K results stuffed in prompt | Agent filters and synthesizes |
+| One-shot retrieval | Iterative search and refinement |
+
+**When to use vector search vs filesystem:**
+
+| Use Case | Best Approach |
+|----------|---------------|
+| Structured data (CSVs, databases) | SQL/grep - precise matching |
+| Unstructured docs (PDFs, notes) | Vector search - semantic similarity |
+| Code search | Grep + embeddings hybrid |
+| Finding similar past deals/cases | Vector search - similarity matching |
+
+**Connecting to vector databases via MCP:**
+
+For this workshop, we'll use **Vectorize.io**, which provides:
+- A visual UI for uploading and managing documents
+- Automatic vectorization of your files (PDFs, docs, text)
+- Built-in MCP integration for Claude Code
+- No code required for basic RAG workflows
+
+Once connected, Claude can:
+- Search for semantically similar content
+- Retrieve context for complex questions
+- Enrich data based on proprietary knowledge
+
 ### Tracking Sub-agent Progress (SDK)
 
 When using the Agent SDK, you can track sub-agent progress through streaming:
@@ -589,6 +630,186 @@ Based on results:
 - Working lead-pipeline skill
 - Screenshot of pipeline execution
 - Sample output with 5 processed leads
+
+---
+
+## Bonus Lab: RAG with Vectorize.io (Optional)
+
+### Scenario: Enrich Deals with Proprietary Knowledge
+
+Your company has historical deal notes, win/loss analyses, and sales playbooks. When processing new leads, you want to:
+- Find similar past deals
+- Pull relevant playbook sections
+- Get recommendations based on what worked before
+
+This is a perfect use case for vector search + agents.
+
+### Step 1: Set Up Vectorize.io
+
+**Vectorize.io** provides a visual workflow builder for RAG pipelines with direct Claude Code integration via MCP.
+
+1. **Create an account** at [vectorize.io](https://vectorize.io)
+
+2. **Create a new pipeline:**
+   - Click "New Pipeline"
+   - Name it "Sales Knowledge Base"
+   - Choose your embedding model (OpenAI or Cohere recommended)
+
+3. **Upload your documents** directly in the UI:
+   - Sales playbooks (PDF, Word, Markdown)
+   - Historical deal summaries
+   - Win/loss analysis reports
+   - Product documentation
+   - Competitor battlecards
+
+4. **Configure retrieval settings:**
+   - Set chunk size (500-1000 tokens recommended)
+   - Enable metadata filtering if you want to filter by deal type, industry, etc.
+
+### Step 2: Create an MCP Agent in Vectorize
+
+1. **Navigate to Agents** in the Vectorize dashboard
+
+2. **Create a new MCP Agent:**
+   - Name: "Sales Knowledge Agent"
+   - Select your pipeline as the data source
+   - Configure the retrieval function:
+     - Function name: `search_knowledge_base`
+     - Description: "Search historical deals, playbooks, and sales documentation"
+
+3. **Generate API credentials:**
+   - Go to Agent API Keys
+   - Create a new key named "Claude Code"
+   - Copy the API key and Agent ID
+
+### Step 3: Connect to Claude Code
+
+Run this command to add the Vectorize MCP server:
+
+```bash
+claude mcp add vectorize-mcp \
+  --env VECTORIZE_API_KEY=YOUR_API_KEY \
+  -- npx -y mcp-remote@latest \
+  https://agents.vectorize.io/api/agents/YOUR_AGENT_ID/mcp \
+  --header "Authorization: Bearer ${VECTORIZE_API_KEY}"
+```
+
+Verify the connection:
+```bash
+claude mcp list
+```
+
+You should see `vectorize-mcp` in the list.
+
+### Step 4: Test the RAG Integration
+
+Start a new Claude Code session and test:
+
+```
+> Search our knowledge base for deals we won in the Healthcare industry.
+> What were the common winning factors?
+```
+
+Claude will automatically use the Vectorize MCP to search your indexed documents and return relevant context.
+
+**More example queries:**
+
+```
+> Find information about how we handle security objections
+```
+
+```
+> What's our playbook for selling to enterprise companies with 1000+ employees?
+```
+
+```
+> Search for deals where we competed against [Competitor Name]. What worked?
+```
+
+### Step 5: Integrate into Your Pipeline
+
+Create `.claude/agents/knowledge-enricher.md`:
+
+```markdown
+---
+name: knowledge-enricher
+description: Enrich leads with insights from our sales knowledge base using Vectorize. Use when you need historical context, playbook guidance, or similar deal examples.
+model: haiku
+tools: ["mcp__vectorize-mcp__search_knowledge_base"]
+---
+
+# Knowledge Enricher
+
+Search our sales knowledge base to provide context for new leads and deals.
+
+## Process
+
+1. **Identify search criteria** from the lead:
+   - Industry vertical
+   - Company size range
+   - Likely pain points based on role/title
+
+2. **Search the knowledge base** for:
+   - Similar past deals (won and lost)
+   - Industry-specific playbook sections
+   - Relevant objection handling
+
+3. **Return structured insights**:
+
+```json
+{
+  "similar_deals": [
+    {"company": "...", "outcome": "...", "key_factors": "..."}
+  ],
+  "playbook_guidance": "...",
+  "recommended_approach": "...",
+  "potential_objections": ["..."]
+}
+```
+```
+
+### Step 6: Run the Full Pipeline
+
+```
+> Process this lead through the full pipeline with knowledge enrichment:
+>
+> Company: MedTech Solutions
+> Industry: Healthcare
+> Size: 300 employees
+> Contact: VP of Operations
+>
+> 1. Use knowledge-enricher to find similar deals and playbook guidance
+> 2. Apply lead scoring
+> 3. Draft a personalized email that incorporates the lessons learned
+```
+
+### What Makes Vectorize Different
+
+| Feature | Benefit |
+|---------|---------|
+| **Visual UI** | Upload files directly, no code needed |
+| **Workflow builder** | Configure chunking, embedding, retrieval visually |
+| **MCP integration** | Native Claude Code support via agent MCP |
+| **Hosted infrastructure** | No vector DB to manage |
+| **Automatic updates** | Re-upload docs and vectors update automatically |
+
+### Example Queries That Shine with Vector Search
+
+Vector search finds semantically similar content, not just keyword matches:
+
+| Query | What Vector Search Finds |
+|-------|-------------------------|
+| "Deals where budget was the main concern" | Deals mentioning cost, pricing, ROI, budget constraints |
+| "Skeptical technical buyers" | Deals with CTOs who needed proof, security reviews, POCs |
+| "Fast-moving startups" | Deals with short cycles, founder-led, quick decisions |
+
+### Deliverable
+
+- [ ] Vectorize.io account created
+- [ ] Documents uploaded to pipeline
+- [ ] MCP agent configured and connected to Claude Code
+- [ ] Knowledge enricher agent working
+- [ ] Sample query showing relevant results from your docs
 
 ---
 
