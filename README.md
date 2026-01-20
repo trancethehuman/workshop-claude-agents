@@ -1,6 +1,6 @@
-# Building AI Agents with Claude Code & Agent SDK
+# AI for Data Science
 
-An 8-week hands-on workshop teaching you to build AI agents for data analysis, GTM, marketing, and business automation.
+An 8-week hands-on workshop teaching you to build AI agents for data analysis, visualization, predictive modeling, and business automation using Claude Code and Claude Agent SDK.
 
 **Key insight:** Claude Code is not just for writing code. It's an agent that can analyze data, research companies, draft emails, process documents, and automate repetitive business tasks. This workshop teaches you to harness that power.
 
@@ -59,7 +59,7 @@ If Claude responds with information about the repo, you're ready.
 | 2    | Tool Calling     | How Claude uses tools, web search, data fetching     |
 | 3    | MCP Integration  | Connect to CRM, databases, external APIs             |
 | 4    | Agent Skills     | Create reusable skills for data analysis & GTM       |
-| 5    | Sub-agents       | Orchestrate specialized agents for complex workflows |
+| 5    | Context Engineering | Sub-agents, RAG with Vectorize.io, memory patterns |
 | 6    | Agent SDK        | Run agents headlessly at scale                       |
 | 7    | Evals            | Measure and improve agent quality                    |
 | 8    | Capstone         | Present projects, peer learning                      |

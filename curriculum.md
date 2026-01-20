@@ -1,9 +1,9 @@
-# Workshop Series: Building AI Agents with Claude Code & Agent SDK
+# Workshop Series: AI for Data Science
 
 **Duration:** 8 weeks, 3 hours per session, weekly
 **Format:** Virtual (Zoom)
-**Language:** TypeScript
-**Prerequisites:** Claude Pro subscription, GitHub account, TypeScript/Node.js familiarity
+**Languages:** TypeScript and Python
+**Prerequisites:** Claude Pro subscription, GitHub account, TypeScript or Python familiarity
 
 ---
 
@@ -36,7 +36,7 @@ This workshop teaches developers to build AI agents for data analytics and GTM (
 | 2 | Tool Calling | Understand how Claude uses tools, build custom tools |
 | 3 | MCP Integration | Connect Claude to external services (CRM, databases, APIs) |
 | 4 | Agent Skills | Create reusable skills that extend Claude's capabilities |
-| 5 | Sub-agents | Orchestrate specialized agents for complex workflows |
+| 5 | Context Engineering | Sub-agents, RAG with Vectorize.io, memory patterns |
 | 6 | Agent SDK (TypeScript) | Run agents headless, fleet execution at scale |
 | 7 | Evals | Build dashboard, test cases, measure and iterate |
 | 8 | Demos | Present projects, peer learning, feedback |
