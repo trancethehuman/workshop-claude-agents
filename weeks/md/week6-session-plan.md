@@ -279,9 +279,9 @@ asyncio.run(main())
 
 ## Block 2: Lab 1 - Your First SDK Agent (30 min)
 
-### Task: Build a File Analyzer Agent
+### Task: Build a Database Analyzer Agent
 
-Create an agent that analyzes CSV files and produces reports. Choose TypeScript or Python based on your preference.
+Create an agent that analyzes SQLite databases and produces reports. Choose TypeScript or Python based on your preference.
 
 **Step 1:** Set up the project:
 
@@ -319,11 +319,11 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   let toolCalls = 0;
 
   const result = await query({
-    prompt: `Analyze the CSV file at ${filePath}. Provide:
-    1. Number of rows and columns
-    2. Column names and data types
+    prompt: `Analyze the SQLite database at ${filePath}. Provide:
+    1. List of tables and row counts
+    2. Schema for each table (columns and types)
     3. Summary statistics for numeric columns
-    4. Any data quality issues you notice`,
+    4. Key relationships between tables`,
     options: {
       maxTurns: 5,
       onToolCall: (tool) => {
@@ -340,7 +340,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 }
 
 // Run
-analyzeFile('../data/sample-leads.csv')
+analyzeFile('../data/startup-funding.db')
   .then(result => {
     console.log('\n=== Analysis Result ===\n');
     console.log(result.text);
@@ -355,15 +355,15 @@ import asyncio
 from claude_agent_sdk import query, ClaudeAgentOptions
 
 async def analyze_file(file_path: str) -> dict:
-    """Analyze a CSV file and return structured results."""
+    """Analyze a SQLite database and return structured results."""
     tool_calls = 0
     result_text = ""
 
-    prompt = f"""Analyze the CSV file at {file_path}. Provide:
-    1. Number of rows and columns
-    2. Column names and data types
+    prompt = f"""Analyze the SQLite database at {file_path}. Provide:
+    1. List of tables and row counts
+    2. Schema for each table (columns and types)
     3. Summary statistics for numeric columns
-    4. Any data quality issues you notice"""
+    4. Key relationships between tables"""
 
     async for message in query(
         prompt=prompt,
@@ -384,7 +384,7 @@ async def analyze_file(file_path: str) -> dict:
     }
 
 async def main():
-    result = await analyze_file('../data/sample-leads.csv')
+    result = await analyze_file('../data/startup-funding.db')
     print('\n=== Analysis Result ===\n')
     print(result["text"])
     print(f'\nTotal tool calls: {result["tool_calls"]}')
@@ -948,7 +948,7 @@ daytona = Daytona()
 sandbox = daytona.create()
 
 # Upload data to sandbox
-sandbox.fs.upload_file("sample-leads.csv", "/workspace/leads.csv")
+sandbox.fs.upload_file("startup-funding.db", "/workspace/funding.db")
 
 # Have Claude generate analysis code
 message = client.messages.create(
@@ -957,11 +957,11 @@ message = client.messages.create(
     messages=[{
         "role": "user",
         "content": """Write Python code to:
-        1. Load /workspace/leads.csv
-        2. Calculate conversion rates by source
+        1. Connect to SQLite database at /workspace/funding.db
+        2. Query funding rounds by stage and calculate totals
         3. Print a summary table
 
-        Use pandas. Only output the Python code, no explanations."""
+        Use sqlite3 and pandas. Only output the Python code, no explanations."""
     }]
 )
 
@@ -988,7 +988,7 @@ async function analyzeWithClaude() {
   const sandbox = await daytona.create({ language: "python" });
 
   // Upload data
-  await sandbox.fs.uploadFile("sample-leads.csv", "/workspace/leads.csv");
+  await sandbox.fs.uploadFile("startup-funding.db", "/workspace/funding.db");
 
   // Have Claude generate analysis code
   const message = await client.messages.create({
@@ -997,11 +997,11 @@ async function analyzeWithClaude() {
     messages: [{
       role: "user",
       content: `Write Python code to:
-        1. Load /workspace/leads.csv
-        2. Calculate conversion rates by source
+        1. Connect to SQLite database at /workspace/funding.db
+        2. Query funding rounds by stage and calculate totals
         3. Print a summary table
 
-        Use pandas. Only output the Python code, no explanations.`
+        Use sqlite3 and pandas. Only output the Python code, no explanations.`
     }]
   });
 
@@ -1063,8 +1063,8 @@ async def run_sandboxed_agent(task: str, data_file: str):
         sandbox.delete()
 
 asyncio.run(run_sandboxed_agent(
-    task="Analyze the leads data and generate summary statistics",
-    data_file="sample-leads.csv"
+    task="Analyze the funding data and generate summary statistics by stage",
+    data_file="startup-funding.db"
 ))
 ```
 
@@ -1151,13 +1151,13 @@ For each data file:
 | Production pipelines | Yes | Defense in depth |
 | Code generation tasks | Yes | Always sandbox generated code |
 
-### Exercise: Run Your Enricher in a Sandbox
+### Exercise: Run Your Analyzer in a Sandbox
 
 1. Sign up for a Daytona free tier account
-2. Modify your lead enricher to run in a sandbox
-3. Upload sample-leads.csv to the sandbox
-4. Run the enrichment agent
-5. Download the enriched results
+2. Modify your file analyzer to run in a sandbox
+3. Upload startup-funding.db to the sandbox
+4. Run the analysis agent
+5. Download the results
 
 ---
 
@@ -1174,11 +1174,11 @@ For each data file:
 
 ### Homework
 
-**Build an Automated Report Generator:**
+**Part 1: Build an Automated Report Generator**
 
 1. Create an agent that:
-   - Reads a data file (CSV or JSON)
-   - Analyzes the data
+   - Connects to the startup-funding.db
+   - Analyzes funding trends
    - Generates a markdown report
    - Saves to output folder
 
@@ -1187,12 +1187,93 @@ For each data file:
    - Error handling with retries
    - Session-based follow-up questions
 
-3. Run it on 3 different datasets
+3. Run analysis queries like:
+   - Funding trends by quarter
+   - Top investors by deal count
+   - Industry breakdown
 
 4. Document:
    - Code structure
    - How you handled errors
    - Performance observations
+
+**Part 2: Daily Metrics Monitoring Agent (Bonus)**
+
+Build an agent that runs automated metrics checks against the funding database:
+
+```typescript
+// daily-metrics-agent.ts
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+interface MetricCheck {
+  name: string;
+  query: string;
+  baseline: string;
+  threshold: number; // Alert if deviation exceeds this %
+}
+
+const METRICS: MetricCheck[] = [
+  {
+    name: 'Weekly Funding Volume',
+    query: `SELECT SUM(amount_usd) as total FROM funding_rounds
+            WHERE funding_date >= date('now', '-7 days')`,
+    baseline: `SELECT AVG(weekly_total) FROM (
+      SELECT SUM(amount_usd) as weekly_total FROM funding_rounds
+      WHERE funding_date >= date('now', '-90 days')
+      GROUP BY strftime('%Y-%W', funding_date))`,
+    threshold: 0.2
+  },
+  {
+    name: 'Series A Deal Count',
+    query: `SELECT COUNT(*) as count FROM funding_rounds
+            WHERE stage = 'Series A'
+            AND funding_date >= date('now', '-30 days')`,
+    baseline: `SELECT AVG(monthly_count) FROM (
+      SELECT COUNT(*) as monthly_count FROM funding_rounds
+      WHERE stage = 'Series A'
+      GROUP BY strftime('%Y-%m', funding_date))`,
+    threshold: 0.3
+  }
+];
+
+async function runDailyMetricsCheck() {
+  const result = await query({
+    prompt: `You are a metrics monitoring agent. Run these checks and report anomalies:
+
+${METRICS.map(m => `
+**${m.name}**
+Current: ${m.query}
+Baseline: ${m.baseline}
+Alert threshold: ${m.threshold * 100}% deviation
+`).join('\n')}
+
+For each metric:
+1. Run both queries against startup-funding.db
+2. Calculate % deviation from baseline
+3. If deviation > threshold, flag as anomaly
+4. For anomalies, suggest what might have caused the change
+
+Return a structured report.`,
+    options: {
+      maxTurns: 10,
+    }
+  });
+
+  console.log('Daily Metrics Report');
+  console.log('='.repeat(40));
+  console.log(result.text);
+}
+
+runDailyMetricsCheck().catch(console.error);
+```
+
+**What this teaches:**
+- Running scheduled agent tasks
+- Combining SQL queries with LLM analysis
+- Anomaly detection patterns
+- Building monitoring systems with agents
+
+**Stretch goal:** Extend the agent to post alerts to Slack or email when anomalies are detected.
 
 ### Next Week Preview
 

@@ -300,7 +300,7 @@ tools: ["Read", "Write"]
 
 ```
 > Run the lead pipeline on the top 5 leads
-> from sample-leads.csv
+> from startup-funding.db
 ```
 
 ---

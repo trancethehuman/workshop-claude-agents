@@ -345,7 +345,7 @@ My focus area: [describe your use case]
 Try these commands:
 ```
 > What files are in the data folder?
-> Read the sample-leads.csv and summarize it
+> Read the startup-funding.db and summarize it
 > Search for files that mention "revenue"
 ```
 

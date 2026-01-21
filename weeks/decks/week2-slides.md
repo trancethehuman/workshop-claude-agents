@@ -161,12 +161,14 @@ Agent receives task
 
 ---
 
-# Hands-On: SQLite Database
+# Workshop Dataset: Startup Funding
 
-This repo includes `data/sample-sales.db`:
-- `customers` - 50 companies
-- `deals` - 100 deals with stages and values
-- `activities` - 500+ records
+`data/startup-funding.db` - Real VC data from 2018-2025
+
+- **200 startups** across AI/ML, Fintech, Healthcare, Dev Tools
+- **66 investors** (Y Combinator, Sequoia, a16z, Accel...)
+- **~480 funding rounds** from Pre-Seed through Series C
+- Includes AI coding tools: Cursor, Replit, Codeium
 
 Claude queries it directly via Bash + sqlite3.
 
@@ -197,7 +199,7 @@ Notice: Claude uses **Glob** to find files.
 
 **Exercise 2:**
 ```
-> Read the sample-leads.csv file and give me:
+> Read the startup-funding.db file and give me:
 > - Total rows and columns
 > - Column names and what they contain
 > - Distribution of the 'status' field
@@ -220,7 +222,7 @@ Notice: Claude uses **Glob** to find files.
 
 **Exercise 4:**
 ```
-> Compare sample-leads.csv with mock-crm.json.
+> Compare startup-funding.db with mock-crm.json.
 > Which leads also appear in the CRM contacts?
 ```
 
@@ -323,7 +325,7 @@ When to use WebFetch:
 
 **Step 3:**
 ```
-> Research these 3 companies from sample-leads.csv:
+> Research these 3 companies from startup-funding.db:
 > 1. Acme Corp
 > 2. GlobalTech Inc
 > 3. HealthFirst Solutions

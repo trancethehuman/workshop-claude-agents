@@ -183,24 +183,86 @@ For 50+ cases or after every code change, automate.
 
 ---
 
-# Simple Automation Script
+# Workshop Eval Runner
 
-```typescript
-async function runSingleEval(testCase: TestCase) {
-  const result = await query({
-    prompt: testCase.input,
-    options: { maxTurns: 3 }
-  });
+`scripts/run-funding-evals.py` demonstrates:
 
-  // Check if expected terms are mentioned
-  for (const term of testCase.mustMention) {
-    if (!result.text.includes(term)) {
-      return { passed: false };
-    }
-  }
-  return { passed: true };
-}
+- Streaming output (see Claude work in real-time)
+- Tool call visibility (shows SQL queries)
+- Boolean pass/fail scoring
+- JSON result export
+
+---
+
+# How It Works
+
+```python
+cmd = [
+    'claude', '-p', prompt,
+    '--output-format', 'stream-json',
+    '--verbose',
+    '--allowedTools', 'Bash(sqlite3:*),Read'
+]
 ```
+
+---
+
+# Lab 2: Run the Eval Script
+
+**Step 1:** Preview evals
+```bash
+python3 scripts/run-funding-evals.py --dry-run
+```
+
+**Step 2:** Run a single eval
+```bash
+python3 scripts/run-funding-evals.py --id=basic-001
+```
+
+---
+
+# Run Evals by Difficulty
+
+```bash
+# Easy evals (should mostly pass)
+python3 scripts/run-funding-evals.py --filter=easy
+
+# Medium evals
+python3 scripts/run-funding-evals.py --filter=medium
+
+# Hard evals (expect some failures)
+python3 scripts/run-funding-evals.py --filter=hard
+```
+
+---
+
+# What You'll See
+
+```
+[basic-001] Basic Count
+──────────────────────────────────────────────────
+
+┌─ Bash
+│ sqlite3 data/startup-funding.db "SELECT COUNT(*)..."
+│ 200
+└─
+
+**Answer:** There are **200 startups** in the database.
+
+→ ✓ PASS (8s)
+```
+
+---
+
+# Analyze Results
+
+```bash
+cat output/eval-results.json | python3 -m json.tool
+```
+
+Check:
+- Overall pass rate by difficulty
+- Which evals failed and why
 
 ---
 
@@ -209,24 +271,6 @@ async function runSingleEval(testCase: TestCase) {
 Your eval is only as good as your pass/fail criteria.
 
 Spend more time on defining good criteria than on automation.
-
----
-
-# Lab 2: Fix One Failing Test
-
-1. Analyze the failure
-2. Make ONE change
-3. Re-run the test
-4. Check you didn't break other tests
-
----
-
-# The Iteration Loop
-
-```
-Run tests → See failure → Analyze why →
-Make ONE change → Run again
-```
 
 ---
 

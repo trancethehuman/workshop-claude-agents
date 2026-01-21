@@ -607,16 +607,20 @@ Process leads sequentially or in small batches (3-5) to manage context.
 Save detailed results to `output/pipeline-results.json`
 ```
 
-### Step 2: Test with Sample Data
+### Step 2: Test with Startup Data
+
+Use the startup funding database to find promising companies:
 
 ```
-> Run the lead pipeline on the top 5 leads from sample-leads.csv
+> Query the funding database for AI startups that raised Series A in 2024.
+> Pick the top 5 by funding amount and run them through the lead pipeline.
 ```
 
 Watch the pipeline:
-1. Spawn enrichment sub-agents
-2. Apply scoring
-3. Generate emails
+1. Query database for candidates
+2. Spawn enrichment sub-agents for each
+3. Apply scoring based on company data
+4. Generate outreach emails
 
 ### Step 3: Iterate and Improve
 
@@ -824,7 +828,7 @@ Vector search finds semantically similar content, not just keyword matches:
 
 ### Homework
 
-**Extend Your Pipeline:**
+**Part 1: Extend Your Pipeline**
 
 1. Add a new stage to your pipeline. Examples by domain:
 
@@ -844,6 +848,49 @@ Vector search finds semantically similar content, not just keyword matches:
    - Pipeline diagram
    - Agent responsibilities
    - Sample results
+
+**Part 2: Multi-Source Analysis (Explore on Your Own)**
+
+Real data analysis often requires context from multiple sources. When you see an anomaly in your funding data, you might want to know: Was there industry news? Did a major competitor get acquired? Was there a market shift?
+
+This is how professional data scientists work—they don't just query data, they synthesize information from multiple sources to explain what happened and why.
+
+**Your task:** Connect at least one additional MCP server and combine it with the startup funding database.
+
+**Recommended MCPs to explore:**
+
+| MCP | What It Enables | Example Use Case |
+|-----|-----------------|------------------|
+| **Slack** | Search channels, read messages | Find team discussions about companies in your database |
+| **Linear/Jira** | Query issues and projects | Correlate product releases with funding trends |
+| **Notion** | Query databases and pages | Pull company research notes alongside funding data |
+| **Google Drive** | Search documents | Find historical analysis or meeting notes |
+
+**Setup (pick one):**
+
+```bash
+# Slack
+claude mcp add slack
+
+# Linear
+claude mcp add linear
+
+# Notion
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+```
+
+**Example workflow:**
+
+1. Query funding database: "Which AI companies raised the largest rounds last quarter?"
+2. Search Slack/Notion: "Find any team discussions or notes about these companies"
+3. Synthesize: Write a 3-bullet summary combining quantitative funding data with qualitative context
+
+**Deliverable:**
+
+Document your multi-source analysis showing:
+- The data query and results from the funding database
+- Context gathered from your connected MCP
+- Your synthesized explanation (what the data shows + what the context reveals)
 
 ### Next Week Preview
 

@@ -460,7 +460,7 @@ Try these commands in Claude Code:
 ```
 > What files are in the data folder?
 
-> Read the sample-leads.csv and summarize what's in it
+> Read the startup-funding.db and summarize what's in it
 
 > Search for any files that mention "revenue" or "customer"
 
@@ -471,8 +471,10 @@ Notice which tools Claude uses for each task (Glob, Read, Grep).
 
 ### Task 3: Data Exploration Preview (15 min)
 
+**About the dataset:** This repo includes `startup-funding.db`, a SQLite database modeled on real venture capital activity from 2018-2025. It has 200 startups (including AI coding tools like Cursor and Replit), 66 investors, and ~480 funding rounds across industries. We'll use this dataset throughout the workshop to practice data analysis with Claude.
+
 ```
-> Look at data/sample-leads.csv. Tell me:
+> Look at data/startup-funding.db. Tell me:
 > 1. How many rows and columns
 > 2. What the columns represent
 > 3. Any obvious data quality issues

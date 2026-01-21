@@ -4,7 +4,8 @@
 - Understand how Claude uses tools to interact with the world
 - Learn the tool calling loop: think, select, execute, observe
 - Practice with built-in tools for data analysis and research
-- Build a research workflow using web search and data fetching
+- Master the Data Analysis Loop: Monitor, Explore, Craft, Impact
+- Build analysis workflows using SQL and web search
 
 ---
 
@@ -31,15 +32,15 @@ Every time Claude uses a tool, it follows this loop:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Example:** "Analyze the top 10 customers by revenue from this CSV"
+**Example:** "Find the top-funded AI startups in 2024"
 
-1. **Think:** I need to read the CSV file first
-2. **Select:** Use the `Read` tool
-3. **Execute:** Read the file contents
-4. **Observe:** I see 500 rows with columns: customer_name, revenue, date...
-5. **Think:** Now I need to sort by revenue and take top 10
-6. **Select:** Use `Bash` to sort and filter
-7. **Execute:** Run the command
+1. **Think:** I need to query the funding database
+2. **Select:** Use `Bash` with sqlite3
+3. **Execute:** Run the query
+4. **Observe:** I see 50 results with columns: startup_name, amount, stage...
+5. **Think:** Now I need to filter for AI industry and sort by amount
+6. **Select:** Refine the SQL query
+7. **Execute:** Run the updated query
 8. **Observe:** Here are the results...
 9. **Think:** Task complete, present findings
 
@@ -69,12 +70,12 @@ LLMs have seen grep, cat, find, and ls billions of times during training. These 
 |---------|--------------|----------------|
 | `ls` | List files | "What data do I have to work with?" |
 | `cat` | Read file contents | "Let me look at this file" |
-| `grep` | Search for patterns | "Find all mentions of 'pricing objection'" |
-| `find` | Locate files | "Where are the Q4 reports?" |
+| `grep` | Search for patterns | "Find all mentions of 'Series A'" |
+| `find` | Locate files | "Where are the funding reports?" |
 | `head/tail` | Preview files | "Show me the first 10 rows" |
 | `wc` | Count lines/words | "How many records are in this file?" |
-| `sort` | Order data | "Sort by revenue descending" |
-| `uniq` | Find unique values | "What industries are represented?" |
+| `sort` | Order data | "Sort by funding amount descending" |
+| `sqlite3` | Query databases | "Run SQL on the funding database" |
 
 **On-demand context retrieval:**
 
@@ -85,6 +86,7 @@ Agent receives task
     → Explores filesystem (ls, find)
     → Searches for relevant content (grep)
     → Reads specific files (cat)
+    → Queries databases (sqlite3)
     → Sends only what's needed to the model
     → Returns structured output
 ```
@@ -101,10 +103,10 @@ Claude Code comes with these tools ready to use:
 
 | Tool | What It Does | Business Use Cases |
 |------|--------------|-------------------|
-| **Read** | Read files | Analyze CSVs, read reports, review documents |
+| **Read** | Read files | Analyze data, read reports, review documents |
 | **Write** | Create files | Generate reports, save analysis results |
 | **Edit** | Modify files | Update data, fix errors in documents |
-| **Bash** | Run commands | Execute scripts, process data |
+| **Bash** | Run commands | Execute scripts, run SQL, process data |
 | **Glob** | Find files | Locate reports, find datasets |
 | **Grep** | Search content | Find mentions, search across files |
 | **WebSearch** | Search the web | Research companies, find market data |
@@ -116,12 +118,48 @@ Claude reads your request and matches it to available tools:
 
 | Your Request | Claude's Thinking | Tool Selected |
 |--------------|-------------------|---------------|
-| "What's in this CSV?" | Need to read a file | Read |
-| "Find all mentions of 'revenue'" | Need to search content | Grep (or Bash with grep) |
-| "Research Acme Corp" | Need current web info | WebSearch |
+| "What's in this database?" | Need to explore schema | Bash (sqlite3) |
+| "Find all AI startups" | Need to query database | Bash (sqlite3) |
+| "Research Cursor AI funding" | Need current web info | WebSearch |
 | "Create a summary report" | Need to write output | Write |
-| "How many rows have status 'closed'?" | Need to filter and count | Bash (`grep "closed" \| wc -l`) |
-| "Sort leads by score" | Need to reorder data | Bash (`sort -t',' -k3 -rn`) |
+| "How many Series A rounds in 2024?" | Need to count from database | Bash (sqlite3) |
+| "Top investors by portfolio size" | Need to aggregate and rank | Bash (sqlite3) |
+
+### The Data Analysis Loop
+
+Professional data analysis follows a repeatable workflow. This is what separates good analysts from great ones:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   MONITOR → EXPLORE → CRAFT STORY → IMPACT                  │
+│      ↑                                  │                   │
+│      └──────────────────────────────────┘                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**1. Monitor**
+- Run recurring queries to check key metrics
+- Compare current values to historical baselines
+- Flag anomalies (>10% deviation from average)
+
+**2. Explore**
+- When you spot an anomaly, dig deeper
+- Segment the data: by time, category, cohort
+- Look for external context: was there a market shift? A news event?
+
+**3. Craft Story**
+- Synthesize findings into 3-5 key insights
+- Support each insight with specific data
+- Note confidence level and caveats
+
+**4. Impact**
+- Recommend concrete next actions
+- Size the opportunity if possible
+- Identify what additional data would help
+
+Claude can help at every phase of this loop.
 
 ### AI-Assisted SQL and Data Warehouse Querying
 
@@ -131,9 +169,9 @@ One of the most powerful applications of AI agents is querying structured data. 
 
 | Business Question | Claude Generates |
 |-------------------|------------------|
-| "Top 10 customers by revenue" | `SELECT customer_name, SUM(revenue) FROM sales GROUP BY customer_name ORDER BY SUM(revenue) DESC LIMIT 10` |
-| "Month-over-month growth rate" | `SELECT month, revenue, LAG(revenue) OVER (ORDER BY month) as prev, (revenue - LAG(revenue) OVER (ORDER BY month)) / LAG(revenue) OVER (ORDER BY month) * 100 as growth_pct FROM monthly_sales` |
-| "Deals stuck in pipeline > 30 days" | `SELECT * FROM deals WHERE stage != 'Closed' AND DATEDIFF(NOW(), created_at) > 30` |
+| "Top 10 funded AI startups" | `SELECT name, SUM(amount_usd) FROM startups s JOIN funding_rounds fr ON s.id = fr.startup_id WHERE s.industry = 'AI/ML' GROUP BY s.id ORDER BY SUM(amount_usd) DESC LIMIT 10` |
+| "Funding velocity by stage" | `WITH rounds AS (SELECT startup_id, stage, funding_date, LAG(funding_date) OVER (PARTITION BY startup_id ORDER BY funding_date) as prev_date FROM funding_rounds) SELECT stage, AVG(JULIANDAY(funding_date) - JULIANDAY(prev_date)) as avg_days_between FROM rounds WHERE prev_date IS NOT NULL GROUP BY stage` |
+| "Series A to Series B conversion rate by year" | See intermediate SQL examples below |
 
 **Working with data warehouses:**
 
@@ -147,32 +185,88 @@ When your data lives in Snowflake, BigQuery, Redshift, or another warehouse, the
 
 1. **Validate AI-generated queries** - Always review before running on production data
 2. **Start with sample data** - Test queries on a subset first
-3. **Optimize for cost** - Warehouse queries can be expensive; ask Claude to limit results
-4. **Iterate conversationally** - "Now filter that to only Technology industry"
+3. **Use LIMIT clauses** - Prevent runaway queries
+4. **Iterate conversationally** - "Now filter that to only AI/ML industry"
 
-**Example workflow:**
+**Intermediate SQL Patterns:**
 
+This workshop uses SQL patterns beyond basic SELECT queries:
+
+```sql
+-- Window function: Rank startups by funding within industry
+SELECT
+  s.name,
+  s.industry,
+  fr.amount_usd,
+  fr.stage,
+  RANK() OVER (PARTITION BY s.industry ORDER BY fr.amount_usd DESC) as industry_rank
+FROM funding_rounds fr
+JOIN startups s ON fr.startup_id = s.id
+WHERE fr.stage = 'Series A';
+
+-- CTE: Calculate funding velocity (days between rounds)
+WITH round_sequence AS (
+  SELECT
+    startup_id,
+    stage,
+    funding_date,
+    LAG(funding_date) OVER (PARTITION BY startup_id ORDER BY funding_date) as prev_round_date
+  FROM funding_rounds
+)
+SELECT
+  s.name,
+  rs.stage,
+  JULIANDAY(rs.funding_date) - JULIANDAY(rs.prev_round_date) as days_since_last_round
+FROM round_sequence rs
+JOIN startups s ON rs.startup_id = s.id
+WHERE rs.prev_round_date IS NOT NULL
+ORDER BY days_since_last_round ASC
+LIMIT 20;
+
+-- Cohort analysis: Series A to Series B conversion by year
+WITH series_a AS (
+  SELECT startup_id, funding_date as series_a_date
+  FROM funding_rounds WHERE stage = 'Series A'
+),
+series_b AS (
+  SELECT startup_id, funding_date as series_b_date
+  FROM funding_rounds WHERE stage = 'Series B'
+)
+SELECT
+  strftime('%Y', a.series_a_date) as series_a_year,
+  COUNT(DISTINCT a.startup_id) as series_a_count,
+  COUNT(DISTINCT b.startup_id) as converted_to_b,
+  ROUND(COUNT(DISTINCT b.startup_id) * 100.0 / COUNT(DISTINCT a.startup_id), 1) as conversion_rate
+FROM series_a a
+LEFT JOIN series_b b ON a.startup_id = b.startup_id
+GROUP BY series_a_year
+ORDER BY series_a_year;
 ```
-User: "How many leads came from each source last quarter?"
 
-Claude's process:
-1. Understand the schema (Read or ask)
-2. Write the SQL query
-3. Execute via Bash (sqlite3, psql, or export tool)
-4. Present results in a formatted table
-5. Offer follow-up analysis
-```
+### About the Workshop Dataset
 
-**Hands-on in this workshop:**
+Throughout this workshop, we'll use `data/startup-funding.db` - a SQLite database modeled on real startup funding data. The dataset tracks venture capital activity from 2018-2025, covering the AI boom, pandemic-era funding surge, and the 2023-2024 correction.
 
-This repo includes `data/sample-sales.db`, a SQLite database with:
-- `customers` - 50 companies with industry, size, revenue
-- `deals` - 100 deals with stages, values, owners
-- `activities` - 500+ activity records
+**What's in it:**
+- **200 startups** across industries: AI/ML, Fintech, Healthcare, Developer Tools, Cybersecurity, Climate Tech, and more
+- **66 investors** including well-known names (Y Combinator, Sequoia, a16z, Accel) and sector-focused funds
+- **~480 funding rounds** from Pre-Seed through Series C, with realistic amounts and valuations
+- **Growth metrics** for ~50 startups showing ARR, employee count, and user growth over time
+
+**Why this dataset:**
+- It's structured like real VC/market research data you'd encounter professionally
+- The relationships (startups → funding rounds → investors) let us practice JOINs and analytical queries
+- Time-series data enables trend analysis, cohort studies, and anomaly detection
+- Includes recognizable AI coding tools (Cursor, Replit, Codeium) for relatable analysis
+
+**Sample question the data can answer:**
+- "Which AI coding startups raised Series A in 2024, and who led those rounds?"
+- "What's the average time from Seed to Series A by industry?"
+- "Which investors have the best track record getting portfolio companies to Series B?"
 
 Claude can query this directly:
 ```bash
-sqlite3 data/sample-sales.db "SELECT stage, SUM(value) FROM deals GROUP BY stage"
+sqlite3 data/startup-funding.db "SELECT stage, COUNT(*), printf('$%.1fM', AVG(amount_usd)/1000000.0) FROM funding_rounds GROUP BY stage"
 ```
 
 ### Bash vs. Other Approaches
@@ -186,119 +280,146 @@ Why not just use RAG (retrieval augmented generation) or vector search?
 | **SQL + AI** | Translate questions to queries | Precise, scalable, production-ready |
 | **Bash + filesystem** | Exact pattern matching, on-demand | Precise, efficient, debuggable |
 
-When you need "all deals over $50K in Q4", vector search might return similar-sounding content. SQL gives you exactly what you asked for:
+When you need "all Series A rounds over $20M in AI/ML", vector search might return similar-sounding content. SQL gives you exactly what you asked for:
 
 ```sql
-SELECT * FROM deals WHERE value > 50000 AND quarter = 'Q4-2024';
+SELECT s.name, fr.amount_usd, fr.funding_date
+FROM funding_rounds fr
+JOIN startups s ON fr.startup_id = s.id
+WHERE fr.stage = 'Series A'
+  AND fr.amount_usd > 20000000
+  AND s.industry = 'AI/ML';
 ```
 
-Or with Bash on a CSV:
-
-```bash
-grep "2024-Q4" deals.csv | awk -F',' '$3 > 50000'
-```
-
-Claude knows how to write these commands and queries. Let it.
+Claude knows how to write these queries. Let it.
 
 ### Demo: Watch Claude Work
 
 Live demo with this prompt:
 
 ```
-Look at the sample-leads.csv file. Tell me:
-1. How many leads are there?
-2. Which industries are represented?
-3. Who are the top 3 leads by score?
-4. What's the average company size?
+Look at the startup-funding.db database. Tell me:
+1. How many startups are there by industry?
+2. What's the total funding by stage?
+3. Who are the top 5 investors by number of deals led?
+4. Which AI coding tools (Cursor, Replit, Codeium, etc.) have raised Series A?
 ```
 
 Watch how Claude:
-1. Uses **Read** to load the CSV
-2. Reasons about the data structure
-3. Uses **Bash** commands like `sort`, `grep`, `wc` to analyze
+1. Uses **Bash** with sqlite3 to explore the schema
+2. Writes and executes SQL queries
+3. Reasons about the results
 4. Presents structured findings
 
 ---
 
-## Block 2: Lab 1 - Exploring Built-in Tools (30 min)
+## Block 2: Lab 1 - Exploring the Startup Funding Database (45 min)
 
 ### Task: Data Exploration with Claude
 
-Use Claude Code to explore the sample data in this repo.
+Use Claude Code to explore the startup funding data in this repo.
 
-**Exercise 1: File Discovery (5 min)**
-
-```
-> What data files are available in this repository? List them with their sizes.
-```
-
-Notice: Claude uses **Glob** to find files.
-
-**Exercise 2: Data Profiling (10 min)**
+**Exercise 1: Schema Discovery (5 min)**
 
 ```
-> Read the sample-leads.csv file and give me a complete profile:
-> - Total rows and columns
-> - Column names and what they contain
-> - Any missing or unusual values
-> - Distribution of the 'status' field
+> What tables are in the startup-funding.db database? Show me the schema for each.
 ```
 
-Notice: Claude uses **Read** then reasons about the data.
+Notice: Claude uses **Bash** with sqlite3 to explore.
 
-**Exercise 3: Data Analysis (10 min)**
-
-```
-> From sample-leads.csv, answer these business questions:
-> 1. What percentage of leads are in Technology vs other industries?
-> 2. What's the correlation between company size and lead score?
-> 3. Which lead sources produce the highest-scoring leads?
-```
-
-Notice: Claude may use **Bash** to run calculations.
-
-**Exercise 4: Cross-file Analysis (5 min)**
+**Exercise 2: Basic Aggregations (10 min)**
 
 ```
-> Compare sample-leads.csv with mock-crm.json.
-> Which leads from the CSV also appear in the CRM contacts?
-> What additional info does the CRM have about them?
+> From startup-funding.db, answer these questions:
+> 1. How many funding rounds happened each year? Break down by stage.
+> 2. What's the total funding amount by industry?
+> 3. Which stage has the highest average deal size?
 ```
 
-Notice: Claude reads multiple files and synthesizes.
+Notice: Claude writes SQL with GROUP BY, aggregations.
 
-**Exercise 5: SQL Database Querying (10 min)**
+**Exercise 3: Trend Analysis (15 min)**
 
-This repo includes a SQLite database at `data/sample-sales.db` with realistic sales data.
-
-**Schema:**
-- `customers` - 50 companies with industry, size, revenue, region
-- `deals` - 100 deals with value, stage, probability, owner
-- `activities` - ~500 activity records (emails, calls, meetings)
+Run this analysis to understand funding trends:
 
 ```
-> Connect to the sample-sales.db SQLite database and answer these questions:
-> 1. What's the total pipeline value by stage?
-> 2. Which sales rep has the highest win rate?
-> 3. What's the average deal size by industry?
-> 4. Show me deals over $50K that have been stuck in Negotiation for more than 30 days
+> Analyze monthly funding trends for AI/ML companies from 2023 onwards.
+> Show me:
+> - Deal count per month
+> - Total funding per month
+> - Average deal size per month
+> Format as a table sorted by month.
 ```
 
-Notice: Claude writes and executes SQL queries using the `sqlite3` command via Bash. This is exactly how you'd query a data warehouse, just with a local database.
+The SQL pattern for this:
 
-**Try follow-up questions:**
-```
-> Now join the activities table and tell me which deals have gone cold (no activity in 14+ days)
+```sql
+SELECT
+  strftime('%Y-%m', funding_date) as month,
+  COUNT(*) as deal_count,
+  printf('$%.1fM', SUM(amount_usd)/1000000.0) as total_funding,
+  printf('$%.1fM', AVG(amount_usd)/1000000.0) as avg_deal_size
+FROM funding_rounds fr
+JOIN startups s ON fr.startup_id = s.id
+WHERE s.industry = 'AI/ML'
+  AND funding_date >= '2023-01-01'
+GROUP BY month
+ORDER BY month DESC;
 ```
 
-This demonstrates how AI-assisted querying works: you ask business questions, Claude translates to SQL, executes, and presents results.
+**Exercise 4: Investor Analysis (10 min)**
+
+```
+> Who are the top 15 investors by portfolio size?
+> For each, show:
+> - Number of portfolio companies
+> - Total investments (count of rounds)
+> - Follow-on rate (avg rounds per company)
+> Only include investors with at least 3 portfolio companies.
+```
+
+The SQL pattern for this:
+
+```sql
+SELECT
+  i.name as investor,
+  i.type,
+  COUNT(DISTINCT fr.startup_id) as portfolio_companies,
+  COUNT(*) as total_investments,
+  ROUND(COUNT(*) * 1.0 / COUNT(DISTINCT fr.startup_id), 2) as follow_on_rate
+FROM investors i
+JOIN funding_rounds fr ON fr.lead_investor_id = i.id
+GROUP BY i.id
+HAVING portfolio_companies >= 3
+ORDER BY portfolio_companies DESC
+LIMIT 15;
+```
+
+**Exercise 5: Analytical Question (5 min)**
+
+Apply the Data Analysis Loop to answer this question:
+
+```
+> Which AI coding tools raised Series A in 2024-2025?
+> Rank them by likelihood of getting Series B based on:
+> - Funding amount vs. industry median
+> - Time since founding to Series A
+> - Investor track record (has the lead investor backed other Series B+ companies?)
+> Give me your prediction with supporting evidence.
+```
+
+This exercise combines:
+- **Monitor:** Query current state of AI coding tool funding
+- **Explore:** Dig into factors that predict Series B success
+- **Craft:** Build a thesis with supporting data
+- **Impact:** Make a concrete prediction
 
 ### Discussion Questions
 
-1. Which tools did Claude use for each task?
-2. Did Claude ever use multiple tools in sequence?
-3. How did Claude handle the analysis - code or reasoning?
-4. How would the SQL approach differ if this data was in a real data warehouse?
+1. Which SQL patterns were new to you?
+2. How did Claude handle complex multi-table queries?
+3. Where did you see the Data Analysis Loop in action?
+4. What would you change about these queries for your own data?
 
 ---
 
@@ -310,7 +431,7 @@ This demonstrates how AI-assisted querying works: you ask business questions, Cl
 
 ### Why Web Tools Matter
 
-Your data lives in files. But context lives on the web:
+Your data lives in databases. But context lives on the web:
 - Company websites
 - News articles
 - LinkedIn profiles
@@ -326,9 +447,9 @@ WebSearch queries the web and returns relevant results.
 **Good prompts for WebSearch:**
 
 ```
-> Search for recent news about Acme Corp funding
-> Find information about the CRM software market size 2024
-> Look up reviews of competitor product X
+> Search for recent news about Cursor AI funding
+> Find information about the AI coding tools market size 2024
+> Look up reviews of Replit AI features
 ```
 
 **What you get back:**
@@ -350,31 +471,31 @@ WebFetch retrieves and reads a specific URL.
 2. WebFetch → get detailed content from best result
 3. Analyze → synthesize findings
 
-### Combining Tools for Research
+### Combining Data and Web Research
 
-**Company Research Workflow:**
+The real power comes from combining your structured data with web context:
+
+**Example Workflow:**
 
 ```
-User: "Research TechCorp for our sales call tomorrow"
-
-Claude's process:
-1. WebSearch: "TechCorp company news 2024"
-2. WebFetch: Company about page
-3. WebSearch: "TechCorp leadership team"
-4. WebFetch: LinkedIn or team page
-5. Synthesize: Compile research brief
-6. Write: Save to file
+1. Query database: "Show me AI coding startups that raised Series A in 2024"
+2. For top results, WebSearch: "[startup name] latest news"
+3. WebFetch: Get detailed info from relevant articles
+4. Synthesize: "Cursor raised $60M Series B, growing 3x YoY"
+5. Update analysis: Add context to database findings
 ```
+
+This is the Monitor → Explore → Craft → Impact loop in action.
 
 ### Practical Research Patterns
 
 | Research Goal | Tool Sequence |
 |---------------|---------------|
-| Company overview | WebSearch → WebFetch company site |
-| Recent news | WebSearch with date filter |
-| Competitive analysis | WebSearch competitors → WebFetch each |
-| Market sizing | WebSearch industry reports → WebFetch |
-| Contact research | WebSearch person + company → synthesize |
+| Validate funding data | Query DB → WebSearch for announcements |
+| Company deep dive | Query DB → WebFetch company site → WebSearch news |
+| Market sizing | Query DB aggregates → WebSearch industry reports |
+| Competitive analysis | Query DB for comparables → WebSearch each |
+| Trend validation | Query DB time series → WebSearch for explanations |
 
 ### Beyond Built-in: External Web Services
 
@@ -385,15 +506,8 @@ Claude's built-in WebSearch and WebFetch cover most needs. But when you need mor
 | **Tavily** | AI-native search API | When you need structured search results optimized for agents |
 | **Firecrawl** | Web scraping and crawling | When you need to extract data from complex sites |
 | **Bright Data** | Web scraping with anti-bot | When sites block automated access |
-| **Google Search Grounding** | Official Google search data | When you need Google-quality results |
 
-**Tavily** was built specifically for AI agents. It returns clean, structured data instead of raw HTML. Free tier includes 1,000 API credits per month.
-
-**Firecrawl** converts websites into LLM-ready markdown. Useful for extracting content from JavaScript-heavy sites that WebFetch can't handle.
-
-**Bright Data** offers an MCP server that handles anti-bot measures, CAPTCHAs, and rate limiting. Best for large-scale scraping or sites that actively block automation.
-
-These services connect to Claude through **MCP servers**. We'll cover how to build custom tools in Week 6 (Agent SDK), but here's the key idea: any API can become a Claude tool by wrapping it in an MCP server. You define the tool schema with inputs and outputs, and Claude learns when to use it.
+These services connect to Claude through **MCP servers**. We'll cover MCP in Week 3.
 
 ### Limitations to Know
 
@@ -406,77 +520,67 @@ These services connect to Claude through **MCP servers**. We'll cover how to bui
 
 ## Block 4: Lab 2 - Building a Research Workflow (45 min)
 
-### Task: Company Research for GTM
+### Task: Startup Research for Investment Analysis
 
-Build a research workflow that prepares you for sales calls.
+Build a research workflow that combines database queries with web research.
 
-**Scenario:** You have a call with three companies tomorrow. Use Claude to research each one.
+**Scenario:** You're analyzing AI coding tools for an investment memo. Use Claude to research.
 
-### Step 1: Single Company Research (15 min)
+### Step 1: Database Foundation (10 min)
 
-Pick a real company (or use "Stripe" as example):
-
-```
-> Research Stripe for a sales call. I need:
-> 1. What they do (1-2 sentences)
-> 2. Company size and headquarters
-> 3. Recent news (last 3 months)
-> 4. Key products or services
-> 5. Potential pain points we could address
-```
-
-Watch Claude combine WebSearch and WebFetch.
-
-### Step 2: Structured Output (10 min)
-
-Ask Claude to format the research:
+Start with your structured data:
 
 ```
-> Take your research on Stripe and format it as a pre-call brief.
-> Use this structure:
-> - Company Snapshot (name, size, industry)
-> - What They Do
-> - Recent Developments
-> - Talking Points for Our Call
-> Save it to output/stripe-research.md
+> From startup-funding.db, find all AI/ML startups in the Developer Tools or IDEs sub-industry.
+> Show me their funding history, investors, and latest valuation.
+> Focus on companies that have raised Series A or later.
 ```
 
-### Step 3: Batch Research (15 min)
+### Step 2: Web Enrichment (15 min)
 
-Now research multiple companies:
+Pick 3 startups from your results and research each:
 
 ```
-> Research these 3 companies from our sample-leads.csv:
-> 1. Acme Corp
-> 2. GlobalTech Inc
-> 3. HealthFirst Solutions
+> For Cursor, Replit, and Codeium:
+> 1. Search for their latest funding news
+> 2. Find their current employee count (if available)
+> 3. Look for any product announcements in the last 6 months
+> Compile findings into a comparison table.
+```
+
+Watch Claude combine database findings with web research.
+
+### Step 3: Synthesize Analysis (15 min)
+
+Apply the Data Analysis Loop:
+
+```
+> Based on the database data and web research, create an investment brief:
 >
-> For each, provide:
-> - What they do
-> - Industry and size
-> - One interesting fact from recent news
+> **Monitor:** Current state of AI coding tool funding
+> **Explore:** Key differentiators between top players
+> **Craft:** 3-5 key insights with supporting evidence
+> **Impact:** Which company is best positioned for Series B/C success and why?
 >
-> Format as a markdown table.
+> Save the brief to output/ai-coding-tools-analysis.md
 ```
 
-### Step 4: Connect to Your Data (5 min)
-
-Combine web research with your lead data:
+### Step 4: Connect to Broader Market (5 min)
 
 ```
-> For the top 5 leads by score in sample-leads.csv:
-> - Look up each company briefly
-> - Add a "research note" based on what you find
-> - Save the enriched list to output/enriched-leads.md
+> Compare the AI coding tools funding to the broader Developer Tools category.
+> - How does their average deal size compare?
+> - Are they raising at higher or lower valuations?
+> - What does this suggest about market sentiment?
 ```
 
 ### Deliverable
 
 By end of lab, you should have:
-- [ ] Researched at least one company in depth
-- [ ] Created a formatted pre-call brief
-- [ ] Batch researched multiple companies
-- [ ] Connected web research to your lead data
+- [ ] Queried the funding database for AI coding startups
+- [ ] Enriched 3 companies with web research
+- [ ] Created an analysis brief using the Data Analysis Loop
+- [ ] Connected findings to broader market trends
 
 ---
 
@@ -486,9 +590,10 @@ By end of lab, you should have:
 
 1. **Claude is an agent, not a chatbot** - It uses tools to take action
 2. **The loop:** Think → Select Tool → Execute → Observe → Repeat
-3. **Built-in tools:** Read, Write, Bash, Glob, Grep, WebSearch, WebFetch
-4. **Web tools unlock context** - Bridge your data with external information
-5. **Combine tools for workflows** - Search → Fetch → Analyze → Write
+3. **The Data Analysis Loop:** Monitor → Explore → Craft Story → Impact
+4. **Built-in tools:** Read, Write, Bash, Glob, Grep, WebSearch, WebFetch
+5. **SQL is your friend** - Window functions, CTEs, and aggregations unlock powerful analysis
+6. **Combine structured data with web context** - Database findings + web research = complete picture
 
 ### What We Didn't Cover (But You Can Explore)
 
@@ -499,36 +604,37 @@ By end of lab, you should have:
 
 ### Homework
 
-**Research Assignment:**
+**Data Analysis Assignment:**
 
-1. Pick 5 entities relevant to your project:
+1. Pick a domain from the startup-funding.db to analyze:
 
-| Project Domain | Research Targets |
-|----------------|------------------|
-| GTM/Sales | Prospects, competitors, or partners |
-| Developer Tools | Open source projects, tech companies, tools |
-| Content/Marketing | Influencers, publications, trending topics |
-| Customer Support | Product documentation, competitor FAQs, forums |
-| Operations | Vendors, compliance requirements, industry benchmarks |
+| Domain | Analysis Focus |
+|--------|----------------|
+| **Fintech** | Compare to AI/ML funding trends |
+| **Healthcare** | Identify fastest-growing sub-industries |
+| **Climate Tech** | Map investor specialization |
+| **Cybersecurity** | Analyze Series A to B conversion |
+| **Your choice** | Define your own analysis question |
 
-2. Use Claude to research each one. Document:
-   - Which tools Claude used
-   - How long each research took
-   - Quality of information found
-   - Any gaps or limitations
+2. Apply the Data Analysis Loop:
+   - **Monitor:** Run 3 baseline queries
+   - **Explore:** Dig into one anomaly or trend
+   - **Craft:** Write 3-5 insights with supporting data
+   - **Impact:** Make one concrete prediction or recommendation
 
-3. Create a "Research Playbook" with your best prompts:
-   - What prompt works best for overview/context?
-   - What prompt works best for recent updates?
-   - What prompt works best for detailed analysis?
+3. Create an analysis document with:
+   - Your SQL queries (with explanations)
+   - Key findings with data
+   - One insight enriched with web research
+   - Your prediction and confidence level
 
-4. Bring your playbook to Week 3 - we'll enhance it with MCP integrations.
+4. Save to `output/week2-homework-[your-domain].md`
 
 ### Next Week Preview
 
 Week 3: MCP Integration
-- Connect Claude to your databases, APIs, and services
-- Build persistent integrations (not just web searches)
+- Connect Claude to external services
+- Build a data MCP with context management
 - Access private data sources
 - Create connected workflows for your domain
 
@@ -538,25 +644,49 @@ Week 3: MCP Integration
 
 ### Common Issues
 
-1. **WebSearch returns no results:** Check query specificity, try different terms
-2. **WebFetch fails:** Some sites block automated access, try alternatives
-3. **Slow responses:** Web tools take longer than file tools, set expectations
-4. **Rate limiting:** If hitting limits, add delays between requests
+1. **SQLite syntax errors:** Help with quote escaping, date functions
+2. **WebSearch returns no results:** Check query specificity, try different terms
+3. **WebFetch fails:** Some sites block automated access, try alternatives
+4. **Slow responses:** Database queries are fast, web tools take longer
 
 ### Timing Adjustments
 
-- Lab 1 can be shortened if concepts click quickly
-- Lab 2 Step 3 (batch research) can become homework if time-constrained
-- Focus on ensuring everyone completes Step 1 and Step 2
+- Lab 1 is denser than before - allow full 45 minutes
+- Lab 2 can be shortened if running long by skipping Step 4
+- Focus on ensuring everyone runs at least 3-4 SQL queries
 
 ### Discussion Prompts
 
-- "What surprised you about how Claude chose tools?"
-- "Where do you see tool calling being useful in your work?"
-- "What research tasks do you do manually that Claude could help with?"
+- "What surprised you about how Claude wrote SQL?"
+- "Where did you see the Data Analysis Loop in action?"
+- "What analysis would you run on your own company's data?"
 
 ### Energy Management
 
-- Web tools are slower - keep energy up during waits
+- SQL can be intimidating - celebrate successful queries
 - Have participants share interesting findings during labs
-- Celebrate good research prompts when you see them
+- The startup data is engaging - lean into "which startups will succeed?" discussions
+
+### SQL Cheat Sheet (for reference)
+
+```sql
+-- Count by category
+SELECT industry, COUNT(*) FROM startups GROUP BY industry;
+
+-- Join tables
+SELECT s.name, fr.amount_usd
+FROM funding_rounds fr
+JOIN startups s ON fr.startup_id = s.id;
+
+-- Window function (rank)
+RANK() OVER (PARTITION BY industry ORDER BY amount DESC)
+
+-- CTE (common table expression)
+WITH cte AS (SELECT ...) SELECT * FROM cte;
+
+-- Date filtering
+WHERE funding_date >= '2024-01-01'
+
+-- Formatted output
+printf('$%.1fM', amount/1000000.0)
+```

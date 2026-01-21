@@ -183,7 +183,7 @@ When profiling a dataset, provide:
 # Test the Skill
 
 ```
-> Profile the sample-leads.csv file
+> Profile the startup-funding.db file
 ```
 
 Watch for:
@@ -287,7 +287,7 @@ mkdir -p .claude/skills/lead-scorer/references
 # Test with Sample Leads
 
 ```
-> Score the leads in data/sample-leads.csv
+> Score the leads in data/startup-funding.db
 
 > Score this lead: John Smith, VP Engineering at
 Acme Corp (250 employees, Technology industry),

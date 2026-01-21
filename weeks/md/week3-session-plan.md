@@ -3,8 +3,8 @@
 ## Session Goals
 - Understand MCP (Model Context Protocol) architecture
 - Configure MCP servers for various services
-- Connect Claude to CRM, databases, and APIs
-- Build practical integrations for GTM workflows
+- Learn context management for data-heavy applications
+- Connect Claude to external tools and data sources
 
 ---
 
@@ -88,43 +88,89 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 
 ---
 
-## Block 2: Lab 1 - Your First MCP Integration (30 min)
+## Block 2: Theory - Context Management for Data (30 min)
 
-### Task: Connect to GitHub
+### The Problem
 
-**Step 1: Add the GitHub MCP server**
+When working with data, context management becomes critical. A single query can return massive amounts of data, instantly filling your context window.
 
-```bash
-claude mcp add --transport http github https://api.githubcopilot.com/mcp/
+**The difference:**
+- Reading a 500-line file? Predictable, bounded.
+- `SELECT * FROM users`? Could return 2 million rows.
+
+Without careful management, one careless query can:
+- Fill your entire context window
+- Cause Claude to lose track of the conversation
+- Waste tokens on data that doesn't fit
+
+### The Solution: Query Strategically
+
+When working with databases or large datasets, follow these rules:
+
+**1. Always use LIMIT for exploration**
+```sql
+-- Always add a limit for exploration queries
+SELECT * FROM funding_rounds LIMIT 100;
 ```
 
-**Step 2: Authenticate**
+**2. Aggregate first, then drill down**
+```sql
+-- Start with aggregates to understand the data
+SELECT industry, COUNT(*) as count
+FROM startups
+GROUP BY industry
+ORDER BY count DESC;
 
-In Claude Code:
-```
-> /mcp
-```
-Select GitHub and follow the OAuth flow.
-
-**Step 3: Test the integration**
-
-```
-> List my open pull requests
-
-> Show me issues labeled "bug" in this repo
-
-> What PRs have been merged this week?
+-- Then drill into specifics
+SELECT * FROM startups WHERE industry = 'AI/ML' LIMIT 50;
 ```
 
-**Step 4: Verify with `/mcp`**
+**3. Be specific about what you need**
+```sql
+-- Bad: grab everything
+SELECT * FROM funding_rounds;
 
-Check that GitHub tools are available.
+-- Good: specific columns, filtered, limited
+SELECT name, stage, amount_usd
+FROM funding_rounds fr
+JOIN startups s ON fr.startup_id = s.id
+WHERE fr.stage = 'Series A'
+ORDER BY fr.amount_usd DESC
+LIMIT 20;
+```
 
-### Success Criteria
-- [ ] GitHub MCP server added
-- [ ] Authentication complete
-- [ ] Can query PRs and issues
-- [ ] Understand available tools
+**4. Track what you've seen**
+
+When analyzing large datasets, keep mental notes:
+- How many total rows exist
+- What subset you've explored
+- What's left to investigate
+
+### The Data Analysis Loop + Context Management
+
+Remember the Data Analysis Loop from Week 2? Context management fits into each phase:
+
+| Phase | Context Management Strategy |
+|-------|---------------------------|
+| **Monitor** | Run aggregation queries first (safe, bounded) |
+| **Explore** | Drill down with LIMIT, explore segments one at a time |
+| **Craft** | Work with summarized insights, not raw data |
+| **Impact** | Present recommendations, not data dumps |
+
+### Demo
+
+Show what happens with good vs. careless queries:
+
+```
+> How many funding rounds are in the database?
+(Safe - returns a single number)
+
+> Show me all funding rounds
+(Dangerous - could return thousands of rows!)
+
+> Show me the top 20 largest Series A rounds
+(Good - specific, limited, useful)
+```
 
 ---
 
@@ -132,162 +178,134 @@ Check that GitHub tools are available.
 
 ---
 
-## Block 3: Theory - MCP for GTM Workflows (30 min)
+## Block 3: Lab 1 - Connect External Services (45 min)
 
-### Common MCP Servers for GTM
+### Task: Build Your MCP Integration Stack
 
-| Server | Use Case | What It Enables |
-|--------|----------|-----------------|
-| **Notion** | CRM, databases | Query contacts, deals, update records |
-| **PostgreSQL** | Analytics DB | Run queries, explore schemas |
-| **Gmail** | Email | Read threads, draft responses |
-| **Slack** | Team comms | Post updates, read channels |
-| **HubSpot** | CRM | Lead data, deal pipeline |
-| **Airtable** | Structured data | Query bases, update records |
+Connect Claude to external services you'll use in your projects.
 
-### Adding Database Connections
+### Option A: Connect GitHub (15 min)
 
 ```bash
-# PostgreSQL via dbhub
-claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
-  --dsn "postgresql://user:pass@host:5432/database"
+claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 ```
 
-Now Claude can:
+After OAuth flow completes:
+
 ```
-> What tables are in the database?
-> Show me the schema for the leads table
-> Find all leads created this month
+> List my open pull requests
+
+> Show me issues labeled "bug" in this repo
+
+> What commits happened in the last week?
 ```
 
-### Adding Notion
+**Useful for:**
+- Code review workflows
+- Issue triage
+- PR summaries
+
+### Option B: Connect Notion (15 min)
 
 ```bash
 claude mcp add --transport http notion https://mcp.notion.com/mcp
 ```
 
 After OAuth:
+
 ```
-> Search for opportunities in the CRM
-> Update the status of deal "Acme Corp" to "Proposal Sent"
+> Search for databases in my workspace
+
+> Find pages mentioning "project plan"
+
+> Show me the structure of my team wiki
 ```
 
-### Environment Variables
+**Useful for:**
+- Document research
+- Knowledge base queries
+- Task management
 
-For servers requiring API keys:
+### Option C: Connect a Database (15 min)
+
+If you have a PostgreSQL or MySQL database:
 
 ```bash
-# Set via --env flag
-claude mcp add --transport stdio airtable \
-  --env AIRTABLE_API_KEY=your_key \
-  -- npx -y airtable-mcp-server
+# PostgreSQL
+claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
+  --dsn "postgresql://user:pass@host:5432/database"
 
-# Or use shell expansion in .mcp.json
-{
-  "mcpServers": {
-    "api": {
-      "type": "http",
-      "url": "${API_BASE_URL}/mcp",
-      "headers": {
-        "Authorization": "Bearer ${API_KEY}"
-      }
-    }
-  }
-}
+# MySQL
+claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
+  --dsn "mysql://user:pass@host:3306/database"
 ```
 
-### MCP Resources and Prompts
-
-Beyond tools, MCP servers can expose:
-
-**Resources** - Data you can reference with `@`:
+Test:
 ```
-@github:issue://123
-@notion:page://abc123
-@postgres:schema://users
+> What tables are in the database?
+
+> Show me the schema for the users table
+
+> How many records are in each table?
 ```
 
-**Prompts** - Pre-built commands:
+### Verify Your Connections
+
+Check what MCPs are connected:
+
+```bash
+/mcp
 ```
-/mcp__github__pr_review 456
-/mcp__notion__create_page "Meeting Notes"
-```
+
+You should see your added servers listed.
+
+### Success Criteria
+- [ ] At least 1 MCP server connected
+- [ ] Successfully queried the external service
+- [ ] Understand what each MCP enables
 
 ---
 
-## Block 4: Lab 2 - Building a GTM Integration Stack (45 min)
+## Block 4: Lab 2 - Combined Workflow (30 min)
 
-### Task: Connect Multiple Services for Lead Research
+### Task: Multi-Source Analysis
 
-Build an integration that enables Claude to:
-1. Query leads from a data source
-2. Research companies on the web
-3. Store findings in a structured format
+Now combine the startup funding database with external services.
 
-### Option A: Using Sample Data (No API Keys Required)
+**Exercise 1: Funding + Web Research**
 
-Create a local MCP server wrapper:
-
-**Step 1:** Create `scripts/mock-crm-server.ts`:
-
-```typescript
-// A simple stdio MCP server that reads from mock-crm.json
-import { readFileSync } from 'fs';
-
-const crm = JSON.parse(readFileSync('./data/mock-crm.json', 'utf-8'));
-
-// Handle tool calls from stdin
-process.stdin.on('data', (data) => {
-  const request = JSON.parse(data.toString());
-
-  if (request.tool === 'search_contacts') {
-    const results = crm.contacts.filter(c =>
-      c.name.toLowerCase().includes(request.query.toLowerCase())
-    );
-    process.stdout.write(JSON.stringify({ results }));
-  }
-  // ... more tool handlers
-});
-```
-
-**Step 2:** Add as MCP server:
-
-```bash
-claude mcp add --transport stdio mock-crm -- npx ts-node scripts/mock-crm-server.ts
-```
-
-### Option B: Using Real Services (API Keys Required)
-
-**Step 1:** Add Notion for CRM:
-
-```bash
-claude mcp add --transport http notion https://mcp.notion.com/mcp
-```
-
-**Step 2:** Connect and test:
+Using both the local database and web search:
 
 ```
-> Search for contacts at technology companies
-> Find all deals in "Negotiation" stage
-> What's the total pipeline value?
+> Find AI coding tool companies in the funding database.
+> Then research each company's current product and recent news.
+> Create a comparison table with: Company, Total Funding, Latest Stage, Product Focus, Recent News
 ```
 
-### GTM Workflow Test
-
-Once connected, test a full workflow:
+**Exercise 2: Funding + GitHub (if connected)**
 
 ```
-> I need to prepare for a call with Acme Corp.
-> Find their contact info, recent activity, and any open deals.
-> Then search the web for their latest news.
+> Which AI coding tools in our database have public GitHub repos?
+> Compare their GitHub stars to their funding amounts.
+> Is there a correlation between community popularity and funding?
+```
+
+**Exercise 3: Data-Driven Research**
+
+```
+> I want to understand the Series A landscape for AI startups.
+> 1. Query the database for all AI/ML Series A rounds in 2024
+> 2. Calculate the median round size and time from founding to Series A
+> 3. Research 2-3 of these companies online to understand what made them fundable
+> 4. Summarize patterns you see
 ```
 
 ### Deliverable
 
-Screenshot showing:
-1. `/mcp` output with connected servers
-2. Successful query results
-3. Multi-step workflow execution
+Document your combined workflow showing:
+1. Screenshot of `/mcp` with connected servers
+2. A multi-step analysis that used at least 2 sources (database + web, or database + GitHub, etc.)
+3. Your synthesized findings
 
 ---
 
@@ -298,13 +316,14 @@ Screenshot showing:
 1. **MCP = Universal Protocol** - One way to connect to any service
 2. **Three transports** - HTTP (cloud), stdio (local), SSE (deprecated)
 3. **Three scopes** - local, project, user (precedence matters)
-4. **GTM power** - Connect CRM, databases, email for complete workflows
+4. **Context management is critical** - Aggregate first, limit always, drill down carefully
+5. **Combine sources** - Real analysis often needs data + context from multiple places
 
 ### Homework
 
-**Set up your integration stack:**
+**Part 1: Expand Your MCP Stack**
 
-1. Add at least 2 MCP servers relevant to your project:
+Add at least 1 more MCP server relevant to your project:
 
 | Project Domain | Useful MCP Servers |
 |----------------|-------------------|
@@ -314,16 +333,27 @@ Screenshot showing:
 | Customer Support | Zendesk, Intercom, Slack |
 | Operations | Google Sheets, Airtable, databases |
 
-2. Document:
-   - Which servers you added
-   - How you configured them
-   - 3 useful queries you can now run
+**Part 2: Document Your Stack**
 
-3. Create a `.mcp.json` for your project (if team-shareable)
+Create a brief doc with:
+- Which servers you added and why
+- How you configured them (transport, scope)
+- 3 useful queries you can now run
+
+**Part 3: Multi-Source Analysis**
+
+Do one analysis that combines:
+- The startup funding database (local queries)
+- At least one external MCP (GitHub, Notion, web research, etc.)
+
+Document your findings and the workflow you used.
 
 ### Next Week Preview
 
 Week 4: Agent Skills - Teaching Claude new capabilities with SKILL.md files
+- Encode domain expertise as reusable skills
+- Create a data analysis skill with guardrails
+- Progressive disclosure and skill organization
 
 ---
 
@@ -332,19 +362,31 @@ Week 4: Agent Skills - Teaching Claude new capabilities with SKILL.md files
 ### Common Issues
 
 1. **OAuth failures:** Ensure browser allows popups, try incognito
-2. **stdio server not starting:** Check Node version, npm permissions
-3. **Connection timeouts:** Increase with `MCP_TIMEOUT=10000 claude`
-4. **"No such tool" errors:** MCP server may have disconnected, re-add it
+2. **Connection timeouts:** Increase with `MCP_TIMEOUT=10000 claude`
+3. **"No such tool" errors:** MCP server may have disconnected, re-add it
+4. **Database connection issues:** Check DSN format, firewall rules
 
 ### API Key Options for Participants
 
 For live services, participants can:
-- Use free tiers (Notion, Airtable have free plans)
-- Use mock data servers (provided in repo)
+- Use free tiers (Notion, GitHub have free plans)
+- Work with the local funding database (no accounts needed)
 - Pair up if some have accounts
 
 ### Timing Adjustments
 
-- If OAuth issues: Skip to Option A (mock data)
-- If ahead: Explore additional MCP servers from registry
+- If OAuth issues: Focus on GitHub (most reliable) or skip to database queries
+- If ahead: Have participants try multiple MCPs
 - Lab 2 can extend into homework if needed
+
+### Discussion Prompts
+
+- "What external data would make your project more powerful?"
+- "How do you think about combining structured data with unstructured context?"
+- "What context management mistakes have you made in the past?"
+
+### Key Concepts to Emphasize
+
+1. **MCP unlocks external context** - But the pattern is the same: query, limit, iterate
+2. **Local data + external context = insight** - Numbers alone don't tell the story
+3. **Context management applies everywhere** - Not just databases, any large data source

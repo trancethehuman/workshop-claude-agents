@@ -168,14 +168,6 @@ Anthropic also launched a directory with skills from commercial partners: Atlass
 | **Complexity** | Simple prompts | Multi-file workflows |
 | **Discovery** | Manual | Automatic (by description) |
 
-### How Skills Work
-
-**1. Discovery:** At startup, Claude loads skill `name` and `description`
-
-**2. Activation:** When your request matches, Claude asks to use the skill
-
-**3. Execution:** Full `SKILL.md` loads, Claude follows instructions
-
 ### SKILL.md Structure
 
 ```markdown
@@ -214,37 +206,37 @@ Show a skill in action:
 
 ## Block 2: Lab 1 - Your First Skill (30 min)
 
-### Task: Create a Data Profiling Skill
+### Task: Create a Database Profiler Skill
 
-Build a skill that profiles CSV datasets.
+Build a skill that profiles the startup funding database systematically.
 
 **Step 1:** Create the skill directory:
 
 ```bash
-mkdir -p .claude/skills/data-profiler
+mkdir -p .claude/skills/database-profiler
 ```
 
 **Step 2:** Create `SKILL.md`:
 
 ```markdown
 ---
-name: data-profiler
-description: Profile CSV datasets to understand structure, quality, and statistics. Use when analyzing a new dataset, checking data quality, or exploring data before analysis.
+name: database-profiler
+description: Profile SQLite databases to understand structure, quality, and statistics. Use when analyzing a new database, checking data quality, or exploring data before analysis.
 ---
 
-# Data Profiler
+# Database Profiler
 
-When profiling a dataset, provide:
+When profiling a database, provide:
 
 ## 1. Structure Overview
-- Number of rows and columns
-- Column names and data types
-- Sample of first 5 rows
+- List all tables
+- For each table: column names, data types, row count
+- Identify primary keys and foreign key relationships
 
 ## 2. Quality Assessment
 - Missing values per column (count and percentage)
-- Duplicate rows
-- Obvious data type mismatches
+- Duplicate rows per table
+- Referential integrity issues (orphaned foreign keys)
 
 ## 3. Statistical Summary
 For numeric columns:
@@ -257,11 +249,20 @@ For categorical columns:
 - Most common values (top 5)
 - Distribution skew
 
+For date columns:
+- Date range (earliest to latest)
+- Gaps or clustering
+
 ## 4. Recommendations
 Based on findings, suggest:
-- Columns that need cleaning
-- Potential data quality issues
+- Data quality issues to address
+- Interesting patterns to explore
 - Next steps for analysis
+
+## Context Management
+- Always use LIMIT when exploring individual tables
+- Start with aggregations before drilling down
+- Report row counts so analyst knows the scale
 
 ## Output Format
 
@@ -271,12 +272,13 @@ Use markdown tables for statistics. Be concise but thorough.
 **Step 3:** Test the skill:
 
 ```
-> Profile the sample-leads.csv file
+> Profile the startup-funding.db database
 ```
 
 Watch for:
 - Claude asking to use the skill
 - Structured output following the template
+- Context-aware queries (using LIMIT, aggregations first)
 
 ### Success Criteria
 - [ ] Skill created in correct location
@@ -296,11 +298,11 @@ Watch for:
 For complex skills, add supporting files:
 
 ```
-.claude/skills/lead-scorer/
+.claude/skills/data-analyst/
 ├── SKILL.md              # Main instructions
 ├── references/
-│   ├── scoring-rubric.md # Detailed criteria
-│   └── examples.md       # Sample scores
+│   ├── sql-patterns.md   # Query templates
+│   └── analysis-loop.md  # Methodology
 └── scripts/
     └── validate.py       # Validation script
 ```
@@ -308,7 +310,7 @@ For complex skills, add supporting files:
 **Reference files** load on demand:
 
 ```markdown
-For detailed scoring criteria, see [scoring-rubric.md](references/scoring-rubric.md).
+For SQL query patterns, see [sql-patterns.md](references/sql-patterns.md).
 ```
 
 ### Progressive Disclosure
@@ -330,12 +332,12 @@ Run validation: `python scripts/validate.py input.csv`
 
 **Bad:**
 ```yaml
-description: Helps with leads.
+description: Helps with data.
 ```
 
 **Good:**
 ```yaml
-description: Score leads 1-100 based on firmographic and behavioral signals. Use when prioritizing leads, building target lists, or evaluating inbound prospects.
+description: Analyze datasets using the Data Analysis Loop (Monitor → Explore → Craft → Impact). Use when profiling data, investigating anomalies, or building analytical reports.
 ```
 
 Include:
@@ -378,135 +380,212 @@ hooks:
 
 ---
 
-## Block 4: Lab 2 - Build a GTM Skill (45 min)
+## Block 4: Lab 2 - Build a Data Analysis Skill (45 min)
 
-### Task: Create a Lead Scoring Skill
+### Task: Create a Data Analysis Skill with Guardrails
 
-Build a comprehensive lead scoring skill with:
-1. Scoring rubric
-2. Example scores
-3. Structured output
+Build a comprehensive skill that encodes the Data Analysis Loop from Week 2, with context management built in.
 
 **Step 1:** Create skill structure:
 
 ```bash
-mkdir -p .claude/skills/lead-scorer/references
+mkdir -p .claude/skills/data-analyst/references
 ```
 
 **Step 2:** Create `SKILL.md`:
 
 ```markdown
 ---
-name: lead-scorer
-description: Score leads 1-100 based on company fit, buying signals, and engagement. Use when prioritizing leads, evaluating prospects, or building target account lists.
-allowed-tools: Read, Grep, WebSearch, WebFetch
+name: data-analyst
+description: Systematic data analysis using the Data Analysis Loop (Monitor → Explore → Craft → Impact). Use when profiling datasets, investigating anomalies, finding trends, or building analytical reports from databases.
+allowed-tools: Read, Grep, Bash(sqlite3:*), WebSearch, WebFetch
 ---
 
-# Lead Scorer
+# Data Analyst
 
-Score leads based on the rubric in [scoring-rubric.md](references/scoring-rubric.md).
+You are a data analyst. Follow the Data Analysis Loop and context management rules below.
 
-## Scoring Process
+## The Data Analysis Loop
 
-1. **Gather Information**
-   - Read lead data from provided source
-   - Research company if URL/name provided
-   - Note any missing information
+Every analysis follows four phases:
 
-2. **Apply Scoring Rubric**
-   - Company Fit (0-40 points)
-   - Buying Signals (0-30 points)
-   - Engagement Level (0-30 points)
+### 1. Monitor
+- Run aggregation queries to check key metrics
+- Compare current values to historical baselines
+- Flag anomalies (significant deviations from average)
 
-3. **Output Format**
+### 2. Explore
+- When you spot something interesting, dig deeper
+- Segment the data: by time, category, cohort
+- Look for external context: what else was happening?
 
-| Lead | Company | Score | Breakdown | Reasoning |
-|------|---------|-------|-----------|-----------|
-| Name | Company | XX/100 | Fit: X, Signals: X, Engage: X | Brief explanation |
+### 3. Craft Story
+- Synthesize findings into 3-5 key insights
+- Support each insight with specific data
+- Note confidence level and caveats
 
-4. **Prioritization**
-   - Hot (80-100): Immediate follow-up
-   - Warm (60-79): Nurture sequence
-   - Cool (40-59): Long-term nurture
-   - Cold (<40): Deprioritize
+### 4. Impact
+- Recommend concrete next actions
+- Size the opportunity if possible
+- Identify what additional data would help
 
-## Important Notes
+## Context Management Rules (Critical)
 
-- If data is missing, note it and score conservatively
-- Explain reasoning for non-obvious scores
-- Flag any red flags or concerns
+1. **Always use LIMIT** - Default to 100 rows for exploration
+2. **Track truncation** - Note when results are limited
+3. **Aggregate first** - Start with GROUP BY, then drill down
+4. **One question at a time** - Don't try to answer everything in one query
+
+## SQL Patterns
+
+For common analysis patterns, see [sql-patterns.md](references/sql-patterns.md).
+
+## Output Format
+
+Structure every analysis as:
+
+**Summary:** 2-3 sentences
+
+**Key Findings:**
+- Finding 1 (metric: X, change: Y%)
+- Finding 2 (metric: X, change: Y%)
+- Finding 3 (metric: X, change: Y%)
+
+**Context:** External factors that might explain trends
+
+**Recommendation:** Next action to take
+
+**Confidence:** High/Medium/Low with reasoning
 ```
 
-**Step 3:** Create `references/scoring-rubric.md`:
+**Step 3:** Create `references/sql-patterns.md`:
 
 ```markdown
-# Lead Scoring Rubric
+# SQL Patterns for Data Analysis
 
-## Company Fit (0-40 points)
+## Time-Series Aggregation
 
-### Industry Match (0-15)
-- 15: Perfect target industry
-- 10: Adjacent industry
-- 5: Tangentially relevant
-- 0: Outside target market
-
-### Company Size (0-15)
-- 15: Ideal company size (e.g., 100-1000 employees)
-- 10: Acceptable range
-- 5: Edge of range
-- 0: Too small or too large
-
-### Budget Indicators (0-10)
-- 10: Clear budget signals (funding, growth)
-- 5: Neutral
-- 0: Budget concerns
-
-## Buying Signals (0-30 points)
-
-### Intent Signals (0-15)
-- 15: Active evaluation (demo request, pricing page)
-- 10: Research phase (content downloads)
-- 5: Awareness (website visit)
-- 0: No signals
-
-### Timing (0-15)
-- 15: Immediate need expressed
-- 10: Near-term project planned
-- 5: Future consideration
-- 0: No timeline
-
-## Engagement Level (0-30 points)
-
-### Recency (0-10)
-- 10: Activity in last 7 days
-- 7: Activity in last 30 days
-- 3: Activity in last 90 days
-- 0: No recent activity
-
-### Frequency (0-10)
-- 10: Multiple touchpoints
-- 5: Single touchpoint
-- 0: No engagement
-
-### Quality (0-10)
-- 10: Decision-maker engaged
-- 5: Influencer engaged
-- 0: Unknown contact
+```sql
+SELECT
+  strftime('%Y-%m', date_column) as month,
+  COUNT(*) as count,
+  SUM(amount) as total,
+  AVG(amount) as average
+FROM table
+WHERE date_column >= date('now', '-12 months')
+GROUP BY month
+ORDER BY month DESC;
 ```
 
-**Step 4:** Test with sample leads:
+## Window Functions for Rankings
+
+```sql
+-- Rank within categories
+SELECT
+  category,
+  item,
+  value,
+  RANK() OVER (PARTITION BY category ORDER BY value DESC) as rank
+FROM table;
+
+-- Running totals
+SELECT
+  date,
+  amount,
+  SUM(amount) OVER (ORDER BY date) as running_total
+FROM table;
+
+-- Compare to previous period
+SELECT
+  month,
+  revenue,
+  LAG(revenue) OVER (ORDER BY month) as prev_month,
+  revenue - LAG(revenue) OVER (ORDER BY month) as change
+FROM monthly_revenue;
+```
+
+## Cohort Analysis
+
+```sql
+WITH cohorts AS (
+  SELECT
+    startup_id,
+    MIN(funding_date) as first_funding_date
+  FROM funding_rounds
+  GROUP BY startup_id
+)
+SELECT
+  strftime('%Y', c.first_funding_date) as cohort_year,
+  COUNT(DISTINCT c.startup_id) as cohort_size,
+  COUNT(DISTINCT CASE
+    WHEN fr.stage = 'Series A' THEN c.startup_id
+  END) as reached_series_a
+FROM cohorts c
+LEFT JOIN funding_rounds fr ON c.startup_id = fr.startup_id
+GROUP BY cohort_year
+ORDER BY cohort_year;
+```
+
+## Conversion Funnel
+
+```sql
+WITH stages AS (
+  SELECT
+    startup_id,
+    MAX(CASE WHEN stage = 'Seed' THEN 1 ELSE 0 END) as has_seed,
+    MAX(CASE WHEN stage = 'Series A' THEN 1 ELSE 0 END) as has_series_a,
+    MAX(CASE WHEN stage = 'Series B' THEN 1 ELSE 0 END) as has_series_b
+  FROM funding_rounds
+  GROUP BY startup_id
+)
+SELECT
+  SUM(has_seed) as seed_companies,
+  SUM(has_series_a) as series_a_companies,
+  SUM(has_series_b) as series_b_companies,
+  ROUND(SUM(has_series_a) * 100.0 / SUM(has_seed), 1) as seed_to_a_rate,
+  ROUND(SUM(has_series_b) * 100.0 / SUM(has_series_a), 1) as a_to_b_rate
+FROM stages;
+```
+
+## Funding Velocity
+
+```sql
+-- Days between funding rounds
+WITH round_sequence AS (
+  SELECT
+    startup_id,
+    stage,
+    funding_date,
+    LAG(funding_date) OVER (PARTITION BY startup_id ORDER BY funding_date) as prev_round_date
+  FROM funding_rounds
+)
+SELECT
+  s.name,
+  rs.stage,
+  CAST(JULIANDAY(rs.funding_date) - JULIANDAY(rs.prev_round_date) AS INTEGER) as days_since_last_round
+FROM round_sequence rs
+JOIN startups s ON rs.startup_id = s.id
+WHERE rs.prev_round_date IS NOT NULL
+ORDER BY days_since_last_round ASC
+LIMIT 20;
+```
+```
+
+**Step 4:** Test with analytical questions:
 
 ```
-> Score the leads in data/sample-leads.csv
+> Analyze the AI/ML funding landscape in the database. What trends do you see?
 
-> Score this lead: John Smith, VP Engineering at Acme Corp (250 employees, Technology industry), downloaded our whitepaper last week
+> Which startups have the fastest funding velocity (shortest time between rounds)?
+
+> Build a cohort analysis: of companies that raised Seed in 2022, how many reached Series A?
 ```
 
 ### Deliverable
 
-- Working lead-scorer skill
-- Scoring rubric reference
-- Screenshot of scored leads with reasoning
+- Working data-analyst skill with references
+- Screenshot showing the Data Analysis Loop in action
+- At least one analysis that produces structured output
 
 ---
 
@@ -527,13 +606,13 @@ mkdir -p .claude/skills/data-visualizer/scripts
 ```markdown
 ---
 name: data-visualizer
-description: Generate charts and visualizations from data files. Use when asked to visualize data, create charts, plot trends, or build graphs. Supports bar charts, line charts, scatter plots, and pie charts.
+description: Generate charts and visualizations from data. Use when asked to visualize data, create charts, plot trends, or build graphs. Supports bar charts, line charts, scatter plots, and pie charts.
 allowed-tools: Read, Bash, Write
 ---
 
 # Data Visualizer
 
-Generate professional visualizations from CSV or JSON data.
+Generate professional visualizations from query results or data files.
 
 ## Supported Chart Types
 
@@ -546,7 +625,7 @@ Generate professional visualizations from CSV or JSON data.
 
 ## Process
 
-1. Read the data file
+1. Get the data (from query or file)
 2. Identify the best chart type for the question
 3. Run the visualization script with appropriate parameters
 4. Save the output image to `output/charts/`
@@ -660,7 +739,7 @@ if __name__ == '__main__':
 **Test the skill:**
 
 ```
-> Visualize the lead scores by industry from sample-leads.csv as a bar chart
+> Query the funding database for total funding by industry, then visualize it as a bar chart
 ```
 
 ### Creating Interactive Dashboards
@@ -676,23 +755,15 @@ For dashboards that users can interact with in a browser, Claude can generate HT
 
 ```
 > Create an HTML dashboard that displays:
-> 1. Lead count by industry (bar chart)
-> 2. Lead score distribution (histogram)
-> 3. A filterable table of all leads
+> 1. Funding by industry (bar chart)
+> 2. Funding over time (line chart)
+> 3. A filterable table of all startups
 >
 > Use Chart.js for the charts. Make it look professional.
 > Save to output/dashboard/index.html
 ```
 
-Claude will generate a complete HTML file with embedded CSS and JavaScript using Chart.js or similar libraries. Open the file in a browser to see your dashboard.
-
-**Key points:**
-- Claude writes the HTML/CSS/JS, not a framework app
-- Works offline, no build step needed
-- Easy to customize and iterate
-- Can be hosted as a static site
-
-This approach bridges the gap between quick analysis and production dashboards.
+Claude will generate a complete HTML file with embedded CSS and JavaScript using Chart.js. Open the file in a browser to see your dashboard.
 
 ---
 
@@ -704,6 +775,7 @@ This approach bridges the gap between quick analysis and production dashboards.
 2. **Description is Critical** - Include what, when, and keywords
 3. **Progressive Disclosure** - Keep SKILL.md lean, reference details
 4. **Test Thoroughly** - Verify discovery and output quality
+5. **Data Analysis Loop** - Encode methodology, not just tools
 
 ### Homework
 
@@ -718,7 +790,7 @@ Build two skills that encode expertise from your domain. Each skill should captu
 | Content/Marketing | Content brief writer, SEO analyzer, repurposing guide |
 | Customer Support | Ticket classifier, response drafter, escalation checker |
 | Operations | Invoice processor, compliance checker, report formatter |
-| Data Analytics | Data profiler, anomaly detector, visualization generator, dashboard builder |
+| Data Analytics | Data profiler, anomaly detector, trend analyzer, report generator |
 
 **For each skill:**
 - Clear trigger description (when should it activate?)

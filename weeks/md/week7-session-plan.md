@@ -285,7 +285,7 @@ Add a results section to your file:
 
 ---
 
-## Block 3: Theory - Automating Your Evals (30 min)
+## Block 3: Theory - Automating Your Evals (20 min)
 
 ### When to Automate
 
@@ -296,9 +296,7 @@ Manual testing is fine for 5 test cases. But what about:
 
 That's when you want automation.
 
-### Two Options for Running Evals at Scale
-
-**Option 1: Workshop Eval Runner Script (Recommended)**
+### The Workshop Eval Runner
 
 This workshop includes a ready-to-use eval runner at `scripts/run-funding-evals.py`. It demonstrates:
 - Streaming output so you see Claude's work in real-time
@@ -306,93 +304,43 @@ This workshop includes a ready-to-use eval runner at `scripts/run-funding-evals.
 - Boolean pass/fail scoring with string matching
 - JSON result export for analysis
 
-See the detailed documentation in **Block 3, Lab 2** below.
+You'll run this script hands-on in Lab 2.
 
-**Option 2: Custom Script with Claude Agent SDK**
+### How the Eval Runner Works
 
-For custom eval needs, here's the minimal approach using the Claude Agent SDK (same patterns from Week 6) with parallel execution:
+**1. Uses Claude Code CLI with Streaming**
 
-```typescript
-// src/eval-runner.ts
-import { query } from "@anthropic-ai/claude-agent-sdk";
+The script uses proper CLI flags for real-time output:
 
-interface TestCase {
-  id: string;
-  input: string;
-  mustMention: string[];
-}
-
-interface EvalResult {
-  id: string;
-  passed: boolean;
-  output: string;
-  notes: string[];
-}
-
-// Your golden dataset
-const testCases: TestCase[] = [
-  {
-    id: "1",
-    input: "Score this lead: VP Engineering at 500-person tech company",
-    mustMention: ["seniority", "company size"]
-  },
-  {
-    id: "2",
-    input: "Score this lead: Marketing Coordinator at 10-person startup",
-    mustMention: ["small company", "junior"]
-  },
-  // Add more test cases...
-];
-
-async function runSingleEval(testCase: TestCase): Promise<EvalResult> {
-  const result = await query({
-    prompt: testCase.input,
-    options: {
-      maxTurns: 3,
-    }
-  });
-
-  const output = result.text;
-  const notes: string[] = [];
-  let passed = true;
-
-  // Check if expected terms are mentioned
-  for (const term of testCase.mustMention) {
-    if (!output.toLowerCase().includes(term.toLowerCase())) {
-      passed = false;
-      notes.push(`Missing: ${term}`);
-    }
-  }
-
-  return { id: testCase.id, passed, output, notes };
-}
-
-async function runAllEvals(): Promise<void> {
-  console.log(`Running ${testCases.length} test cases in parallel...\n`);
-
-  // Run all test cases in parallel
-  const results = await Promise.all(
-    testCases.map(tc => runSingleEval(tc))
-  );
-
-  // Print summary
-  const passed = results.filter(r => r.passed).length;
-  console.log(`\nResults: ${passed}/${results.length} passed (${Math.round(100 * passed / results.length)}%)`);
-
-  for (const r of results) {
-    const status = r.passed ? "✓" : "✗";
-    console.log(`  ${status} Test ${r.id}: ${r.notes.length > 0 ? r.notes.join(", ") : "OK"}`);
-  }
-}
-
-runAllEvals().catch(console.error);
+```python
+cmd = [
+    'claude', '-p', prompt,           # Direct prompt (no piping)
+    '--output-format', 'stream-json', # Newline-delimited JSON events
+    '--verbose',                      # Required for stream-json with -p
+    '--allowedTools', 'Bash(sqlite3:*),Read'  # Auto-approve DB queries
+]
 ```
 
-Run it:
-```bash
-npm install @anthropic-ai/claude-agent-sdk typescript ts-node
-npx ts-node src/eval-runner.ts
-```
+**2. Parses Stream Events**
+
+The `stream-json` format emits events as newline-delimited JSON:
+
+| Event Type | Contains | Script Action |
+|------------|----------|---------------|
+| `assistant` | Text content, tool_use | Print text, show tool calls |
+| `user` | tool_result | Show query results |
+| `result` | Final output | Extract for scoring |
+
+**3. Boolean Pass/Fail Scoring**
+
+Each eval has pass criteria checked with simple string matching:
+
+| Criterion Pattern | How It's Checked |
+|-------------------|------------------|
+| `"Returns exactly 200"` | `"200" in output` |
+| `"Does NOT hardcode"` | `"hardcode" not in output.lower()` |
+| `"Uses COUNT(*)"` | `"count(*)" in output.lower()` |
+| Other patterns | Marked as "needs review" |
 
 ### The Key Insight
 
@@ -405,54 +353,127 @@ Spend more time on defining good criteria than on automation infrastructure.
 
 ---
 
-## Block 4: Lab 2 - Iterate on Your Agent (30 min)
+## Block 4: Lab 2 - Run the Eval Script (40 min)
 
-### Task: Fix One Failing Test Case
+### Task: Run the Workshop Eval Suite
 
-From your Lab 1 results, pick a test case that failed (or barely passed). Fix it.
+You'll run the pre-built eval suite against the startup funding database and analyze the results.
 
-**Step 1:** Analyze the failure
+**Step 1: Explore the eval dataset (5 min)**
 
-- What did the agent output?
-- What did you expect?
-- Why is there a gap?
+First, look at what evals exist:
 
-Common issues:
-- Prompt doesn't give enough guidance
-- Missing examples in the skill
-- Edge case not handled
-- Wrong tool being used
-
-**Step 2:** Make one change
-
-Don't change everything at once. Make ONE adjustment:
-- Add a clarifying instruction to your prompt
-- Add an example to your skill
-- Constrain the output format
-- Handle the edge case explicitly
-
-**Step 3:** Re-run the test
-
-Did it pass now? If not, try a different fix.
-
-**Step 4:** Check you didn't break other tests
-
-Run all 5 test cases again. Sometimes fixing one thing breaks another.
-
-### The Iteration Loop
-
-```
-Run tests → See failure → Analyze why → Make ONE change → Run again
+```bash
+# See all evals without running them
+python3 scripts/run-funding-evals.py --dry-run
 ```
 
-Repeat until your agent behaves the way you expect.
+This shows you each eval's:
+- ID and name
+- Difficulty level (easy, medium, hard)
+- Category (retrieval, aggregation, prediction, etc.)
+- Input prompt
+- Pass criteria
 
-### Group Discussion (10 min)
+**Step 2: Run a single eval (10 min)**
 
-Share with your table:
-- What test case failed for you?
-- What did you change to fix it?
-- Did fixing it break anything else?
+Start with one easy eval to see how it works:
+
+```bash
+python3 scripts/run-funding-evals.py --id=basic-001
+```
+
+Watch the output carefully. You'll see:
+- Claude's reasoning streamed in real-time
+- Tool calls in boxes showing the SQL being run
+- Query results displayed
+- Final pass/fail verdict
+
+**Step 3: Run all evals by difficulty (15 min)**
+
+Now run the full suite by difficulty:
+
+```bash
+# Run easy evals first (should mostly pass)
+python3 scripts/run-funding-evals.py --filter=easy
+
+# Then medium
+python3 scripts/run-funding-evals.py --filter=medium
+
+# Then hard (expect some failures)
+python3 scripts/run-funding-evals.py --filter=hard
+```
+
+**Step 4: Analyze the results (10 min)**
+
+Check the results file:
+
+```bash
+cat output/eval-results.json | python3 -m json.tool
+```
+
+Look at:
+- Overall pass rate by difficulty
+- Which specific evals failed
+- Why they failed (check `criteria_results`)
+
+**What You'll See**
+
+The script streams Claude's output in real-time:
+
+```
+──────────────────────────────────────────────────
+[basic-001] Basic Count
+──────────────────────────────────────────────────
+
+┌─ Bash
+│ sqlite3 data/startup-funding.db "SELECT COUNT(*) ..."
+│ 200
+└─
+**Answer:** There are **200 startups** in the database.
+
+→ ✓ PASS (8s)
+```
+
+### Discussion Questions
+
+After running the evals, discuss with your table:
+
+1. **Which evals failed?** Why do you think they failed?
+2. **Are the pass criteria good?** Do they test what matters?
+3. **What would you add?** What scenarios aren't covered?
+4. **How would you fix failures?** Would you change the prompt or the criteria?
+
+### Stretch Goal: Add Your Own Eval
+
+If you finish early, add a new eval to the JSON file:
+
+```bash
+# Open the eval file
+code data/evals/funding-analysis-evals.json
+```
+
+Add a new eval case:
+
+```json
+{
+  "id": "custom-001",
+  "name": "Your Custom Eval",
+  "category": "your-category",
+  "difficulty": "medium",
+  "input": "Your question to the agent",
+  "pass_criteria": [
+    "Must include X",
+    "Returns exactly Y"
+  ]
+}
+```
+
+Then run it:
+
+```bash
+python3 scripts/run-funding-evals.py --id=custom-001
+```
 
 ---
 
@@ -574,111 +595,18 @@ Have them:
 
 ---
 
-## Appendix: Eval Runner Script Documentation
+## Appendix: Eval Runner Reference
 
-### Overview
-
-The workshop includes `scripts/run-funding-evals.py`, a Python script that runs evals against the startup funding database using Claude Code CLI. It demonstrates best practices for eval automation.
-
-### How to Run
+### CLI Options
 
 ```bash
-# Run all evals
-python3 scripts/run-funding-evals.py
+python3 scripts/run-funding-evals.py [OPTIONS]
 
-# Run only easy/medium/hard evals
-python3 scripts/run-funding-evals.py --filter=easy
-python3 scripts/run-funding-evals.py --filter=hard
-
-# Run a specific eval by ID
-python3 scripts/run-funding-evals.py --id=basic-001
-
-# Dry run - see evals without executing
-python3 scripts/run-funding-evals.py --dry-run
-
-# Verbose mode - show criteria details for all results
-python3 scripts/run-funding-evals.py --verbose
-```
-
-### What You'll See
-
-The script streams Claude's output in real-time, including tool calls:
-
-```
-──────────────────────────────────────────────────
-[basic-001] Basic Count
-──────────────────────────────────────────────────
-
-┌─ Bash
-│ sqlite3 data/startup-funding.db "SELECT COUNT(*) as startup_count FROM startups;"
-│ 200
-└─
-**SQL Query:**
-```sql
-SELECT COUNT(*) as startup_count FROM startups;
-```
-
-**Answer:** There are **200 startups** in the database.
-
-→ ✓ PASS (8s)
-```
-
-### How It Works
-
-**1. Uses Claude Code CLI with Streaming**
-
-The script uses proper CLI flags for real-time output:
-
-```python
-cmd = [
-    'claude', '-p', prompt,           # Direct prompt (no piping)
-    '--output-format', 'stream-json', # Newline-delimited JSON events
-    '--verbose',                      # Required for stream-json with -p
-    '--allowedTools', 'Bash(sqlite3:*),Read'  # Auto-approve DB queries
-]
-```
-
-**2. Parses Stream Events**
-
-The `stream-json` format emits events as newline-delimited JSON:
-
-| Event Type | Contains | Script Action |
-|------------|----------|---------------|
-| `assistant` | Text content, tool_use | Print text, show tool calls |
-| `user` | tool_result | Show query results |
-| `result` | Final output | Extract for scoring |
-
-**3. Boolean Pass/Fail Scoring**
-
-Each eval has pass criteria checked with simple string matching:
-
-| Criterion Pattern | How It's Checked |
-|-------------------|------------------|
-| `"Returns exactly 200"` | `"200" in output` |
-| `"Does NOT hardcode"` | `"hardcode" not in output.lower()` |
-| `"Uses COUNT(*)"` | `"count(*)" in output.lower()` |
-| Other patterns | Marked as "needs review" |
-
-**4. Results Export**
-
-Results are saved to `output/eval-results.json`:
-
-```json
-{
-  "timestamp": "2026-01-21T06:41:27Z",
-  "eval_set": "Startup Funding Analysis Evals",
-  "summary": {"passed": 12, "failed": 2, "review": 2, "total": 16},
-  "results": [
-    {
-      "id": "basic-001",
-      "name": "Basic Count",
-      "passed": true,
-      "output": "SELECT COUNT(*) ... **200 startups**",
-      "duration_ms": 8786,
-      "criteria_results": [...]
-    }
-  ]
-}
+Options:
+  --filter=DIFFICULTY   Run only easy, medium, or hard evals
+  --id=EVAL_ID          Run a specific eval by ID
+  --dry-run             Show evals without executing
+  --verbose, -v         Show criteria details for all results
 ```
 
 ### Eval JSON Format
@@ -708,6 +636,28 @@ Evals are defined in `data/evals/funding-analysis-evals.json`:
       "hard": 0.60
     }
   }
+}
+```
+
+### Results JSON Format
+
+Results are saved to `output/eval-results.json`:
+
+```json
+{
+  "timestamp": "2026-01-21T06:41:27Z",
+  "eval_set": "Startup Funding Analysis Evals",
+  "summary": {"passed": 12, "failed": 2, "review": 2, "total": 16},
+  "results": [
+    {
+      "id": "basic-001",
+      "name": "Basic Count",
+      "passed": true,
+      "output": "SELECT COUNT(*) ... **200 startups**",
+      "duration_ms": 8786,
+      "criteria_results": [...]
+    }
+  ]
 }
 ```
 
