@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-01-21T06:52:37Z",
+  "eval_set": "Startup Funding Analysis Evals",
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "review": 0,
+    "total": 1
+  },
+  "results": [
+    {
+      "id": "basic-001",
+      "name": "Basic Count",
+      "difficulty": "easy",
+      "category": "retrieval",
+      "passed": true,
+      "output": "**SQL Query:**\n```sql\nSELECT COUNT(*) as startup_count FROM startups;\n```\n\n**Answer:** There are **200 startups** in the database.",
+      "criteria_results": [
+        {
+          "criterion": "Returns exactly 200",
+          "passed": true,
+          "note": ""
+        },
+        {
+          "criterion": "Uses COUNT(*) or equivalent",
+          "passed": true,
+          "note": ""
+        }
+      ],
+      "duration_ms": 8331
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "workshop-claude-agents",
+  "version": "1.0.0",
+  "description": "8-week workshop on building AI agents with Claude Code",
+  "type": "module",
+  "scripts": {
+    "generate-funding-data": "npx tsx scripts/generate-funding-data.ts",
+    "build-mcp": "npx tsx mcp-servers/funding-data/index.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

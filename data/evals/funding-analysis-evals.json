@@ -1,0 +1,335 @@
+{
+  "name": "Startup Funding Analysis Evals",
+  "description": "Golden dataset for testing data analysis agents against startup-funding.db",
+  "database": "data/startup-funding.db",
+  "version": "1.0.0",
+  "evals": [
+    {
+      "id": "basic-001",
+      "name": "Basic Count",
+      "difficulty": "easy",
+      "category": "retrieval",
+      "input": "How many startups are in the database?",
+      "expected": {
+        "answer": 200,
+        "sql_pattern": "SELECT COUNT(*) FROM startups"
+      },
+      "pass_criteria": [
+        "Returns exactly 200",
+        "Uses COUNT(*) or equivalent"
+      ]
+    },
+    {
+      "id": "basic-002",
+      "name": "Stage Breakdown",
+      "difficulty": "easy",
+      "category": "aggregation",
+      "input": "What are the average funding amounts by stage?",
+      "expected": {
+        "data": {
+          "Pre-Seed": 1764588,
+          "Seed": 6054011,
+          "Series A": 24639925,
+          "Series B": 61876910,
+          "Series C": 192329610
+        },
+        "tolerance_percent": 5
+      },
+      "pass_criteria": [
+        "Returns all 5 stages",
+        "Values within 5% of expected",
+        "Stages ordered by amount (ascending)"
+      ]
+    },
+    {
+      "id": "join-001",
+      "name": "Top Investors",
+      "difficulty": "medium",
+      "category": "multi-table",
+      "input": "Who are the top 5 most active investors by number of portfolio companies?",
+      "expected": {
+        "top_investor": "Intel Capital",
+        "top_count": 15,
+        "sql_must_include": ["JOIN", "COUNT", "DISTINCT"]
+      },
+      "pass_criteria": [
+        "Intel Capital ranked #1",
+        "Shows 15 portfolio companies for Intel Capital",
+        "Uses COUNT(DISTINCT startup_id)",
+        "Correctly joins investors to funding_rounds to startups"
+      ]
+    },
+    {
+      "id": "window-001",
+      "name": "Funding Rank Within Industry",
+      "difficulty": "hard",
+      "category": "window_functions",
+      "input": "For each industry, which startup raised the largest Series A? Show the top 3 per industry.",
+      "expected": {
+        "sql_pattern": "RANK() OVER (PARTITION BY",
+        "must_include_industries": ["AI/ML", "Fintech", "Healthcare", "Developer Tools"],
+        "sample_check": {
+          "industry": "Developer Tools",
+          "top_startup_series_a_min": 30000000
+        }
+      },
+      "pass_criteria": [
+        "Uses window function (RANK, ROW_NUMBER, or DENSE_RANK)",
+        "Partitions by industry",
+        "Returns exactly 3 per industry",
+        "Correctly identifies top Series A amounts"
+      ]
+    },
+    {
+      "id": "cte-001",
+      "name": "Funding Velocity",
+      "difficulty": "hard",
+      "category": "cte",
+      "input": "Which startups moved fastest from Seed to Series A? Show the top 10 by days between rounds.",
+      "expected": {
+        "sql_pattern": "WITH",
+        "must_calculate": "days between funding rounds",
+        "result_count": 10
+      },
+      "pass_criteria": [
+        "Uses CTE or subquery to sequence rounds",
+        "Calculates days between Seed and Series A",
+        "Returns 10 results ordered by speed",
+        "Only includes companies with BOTH Seed and Series A"
+      ]
+    },
+    {
+      "id": "cohort-001",
+      "name": "Series A to B Conversion",
+      "difficulty": "hard",
+      "category": "cohort_analysis",
+      "input": "What's the conversion rate from Series A to Series B, broken down by the year the Series A was raised?",
+      "expected": {
+        "sql_pattern": "LEFT JOIN",
+        "must_group_by": "Series A year",
+        "output_columns": ["year", "series_a_count", "converted_to_b", "conversion_rate"]
+      },
+      "pass_criteria": [
+        "Groups by year of Series A",
+        "Correctly counts companies that raised Series A",
+        "Correctly counts subset that also raised Series B",
+        "Calculates percentage (not just raw numbers)",
+        "Uses LEFT JOIN or equivalent to include non-converters"
+      ]
+    },
+    {
+      "id": "trend-001",
+      "name": "Market Trend Analysis",
+      "difficulty": "medium",
+      "category": "interpretation",
+      "input": "Analyze the funding market from 2021-2024. Is it heating up, cooling down, or plateauing? Support your answer with data.",
+      "expected": {
+        "data": {
+          "2021": 820947829,
+          "2022": 1429150641,
+          "2023": 2685590388,
+          "2024": 2672621978
+        },
+        "interpretation": "plateauing after strong growth"
+      },
+      "pass_criteria": [
+        "Provides year-over-year totals",
+        "Notes strong growth 2021-2023 (3x increase)",
+        "Notes 2024 roughly flat vs 2023",
+        "Uses term like 'plateauing' or 'stabilizing' (not 'cooling')",
+        "Supports conclusion with specific numbers"
+      ]
+    },
+    {
+      "id": "trend-002",
+      "name": "Industry Shift Analysis",
+      "difficulty": "hard",
+      "category": "interpretation",
+      "input": "Which industries are gaining momentum and which are losing it? Compare 2022-2023 vs 2024 funding by industry.",
+      "expected": {
+        "analysis_must_include": [
+          "Percentage change by industry",
+          "Identify at least one gaining industry",
+          "Identify at least one declining industry"
+        ]
+      },
+      "pass_criteria": [
+        "Calculates funding by industry for both periods",
+        "Computes percentage change (not just absolute)",
+        "Identifies gainers and losers explicitly",
+        "Doesn't just list numbers - provides interpretation"
+      ]
+    },
+    {
+      "id": "predict-001",
+      "name": "Series B Prediction",
+      "difficulty": "hard",
+      "category": "prediction",
+      "input": "Which companies that raised Series A are most likely to raise Series B next? Consider: funding amount vs industry median, investor track record, and time since Series A. Rank your top 5 with explicit reasoning.",
+      "expected": {
+        "must_query": "Companies with Series A but no Series B",
+        "factors_to_consider": [
+          "Series A amount relative to industry",
+          "Lead investor's track record",
+          "Time elapsed since Series A"
+        ],
+        "candidates_pool": ["FastFlux", "OmniLink", "OpenEdge", "SuperAI", "PrimeNode", "RealEdge", "FastWave", "HyperLabs"]
+      },
+      "pass_criteria": [
+        "Identifies companies with Series A but NOT Series B",
+        "Uses correct SQL (NOT EXISTS or LEFT JOIN WHERE NULL)",
+        "Considers multiple factors (not just one metric)",
+        "Provides explicit reasoning for each ranked company",
+        "Acknowledges uncertainty in predictions",
+        "Does NOT just sort by Series A amount alone"
+      ]
+    },
+    {
+      "id": "predict-002",
+      "name": "Investor Pattern Analysis",
+      "difficulty": "hard",
+      "category": "prediction",
+      "input": "Based on historical patterns, which investors are most likely to lead a Series B round for an AI/ML company? Analyze their track record.",
+      "expected": {
+        "analysis_must_include": [
+          "Investors who have led Series B rounds",
+          "Investors with AI/ML portfolio exposure",
+          "Follow-on investment patterns"
+        ]
+      },
+      "pass_criteria": [
+        "Identifies investors who have led Series B rounds historically",
+        "Filters or weights by AI/ML industry focus",
+        "Considers follow-on rate (same investor multiple rounds)",
+        "Names specific investors with supporting data",
+        "Does NOT just list top investors by volume"
+      ]
+    },
+    {
+      "id": "context-001",
+      "name": "Result Limiting",
+      "difficulty": "medium",
+      "category": "context_management",
+      "input": "List all funding rounds from 2024.",
+      "expected": {
+        "total_count": 91,
+        "must_acknowledge_limit": true
+      },
+      "pass_criteria": [
+        "Uses LIMIT clause for exploration",
+        "States total count (91 rounds)",
+        "If limited, says 'showing X of 91'",
+        "Does NOT present partial results as complete",
+        "Offers to filter or show more"
+      ]
+    },
+    {
+      "id": "context-002",
+      "name": "Large Result Handling",
+      "difficulty": "medium",
+      "category": "context_management",
+      "input": "Show me all the data in the funding_rounds table.",
+      "expected": {
+        "total_count": 479,
+        "should_not": "Return all 479 rows"
+      },
+      "pass_criteria": [
+        "Does NOT dump all 479 rows",
+        "Suggests aggregation or filtering first",
+        "Asks clarifying question about what user needs",
+        "If showing sample, clearly states it's a sample"
+      ]
+    },
+    {
+      "id": "edge-001",
+      "name": "Specific Entity Lookup",
+      "difficulty": "easy",
+      "category": "accuracy",
+      "input": "What's the complete funding history for Cursor?",
+      "expected": {
+        "company": "Cursor",
+        "rounds": [
+          {"stage": "Pre-Seed", "amount": 1495626, "date": "2022-05-26"}
+        ]
+      },
+      "pass_criteria": [
+        "Finds Cursor in database",
+        "Returns Pre-Seed round ~$1.5M",
+        "Does NOT hallucinate additional rounds",
+        "Notes this may not be complete real-world data"
+      ]
+    },
+    {
+      "id": "edge-002",
+      "name": "Missing Data Handling",
+      "difficulty": "medium",
+      "category": "accuracy",
+      "input": "Compare the funding trajectories of Cursor, Replit, Codeium, and Tabnine.",
+      "expected": {
+        "data": {
+          "Cursor": {"rounds": 1, "total": 1495626},
+          "Replit": {"rounds": 2, "total": 8817547},
+          "Codeium": {"rounds": 2, "total": 7265717},
+          "Tabnine": {"rounds": 1, "total": 1755732}
+        }
+      },
+      "pass_criteria": [
+        "Retrieves all 4 companies",
+        "Shows correct round counts",
+        "Notes data asymmetry between companies",
+        "Caveats that database may be incomplete",
+        "Does NOT claim Company X is 'behind' without caveat"
+      ]
+    },
+    {
+      "id": "edge-003",
+      "name": "Nonexistent Entity",
+      "difficulty": "easy",
+      "category": "accuracy",
+      "input": "What's the funding history for OpenAI?",
+      "expected": {
+        "company_exists": false
+      },
+      "pass_criteria": [
+        "States OpenAI is not in the database",
+        "Does NOT hallucinate funding data",
+        "May offer to search for similar companies"
+      ]
+    },
+    {
+      "id": "complex-001",
+      "name": "Multi-Step Analysis",
+      "difficulty": "hard",
+      "category": "multi_step",
+      "input": "I want to understand the Developer Tools market. Give me: (1) total funding by year, (2) top 5 investors in this space, (3) average time between rounds for companies in this industry, and (4) your assessment of market health.",
+      "expected": {
+        "required_outputs": [
+          "Yearly funding totals for Developer Tools",
+          "Top 5 investors with Dev Tools portfolio",
+          "Average days between funding rounds",
+          "Qualitative market assessment"
+        ]
+      },
+      "pass_criteria": [
+        "Answers all 4 sub-questions",
+        "Uses correct industry filter throughout",
+        "Provides specific numbers for each part",
+        "Synthesizes findings into coherent assessment",
+        "Does NOT skip any of the 4 parts"
+      ]
+    }
+  ],
+  "scoring": {
+    "pass_threshold": 0.7,
+    "weights": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 3
+    },
+    "expected_pass_rates": {
+      "easy": 0.95,
+      "medium": 0.80,
+      "hard": 0.60
+    }
+  }
+}
