@@ -51,26 +51,72 @@ The only eval that matters is: **Does it do what YOU need it to do?**
 
 ### The Right Approach
 
-1. **Start with error analysis, not infrastructure**
+1. **Build evals WHILE building, not after**
+   - Don't wait until you're "done" to create test cases
+   - Every time you build a new capability, immediately create 3 eval questions
+   - Example: Build an MCP tool → Immediately create 3 queries to test it
+   - This catches problems early when they're easy to fix
+
+2. **Start with error analysis, not infrastructure**
    - Run your agent 20-50 times on real inputs
    - Manually look at the outputs
    - Ask: "Would I accept this if a human produced it?"
    - Spend 30 minutes doing this before building anything
 
-2. **Define YOUR pass/fail criteria**
+3. **Define YOUR pass/fail criteria**
    - What makes an output "good enough" for your use case?
    - Be specific. Not "good summary" but "captures the 3 main points"
    - Write it down. This becomes your eval criteria.
 
-3. **Create 5 input/output pairs**
-   - Pick 5 representative inputs from your domain
-   - For each, write what a "passing" output looks like
-   - Include at least one edge case
+4. **Use the Three-Query Pattern**
+   - Create at least 3 test queries for each capability:
+     - **2 basic queries**: Simple, should definitely work (e.g., "How many companies are in the database?")
+     - **1 complex query**: Tests reasoning and synthesis (e.g., "Which AI startups are most likely to raise Series B?")
+   - The complex query reveals whether your agent can think, not just retrieve
 
-4. **Run and compare**
+5. **Run and compare**
    - Run your agent on each input
    - Compare actual output to expected
    - Note: You're looking for "close enough," not "exact match"
+
+### Test Prediction, Not Just Retrieval
+
+The best evals test whether your agent can reason and synthesize, not just fetch data.
+
+| Eval Type | Bad Example | Good Example |
+|-----------|-------------|--------------|
+| Data retrieval | "List all Series A companies" | "Which companies are most likely to raise Series B?" |
+| Research | "Find info about Acme Corp" | "Would Acme Corp be a good acquisition target? Why?" |
+| Analysis | "What's the average deal size?" | "Is the market heating up or cooling down? Support your answer." |
+
+**Prediction evals are powerful because:**
+- They require the agent to synthesize multiple data points
+- They expose gaps in reasoning, not just gaps in retrieval
+- They're closer to real business questions
+
+Example from the startup funding database:
+```
+Input: "Rank the AI coding tools by likelihood of getting Series B. Explain your reasoning."
+
+Good output must:
+- Consider funding amount vs. industry median
+- Factor in time since founding to Series A
+- Weigh investor track record
+- Provide explicit reasoning for each ranking
+```
+
+### Context Management Criteria (For Data Agents)
+
+If your agent queries databases or large datasets, add these pass/fail criteria:
+
+| Criterion | Pass | Fail |
+|-----------|------|------|
+| Acknowledges limits | "Showing top 100 of 45,000 results" | Presents limited results as complete |
+| Uses appropriate limits | Adds LIMIT clause for exploration | Returns unbounded results |
+| Tracks truncation | Notes when previous results were limited | Forgets and makes claims based on incomplete data |
+| Aggregates first | Starts with GROUP BY, then drills down | Tries to load entire dataset |
+
+These criteria prevent your agent from making confident claims based on incomplete data.
 
 ### Use Binary Pass/Fail, Not Scales
 
@@ -111,6 +157,18 @@ From Hamel's research:
 > "A 70% pass rate might indicate you're testing meaningful things. A 100% pass rate might mean your tests are too easy."
 
 If every test passes, your golden dataset probably isn't challenging enough.
+
+### Calibrate Domain Specificity
+
+Your eval questions need to be domain-specific, but not TOO specific.
+
+| Too Generic | Just Right | Too Specific |
+|-------------|------------|--------------|
+| "Does it return data?" | "Does it return funding data with correct schema?" | "Does it return exactly 47 rows for Q3 2024?" |
+| "Is it helpful?" | "Does it explain the trend direction with evidence?" | "Does it mention the exact words 'market cooling'?" |
+| "Does it work?" | "Does it handle missing data gracefully?" | "Does it throw error code ERR_NULL_12?" |
+
+**The sweet spot:** Questions that test your specific domain logic but don't break when underlying data changes.
 
 ---
 
@@ -167,6 +225,20 @@ Think about:
 | Customer Support | Classify a billing question | Ticket in another language | Abusive/threatening message |
 | Operations | Process a standard invoice | Invoice with multiple currencies | Invoice missing required fields |
 | Data Analytics | Profile a clean CSV | CSV with mixed data types | Corrupted or empty file |
+
+**Data Analytics Example (Using startup-funding.db):**
+
+Here's a preview of the golden dataset for a data analysis agent. See `evals/week7-golden-dataset.md` for the complete 8-eval set with expected outputs and pass criteria.
+
+| Test | Input | Pass Criteria |
+|------|-------|---------------|
+| Basic retrieval | "How many startups are in the database?" | Returns exactly 200 |
+| Aggregation | "Average funding by stage?" | Pre-Seed ~$1.76M, Seed ~$6M, Series A ~$24.6M, B ~$62M, C ~$192M |
+| Multi-table join | "Top 5 investors by portfolio size?" | Intel Capital #1 with 15 companies |
+| Trend analysis | "Is funding heating up or cooling?" | Notes 2021-2023 growth, 2024 plateau |
+| Prediction | "Which Series A companies will raise B next?" | Ranks with reasoning, cites amount + investor + timing |
+| Context management | "List all 2024 funding rounds" | States "showing X of 91" if limited |
+| Edge case | "Compare Cursor vs Replit" | Notes data asymmetry (1 round vs 2), caveats incompleteness |
 
 **Step 3:** Run your agent on each input
 
@@ -226,22 +298,19 @@ That's when you want automation.
 
 ### Two Options for Running Evals at Scale
 
-**Option 1: CLI Agents Fleet (Open Source Tool)**
+**Option 1: Workshop Eval Runner Script (Recommended)**
 
-There's an open-source project specifically for running AI agents at scale:
+This workshop includes a ready-to-use eval runner at `scripts/run-funding-evals.py`. It demonstrates:
+- Streaming output so you see Claude's work in real-time
+- Tool call visibility (shows SQL queries and results)
+- Boolean pass/fail scoring with string matching
+- JSON result export for analysis
 
-[github.com/trancethehuman/cli-agents-fleet](https://github.com/trancethehuman/cli-agents-fleet)
+See the detailed documentation in **Block 3, Lab 2** below.
 
-If this tool has an eval feature shipped by the time you take this course, use it. It handles:
-- Batch processing multiple inputs
-- Parallel execution
-- Result collection
+**Option 2: Custom Script with Claude Agent SDK**
 
-Check the repo for current capabilities.
-
-**Option 2: Simple Script with Claude Agent SDK**
-
-If you need to roll your own, here's the minimal approach using the Claude Agent SDK (same patterns from Week 6) with parallel execution:
+For custom eval needs, here's the minimal approach using the Claude Agent SDK (same patterns from Week 6) with parallel execution:
 
 ```typescript
 // src/eval-runner.ts
@@ -413,7 +482,7 @@ Grow your golden dataset from 5 to 10 test cases:
 **Part 2: Automate Your Evals**
 
 Either:
-- Use [CLI Agents Fleet](https://github.com/trancethehuman/cli-agents-fleet) if it has eval support
+- Adapt the workshop eval runner (`scripts/run-funding-evals.py`) for your use case
 - Write a simple script using the Claude Agent SDK (see Block 3)
 
 Run your 10 test cases automatically and save the results.
@@ -471,6 +540,12 @@ It's a starting point. Quality over quantity. 5 thoughtful tests beat 50 generic
 **"Should I use LLM-as-judge?"**
 Not for this course. It adds complexity and cost. Start with simple rule-based checks.
 
+**"When should I create eval questions?"**
+Immediately when you build something new. Just built an MCP tool? Create 3 eval questions right then. Wrote a new skill? Add 3 test cases before moving on. This habit catches problems early.
+
+**"What makes a good prediction eval?"**
+It should require synthesis across multiple data points. "Which company will raise Series B next?" is better than "List companies that raised Series A" because it tests reasoning, not retrieval.
+
 ### Timing
 
 - Block 1 (Theory): Focus on the "why" - don't rush
@@ -489,5 +564,168 @@ Have them:
 ### Resources
 
 - [Hamel Husain's Eval FAQ](https://hamel.dev/blog/posts/evals-faq/) - The article this session draws from
-- [CLI Agents Fleet](https://github.com/trancethehuman/cli-agents-fleet) - Open source tool for running agents at scale
-- [Claude Agent SDK Docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk/overview) - For the automation script
+- [Claude Agent SDK Docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk/overview) - For custom automation scripts
+- [Claude Code CLI Docs](https://docs.anthropic.com/en/docs/claude-code) - For understanding CLI flags
+
+**Workshop Eval Resources:**
+- `data/evals/funding-analysis-evals.json` - Machine-readable eval set (16 test cases)
+- `evals/week7-golden-dataset.md` - Detailed documentation with expected outputs
+- `scripts/run-funding-evals.py` - Eval runner script (see documentation below)
+
+---
+
+## Appendix: Eval Runner Script Documentation
+
+### Overview
+
+The workshop includes `scripts/run-funding-evals.py`, a Python script that runs evals against the startup funding database using Claude Code CLI. It demonstrates best practices for eval automation.
+
+### How to Run
+
+```bash
+# Run all evals
+python3 scripts/run-funding-evals.py
+
+# Run only easy/medium/hard evals
+python3 scripts/run-funding-evals.py --filter=easy
+python3 scripts/run-funding-evals.py --filter=hard
+
+# Run a specific eval by ID
+python3 scripts/run-funding-evals.py --id=basic-001
+
+# Dry run - see evals without executing
+python3 scripts/run-funding-evals.py --dry-run
+
+# Verbose mode - show criteria details for all results
+python3 scripts/run-funding-evals.py --verbose
+```
+
+### What You'll See
+
+The script streams Claude's output in real-time, including tool calls:
+
+```
+──────────────────────────────────────────────────
+[basic-001] Basic Count
+──────────────────────────────────────────────────
+
+┌─ Bash
+│ sqlite3 data/startup-funding.db "SELECT COUNT(*) as startup_count FROM startups;"
+│ 200
+└─
+**SQL Query:**
+```sql
+SELECT COUNT(*) as startup_count FROM startups;
+```
+
+**Answer:** There are **200 startups** in the database.
+
+→ ✓ PASS (8s)
+```
+
+### How It Works
+
+**1. Uses Claude Code CLI with Streaming**
+
+The script uses proper CLI flags for real-time output:
+
+```python
+cmd = [
+    'claude', '-p', prompt,           # Direct prompt (no piping)
+    '--output-format', 'stream-json', # Newline-delimited JSON events
+    '--verbose',                      # Required for stream-json with -p
+    '--allowedTools', 'Bash(sqlite3:*),Read'  # Auto-approve DB queries
+]
+```
+
+**2. Parses Stream Events**
+
+The `stream-json` format emits events as newline-delimited JSON:
+
+| Event Type | Contains | Script Action |
+|------------|----------|---------------|
+| `assistant` | Text content, tool_use | Print text, show tool calls |
+| `user` | tool_result | Show query results |
+| `result` | Final output | Extract for scoring |
+
+**3. Boolean Pass/Fail Scoring**
+
+Each eval has pass criteria checked with simple string matching:
+
+| Criterion Pattern | How It's Checked |
+|-------------------|------------------|
+| `"Returns exactly 200"` | `"200" in output` |
+| `"Does NOT hardcode"` | `"hardcode" not in output.lower()` |
+| `"Uses COUNT(*)"` | `"count(*)" in output.lower()` |
+| Other patterns | Marked as "needs review" |
+
+**4. Results Export**
+
+Results are saved to `output/eval-results.json`:
+
+```json
+{
+  "timestamp": "2026-01-21T06:41:27Z",
+  "eval_set": "Startup Funding Analysis Evals",
+  "summary": {"passed": 12, "failed": 2, "review": 2, "total": 16},
+  "results": [
+    {
+      "id": "basic-001",
+      "name": "Basic Count",
+      "passed": true,
+      "output": "SELECT COUNT(*) ... **200 startups**",
+      "duration_ms": 8786,
+      "criteria_results": [...]
+    }
+  ]
+}
+```
+
+### Eval JSON Format
+
+Evals are defined in `data/evals/funding-analysis-evals.json`:
+
+```json
+{
+  "name": "Startup Funding Analysis Evals",
+  "evals": [
+    {
+      "id": "basic-001",
+      "name": "Basic Count",
+      "category": "retrieval",
+      "difficulty": "easy",
+      "input": "How many startups are in the database?",
+      "pass_criteria": [
+        "Returns exactly 200",
+        "Uses COUNT(*) or equivalent"
+      ]
+    }
+  ],
+  "scoring": {
+    "expected_pass_rates": {
+      "easy": 0.95,
+      "medium": 0.80,
+      "hard": 0.60
+    }
+  }
+}
+```
+
+### Adapting for Your Agent
+
+To use this pattern for your own agent:
+
+1. **Create your eval JSON** with inputs and pass criteria
+2. **Modify the prompt template** in `run_eval()` to match your agent's context
+3. **Update `--allowedTools`** to match what your agent needs
+4. **Adjust scoring logic** for your criteria patterns
+
+### Key Design Decisions
+
+| Decision | Why |
+|----------|-----|
+| Stream-json output | See progress during long evals instead of waiting |
+| Tool visibility | Debug what queries the agent is running |
+| Boolean scoring | Clear pass/fail, no ambiguous scales |
+| String matching | Simple, fast, no LLM-as-judge complexity |
+| JSON export | Enables trend analysis across runs |
