@@ -1,0 +1,85 @@
+digraph WorkflowPatterns {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=1.0;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=10, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Workflow Patterns";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Sequential Pipeline
+    subgraph cluster_sequential {
+        label="Sequential Pipeline";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        lead1 [label="Lead" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        enrich1 [label="[Enrichment]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        score1 [label="[Scoring]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        email1 [label="[Email Draft]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        output1 [label="Output" fillcolor="#ECFDF5" color="#059669" shape=box];
+
+        lead1 -> enrich1 -> score1 -> email1 -> output1;
+    }
+
+    // Parallel Processing
+    subgraph cluster_parallel {
+        label="Parallel Processing";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        lead2 [label="Lead" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+
+        {rank=same; agent1; agent2; agent3}
+        agent1 [label="[Agent 1]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        agent2 [label="[Agent 2]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        agent3 [label="[Agent 3]" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+
+        combine [label="Combine" fillcolor="#ECFDF5" color="#059669" shape=box];
+
+        lead2 -> agent1 -> combine;
+        lead2 -> agent2 -> combine;
+        lead2 -> agent3 -> combine;
+    }
+
+    // Hierarchical Delegation
+    subgraph cluster_hierarchical {
+        label="Hierarchical Delegation";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        main_agent [label="Main Agent" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+
+        research_mgr [label="Research Manager" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+        output_mgr [label="Output Manager" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+
+        company_res [label="Company\nResearcher" fillcolor="#ECFDF5" color="#059669" shape=box];
+        contact_res [label="Contact\nResearcher" fillcolor="#ECFDF5" color="#059669" shape=box];
+        report_writer [label="Report\nWriter" fillcolor="#ECFDF5" color="#059669" shape=box];
+        email_writer [label="Email\nWriter" fillcolor="#ECFDF5" color="#059669" shape=box];
+
+        main_agent -> research_mgr;
+        main_agent -> output_mgr;
+        research_mgr -> company_res;
+        research_mgr -> contact_res;
+        output_mgr -> report_writer;
+        output_mgr -> email_writer;
+    }
+}

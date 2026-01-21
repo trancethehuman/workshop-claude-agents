@@ -1,0 +1,55 @@
+digraph LeadEnrichment {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Lead Enrichment Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_enrichment {
+        label="Lead Enrichment Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Lead Enricher Service
+        enricher_service [label="Lead Enricher Service\n\nInput: leads[]  →  enrichBatch()  →  Output: JSON" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Three parallel lead agents
+        node [shape=box fillcolor="#F5F3FF" color="#7C3AED"];
+        {rank=same; lead1; lead2; lead3}
+
+        lead1 [label="Lead 1\nAgent\n(Research)"];
+        lead2 [label="Lead 2\nAgent\n(Research)"];
+        lead3 [label="Lead 3\nAgent\n(Research)"];
+
+        // Results
+        node [shape=box fillcolor="#ECFDF5" color="#059669"];
+        {rank=same; enriched1; enriched2; enriched3}
+
+        enriched1 [label="[EnrichedLead]"];
+        enriched2 [label="[EnrichedLead]"];
+        enriched3 [label="[EnrichedLead]"];
+    }
+
+    // Connections
+    enricher_service -> lead1;
+    enricher_service -> lead2;
+    enricher_service -> lead3;
+
+    lead1 -> enriched1;
+    lead2 -> enriched2;
+    lead3 -> enriched3;
+}

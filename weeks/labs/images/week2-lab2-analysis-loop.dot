@@ -1,0 +1,29 @@
+digraph AnalysisLoop {
+    rankdir=LR;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=1.0;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Data Analysis Loop";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Loop components
+    monitor [label="MONITOR" fillcolor="#EFF6FF" color="#2563EB"];
+    explore [label="EXPLORE" fillcolor="#F5F3FF" color="#7C3AED"];
+    craft [label="CRAFT STORY" fillcolor="#FEF3C7" color="#D97706"];
+    impact [label="IMPACT" fillcolor="#ECFDF5" color="#059669"];
+
+    // Forward flow
+    monitor -> explore;
+    explore -> craft;
+    craft -> impact;
+
+    // Back to start (loop)
+    impact -> monitor;
+}

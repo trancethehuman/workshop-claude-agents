@@ -1,0 +1,36 @@
+digraph AdvancedSkill {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Advanced Skill Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_advanced {
+        label="Advanced Skill Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Skills directory structure
+        skills_structure [label=".claude/skills/\n└── data-analyst/\n    ├── SKILL.md ← Main instructions\n    └── references/\n        └── sql-patterns.md ← Loaded on-demand" shape=box fillcolor="#ECFDF5" color="#059669" fontname="Courier New" fontsize=10];
+
+        // Data Analysis Loop
+        analysis_loop [label="Data Analysis Loop\nMONITOR → EXPLORE → CRAFT STORY → IMPACT" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+    }
+
+    // Connection showing the flow
+    skills_structure -> analysis_loop [style=invis];
+}

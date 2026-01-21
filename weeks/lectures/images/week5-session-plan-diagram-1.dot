@@ -1,0 +1,42 @@
+digraph WithoutSubAgents {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.5;
+    ranksep=0.6;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=9, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=8];
+
+    // Title
+    label="Without Sub-agents: Context Explosion";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main agent context container
+    subgraph cluster_main {
+        label="Main Agent Context";
+        style="rounded,filled";
+        fillcolor="#FEE2E2";
+        color="#DC2626";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        task [label="Task: Research 10 companies" fillcolor="#FEF3C7" color="#D97706" shape=box];
+        result1 [label="WebSearch result for Company 1 (500 tokens)" fillcolor="#F3F4F6" color="#6B7280" shape=box];
+        fetch1 [label="WebFetch page content (2000 tokens)" fillcolor="#F3F4F6" color="#6B7280" shape=box];
+        analysis1 [label="Analysis reasoning (300 tokens)" fillcolor="#F3F4F6" color="#6B7280" shape=box];
+        result2 [label="WebSearch result for Company 2 (500 tokens)" fillcolor="#F3F4F6" color="#6B7280" shape=box];
+        fetch2 [label="WebFetch page content (2000 tokens)" fillcolor="#F3F4F6" color="#6B7280" shape=box];
+        explosion [label="... context explodes ..." fillcolor="#FEE2E2" color="#DC2626" shape=box];
+    }
+
+    task -> result1 [style=invis];
+    result1 -> fetch1 [style=invis];
+    fetch1 -> analysis1 [style=invis];
+    analysis1 -> result2 [style=invis];
+    result2 -> fetch2 [style=invis];
+    fetch2 -> explosion [style=invis];
+}

@@ -1,0 +1,48 @@
+digraph ToolCallingLoop {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Tool Calling Loop";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_loop {
+        label="Tool Calling Loop";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Loop components (horizontal flow)
+        {rank=same; think; select; execute}
+
+        think [label="THINK"];
+        select [label="SELECT TOOL"];
+        execute [label="EXECUTE"];
+        observe [label="OBSERVE" fillcolor="#FEF3C7" color="#D97706"];
+        think_again [label="THINK AGAIN"];
+        repeat_label [label="(repeat until done)" shape=plaintext fillcolor=none color=none];
+    }
+
+    // Forward flow
+    think -> select;
+    select -> execute;
+    execute -> observe;
+    observe -> think_again;
+
+    // Back to think
+    think_again -> think [xlabel="repeat" fontsize=9];
+}

@@ -1,0 +1,69 @@
+digraph SandboxingPatterns {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.6;
+    ranksep=0.6;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10, style="rounded,filled", shape=box];
+
+    // Title
+    label="Sandboxing Patterns";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Pattern 1: Batch Processing
+    subgraph cluster_batch {
+        label="Pattern 1: Batch Processing";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        batch1 [label="For each data file:" fillcolor="#EFF6FF" color="#2563EB"];
+        batch2 [label="1. Create sandbox" fillcolor="#F5F3FF" color="#7C3AED"];
+        batch3 [label="2. Upload file" fillcolor="#F5F3FF" color="#7C3AED"];
+        batch4 [label="3. Run agent analysis" fillcolor="#F5F3FF" color="#7C3AED"];
+        batch5 [label="4. Download results" fillcolor="#F5F3FF" color="#7C3AED"];
+        batch6 [label="5. Delete sandbox" fillcolor="#FEF3C7" color="#D97706"];
+
+        batch1 -> batch2 -> batch3 -> batch4 -> batch5 -> batch6 [style=invis];
+    }
+
+    // Pattern 2: Long-Running Agent
+    subgraph cluster_longrun {
+        label="Pattern 2: Long-Running Agent";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        long1 [label="1. Create persistent sandbox" fillcolor="#EFF6FF" color="#2563EB"];
+        long2 [label="2. Upload all data files" fillcolor="#F5F3FF" color="#7C3AED"];
+        long3 [label="3. Run multiple agent tasks" fillcolor="#F5F3FF" color="#7C3AED"];
+        long4 [label="4. Stream results back" fillcolor="#F5F3FF" color="#7C3AED"];
+        long5 [label="5. Delete sandbox when done" fillcolor="#FEF3C7" color="#D97706"];
+
+        long1 -> long2 -> long3 -> long4 -> long5 [style=invis];
+    }
+
+    // Pattern 3: User-Triggered Analysis
+    subgraph cluster_user {
+        label="Pattern 3: User-Triggered Analysis";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        user1 [label="1. User uploads file to your app" fillcolor="#EFF6FF" color="#2563EB"];
+        user2 [label="2. Create sandbox for this user" fillcolor="#F5F3FF" color="#7C3AED"];
+        user3 [label="3. Run agent on their data" fillcolor="#F5F3FF" color="#7C3AED"];
+        user4 [label="4. Return results" fillcolor="#F5F3FF" color="#7C3AED"];
+        user5 [label="5. Cleanup after timeout" fillcolor="#FEF3C7" color="#D97706"];
+
+        user1 -> user2 -> user3 -> user4 -> user5 [style=invis];
+    }
+}

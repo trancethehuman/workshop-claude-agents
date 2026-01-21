@@ -12,72 +12,92 @@ paginate: true
 # Session Goals
 
 - Present capstone projects to the group
-- Learn from different approaches
+- Learn from different approaches and implementations
 - Give and receive constructive feedback
+- Celebrate what everyone has built
 
 ---
 
 # Demo Format
 
-Each participant gets **7 minutes:**
-- 5 minutes: Presentation and demo
-- 2 minutes: Q&A and feedback
+**5 minutes:** Presentation and demo
+**2 minutes:** Q&A and feedback
+
+**Structure:**
+1. The Problem (30 sec)
+2. The Solution (1 min)
+3. Live Demo (2.5 min)
+4. Learnings (1 min)
 
 ---
 
-# What to Cover in Your Demo
+# The Problem (30 seconds)
 
-1. **The Problem** (30 sec)
-2. **The Solution** (1 min)
-3. **Live Demo** (2.5 min)
-4. **Learnings** (1 min)
+**Your opening line sets the tone. Lead with the impact, not the technology.**
 
----
+Start with:
+- What manual process you automated
+- What pain point you solved
+- What bottleneck you removed
 
-# The Problem (30 sec)
-
-- What workflow are you automating?
-- Who benefits from this?
+Example: "Our sales team spent 2 hours per day researching companies manually..."
 
 ---
 
-# The Solution (1 min)
+# The Solution (1 minute)
 
-- High-level architecture
-- Key components (skills, MCP, sub-agents)
+**High-level architecture:**
+- What tools/skills/agents you built
+- How they work together
+- Key design decisions
 
----
-
-# Live Demo (2.5 min)
-
-- Show the agent working
-- Walk through a real use case
+Keep it simple. Save technical details for Q&A.
 
 ---
 
-# Learnings (1 min)
+# Live Demo (2.5 minutes)
 
-- What worked well?
-- What was challenging?
-- What would you do differently?
+**Show, don't tell:**
+- Run your agent on real data
+- Show actual output
+- Highlight the key capability
 
----
-
-# Demo Tips: Do
-
-- Prepare a backup recording
-- Have sample data ready
-- Keep it concise
-- Show real output
+**Pro tip:** Have a backup recording in case of live demo issues
 
 ---
 
-# Demo Tips: Don't
+# Learnings (1 minute)
 
-- Read from slides
-- Spend too long on setup
-- Apologize for "rough" work
-- Skip the demo
+**What did you discover?**
+- What worked well
+- What surprised you
+- What you'd do differently
+- What's next for this project
+
+---
+
+# Backup Recording
+
+**Live demos fail 30% of the time.**
+
+A backup recording turns a disaster into a smooth transition.
+
+Record a 2-minute screen capture showing:
+1. Your agent receiving input
+2. The agent working (tools, reasoning)
+3. Final output
+
+---
+
+# Demo Prep Lab
+
+**Duration:** 30 minutes
+
+**What you'll do:**
+- Create your 5-minute demo outline
+- Record a backup demo video
+- Practice with a partner and get timing feedback
+- Complete the final demo checklist
 
 ---
 
@@ -86,10 +106,7 @@ Each participant gets **7 minutes:**
 **What Worked Well:**
 - Specific things that impressed you
 - Clever solutions or approaches
-
----
-
-# Feedback Framework (Continued)
+- Good use of concepts from the course
 
 **Questions:**
 - Clarifying questions about implementation
@@ -101,84 +118,59 @@ Each participant gets **7 minutes:**
 
 ---
 
-# Example Projects: GTM / Sales
+# Demo Session I
 
-| Project | Stack |
-|---------|-------|
-| Lead Enrichment Pipeline | Sub-agents + WebSearch |
-| Email Sequence Generator | Skills + Gmail MCP |
-| CRM Sync Agent | SDK + HubSpot MCP |
+**8 demos × 7 minutes = 56 minutes**
 
----
-
-# Example Projects: Developer Tools
-
-| Project | Stack |
-|---------|-------|
-| Code Review Bot | GitHub MCP + Skills |
-| Documentation Generator | SDK + Repo tools |
-| Dependency Auditor | Sub-agents + npm/pip |
+| # | Time |
+|---|------|
+| 1-8 | 5+2 min each |
 
 ---
 
-# Example Projects: Content / Marketing
-
-| Project | Stack |
-|---------|-------|
-| Content Repurposer | Skills + Google Docs MCP |
-| SEO Analyzer | WebSearch + Skills |
-| Newsletter Curator | Sub-agents + RSS |
+# **BREAK**
+## 10 minutes
 
 ---
 
-# Example Projects: Customer Support
+# Demo Session II
 
-| Project | Stack |
-|---------|-------|
-| Ticket Classifier | Skills + Zendesk MCP |
-| Response Drafter | SDK + Knowledge base |
-| Escalation Monitor | Sub-agents + Slack MCP |
+**8 demos × 7 minutes = 56 minutes**
 
----
-
-# Example Projects: Operations
-
-| Project | Stack |
-|---------|-------|
-| Invoice Processor | Skills + Google Sheets |
-| Data Quality Monitor | Skills + Evals |
-| Compliance Checker | Sub-agents + Notion MCP |
+| # | Time |
+|---|------|
+| 9-16 | 5+2 min each |
 
 ---
 
-# Peer Voting Categories
+# Retrospective
 
+**What did we learn?**
+
+Go around and share one key insight:
+- "I learned that..."
+- "I was surprised by..."
+- "I want to try..."
+
+---
+
+# Common Patterns We Saw
+
+Facilitator synthesizes themes:
+- Most popular architectures
+- Common challenges and solutions
+- Creative uses of tools
+- Production-ready patterns
+
+---
+
+# Peer Voting
+
+Vote on categories:
 - Most Practical
 - Most Creative
 - Best Demo
 - Most Likely to Use in Production
-
----
-
-# The 8-Week Journey
-
-| Week | What You Learned |
-|------|------------------|
-| 1 | Defined a project, learned basics |
-| 2 | Mastered tool calling and research |
-| 3 | Connected to real data via MCP |
-| 4 | Encoded expertise as skills |
-
----
-
-# The 8-Week Journey (Continued)
-
-| Week | What You Learned |
-|------|------------------|
-| 5 | Orchestrated sub-agents |
-| 6 | Ran agents programmatically |
-| 7 | Built evals to ensure quality |
-| 8 | Shipped a working agent |
 
 ---
 
@@ -189,15 +181,25 @@ Each participant gets **7 minutes:**
 - Share progress in community channels
 - Pair up on collaborative projects
 
+**Resources:**
+- Claude Code Docs: platform.claude.com/docs
+- Agent SDK GitHub: github.com/anthropics/claude-code
+- Anthropic Discord: discord.gg/anthropic
+
 ---
 
-# Resources for Continued Learning
+# Your Journey
 
-| Resource | Link |
-|----------|------|
-| Claude Code Docs | platform.claude.com/docs |
-| Agent SDK | github.com/anthropics/claude-code |
-| Agent Skills Spec | agentskills.io |
+- **Week 1:** Defined a project and learned the basics
+- **Week 2:** Mastered tool calling and research
+- **Week 3:** Connected to real data via MCP
+- **Week 4:** Encoded expertise as skills
+- **Week 5:** Orchestrated sub-agents
+- **Week 6:** Ran agents programmatically
+- **Week 7:** Built evals to ensure quality
+- **Week 8:** Shipped a working agent for your domain
+
+Everyone built something different, but everyone learned the same core patterns.
 
 ---
 
@@ -210,19 +212,12 @@ Each participant gets **7 minutes:**
 
 ---
 
-# Demo Day Checklist
-
-- [ ] Demo prepared and practiced
-- [ ] Backup recording ready
-- [ ] Sample data loaded
-- [ ] Can share screen
-- [ ] Know your time slot
-
----
-
 # Thank You
 
-Everyone built something different, but everyone learned the same core patterns.
+- Thank you for your engagement
+- Amazing projects and contributions
+- Stay connected through community channels
+- Keep building!
 
 ---
 

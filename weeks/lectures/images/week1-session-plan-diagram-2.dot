@@ -1,0 +1,48 @@
+digraph ClaudeStack {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.3;
+    ranksep=0.3;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="filled", shape=box];
+    edge [style=invis];
+
+    // Title
+    label="The Claude Agent Stack";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Stack layers (top to bottom)
+    app [label="Your Application" fillcolor="#FEF3C7" color="#D97706" height=0.8 width=6];
+    sdk [label="Claude Agent SDK (TS)" fillcolor="#EFF6FF" color="#2563EB" height=0.8 width=6];
+
+    subagents_skills [label="Sub-agents  |  Agent Skills" fillcolor="#F5F3FF" color="#7C3AED" height=0.8 width=6 shape=record];
+
+    mcp [label="MCP Servers" fillcolor="#ECFDF5" color="#059669" height=0.8 width=6];
+    tools [label="Tool Calling" fillcolor="#FEF3C7" color="#D97706" height=0.8 width=6];
+    claude [label="Claude" fillcolor="#F3F4F6" color="#6B7280" height=0.8 width=6];
+
+    // Stack from top to bottom
+    app -> sdk;
+    sdk -> subagents_skills;
+    subagents_skills -> mcp;
+    mcp -> tools;
+    tools -> claude;
+
+    // Annotations (weeks)
+    week6 [label="← Week 6" shape=plaintext fillcolor=none fontsize=10];
+    week5_4 [label="← Week 5, 4" shape=plaintext fillcolor=none fontsize=10];
+    week3 [label="← Week 3" shape=plaintext fillcolor=none fontsize=10];
+    week2 [label="← Week 2" shape=plaintext fillcolor=none fontsize=10];
+
+    {rank=same; sdk; week6}
+    {rank=same; subagents_skills; week5_4}
+    {rank=same; mcp; week3}
+    {rank=same; tools; week2}
+
+    sdk -> week6 [style=invis];
+    subagents_skills -> week5_4 [style=invis];
+    mcp -> week3 [style=invis];
+    tools -> week2 [style=invis];
+}

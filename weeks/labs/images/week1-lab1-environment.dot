@@ -1,0 +1,46 @@
+digraph EnvironmentSetup {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Environment Setup Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Your Development Machine container
+    subgraph cluster_dev {
+        label="Your Development Machine";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Three horizontal components
+        {rank=same; terminal; claude_code; claude_api}
+
+        terminal [label="Terminal"];
+        claude_code [label="Claude Code\n(Agent)"];
+        claude_api [label="Claude API"];
+
+        // Local Files below Claude Code
+        local_files [label="Local Files\n- CLAUDE.md\n- data/*.db" fillcolor="#ECFDF5" color="#059669"];
+    }
+
+    // Bidirectional arrows between Terminal ↔ Claude Code ↔ Claude API
+    terminal -> claude_code [dir=both];
+    claude_code -> claude_api [dir=both];
+
+    // Vertical arrow from Claude Code down to Local Files
+    claude_code -> local_files;
+}

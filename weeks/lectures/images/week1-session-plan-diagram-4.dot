@@ -1,0 +1,26 @@
+digraph SkillStructure {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.4;
+    ranksep=0.4;
+    bgcolor="white";
+    node [fontname="Courier", fontsize=10, shape=plaintext];
+
+    // Title
+    label="Agent Skill Directory Structure";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    root [label=".claude/skills/" fontname="Courier Bold"];
+
+    leadscorer_dir [label="└── lead-scorer/"];
+    skill [label="    ├── SKILL.md         # Instructions"];
+    refs_dir [label="    ├── references/      # Supporting docs"];
+    scripts_dir [label="    └── scripts/         # Utility code"];
+
+    root -> leadscorer_dir [style=invis];
+    leadscorer_dir -> skill [style=invis];
+    skill -> refs_dir [style=invis];
+    refs_dir -> scripts_dir [style=invis];
+}

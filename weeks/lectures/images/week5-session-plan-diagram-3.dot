@@ -1,0 +1,30 @@
+digraph SubAgentArchitecture {
+    rankdir=TB;
+    splines=ortho;
+    nodesep=1.0;
+    ranksep=1.0;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Sub-agent Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main agent
+    main [label="Main Agent\n\"Process these 50 leads\"" fillcolor="#EFF6FF" color="#2563EB" width=3 height=1.2];
+
+    // Sub-agents (horizontal row)
+    {rank=same; enrichment; scorer; writer}
+
+    enrichment [label="Enrichment\nAgent\n\nResearch\ncompanies" fillcolor="#F5F3FF" color="#7C3AED" width=2 height=1.5];
+    scorer [label="Scorer\nAgent\n\nScore based\non rubric" fillcolor="#F5F3FF" color="#7C3AED" width=2 height=1.5];
+    writer [label="Writer\nAgent\n\nDraft\nemails" fillcolor="#F5F3FF" color="#7C3AED" width=2 height=1.5];
+
+    // Connections
+    main -> enrichment;
+    main -> scorer;
+    main -> writer;
+}

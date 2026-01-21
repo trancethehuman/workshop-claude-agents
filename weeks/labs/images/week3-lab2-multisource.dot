@@ -1,0 +1,50 @@
+digraph MultiSource {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Multi-Source Analysis";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_analysis {
+        label="Multi-Source Analysis";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Three data sources at top
+        {rank=same; local_db; mcp_server; web_search}
+
+        local_db [label="Local DB\n(funding.db)"];
+        mcp_server [label="MCP Server\n(GitHub/etc)"];
+        web_search [label="Web Search\n(WebFetch)"];
+
+        // Claude Code synthesis
+        claude_synthesis [label="Claude Code\n(Synthesis)" fillcolor="#F5F3FF" color="#7C3AED"];
+
+        // Combined Analysis output
+        combined [label="Combined\nAnalysis" fillcolor="#ECFDF5" color="#059669"];
+    }
+
+    // All three sources converge to Claude Code
+    local_db -> claude_synthesis;
+    mcp_server -> claude_synthesis;
+    web_search -> claude_synthesis;
+
+    // Claude Code produces Combined Analysis
+    claude_synthesis -> combined;
+}

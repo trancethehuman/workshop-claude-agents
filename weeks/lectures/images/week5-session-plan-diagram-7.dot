@@ -1,0 +1,24 @@
+digraph AgentDefinitionStructure {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.4;
+    ranksep=0.4;
+    bgcolor="white";
+    node [fontname="Courier", fontsize=10, shape=plaintext];
+
+    // Title
+    label="Agent Definition File Structure";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    root [label=".claude/agents/" fontname="Courier Bold"];
+
+    enricher [label="├── lead-enricher.md"];
+    writer [label="├── email-writer.md"];
+    validator [label="└── data-validator.md"];
+
+    root -> enricher [style=invis];
+    enricher -> writer [style=invis];
+    writer -> validator [style=invis];
+}

@@ -1,0 +1,23 @@
+digraph ProgressiveDisclosure {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.6;
+    ranksep=0.6;
+    bgcolor="white";
+    node [fontname="Courier", fontsize=10, shape=box, style="rounded,filled"];
+
+    // Title
+    label="Progressive Disclosure Pattern";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    quick_start [label="## Quick Start\n[Essential instructions - always loaded]" fillcolor="#EFF6FF" color="#2563EB"];
+
+    detailed_ref [label="## Detailed Reference\nSee [reference.md](references/reference.md)\nfor complete documentation." fillcolor="#F5F3FF" color="#7C3AED"];
+
+    scripts [label="## Utility Scripts\nRun validation:\npython scripts/validate.py input.csv" fillcolor="#ECFDF5" color="#059669"];
+
+    quick_start -> detailed_ref [style=invis];
+    detailed_ref -> scripts [style=invis];
+}

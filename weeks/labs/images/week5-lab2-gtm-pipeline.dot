@@ -1,0 +1,56 @@
+digraph GTMPipeline {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="GTM Pipeline Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_gtm {
+        label="GTM Pipeline Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Pipeline Skill
+        pipeline_skill [label="Pipeline Skill\n\"Process these leads through the pipeline\"" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Three parallel agents/components
+        node [shape=box fillcolor="#F5F3FF" color="#7C3AED"];
+        {rank=same; enrichment; scorer; writer}
+
+        enrichment [label="Enrichment\nAgent\n\nResearch\ncompanies"];
+        scorer [label="Scorer\nLogic\n\nScore by\nrubric"];
+        writer [label="Writer\nAgent\n\nDraft\nemails"];
+
+        // Results
+        node [shape=box fillcolor="#ECFDF5" color="#059669"];
+        {rank=same; json_output; score_output; email_output}
+
+        json_output [label="[JSON output]"];
+        score_output [label="[Score + reason]"];
+        email_output [label="[Email draft]"];
+    }
+
+    // Connections: Pipeline Skill fans out
+    pipeline_skill -> enrichment;
+    pipeline_skill -> scorer;
+    pipeline_skill -> writer;
+
+    // Each component produces output
+    enrichment -> json_output;
+    scorer -> score_output;
+    writer -> email_output;
+}

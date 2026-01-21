@@ -1,0 +1,24 @@
+digraph MCPArchitecture {
+    rankdir=LR;
+    splines=ortho;
+    nodesep=1.0;
+    ranksep=1.5;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9, dir=both];
+
+    // Title
+    label="MCP Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Components
+    claude [label="Claude Code" fillcolor="#EFF6FF" color="#2563EB" width=2.5];
+    mcp [label="MCP Server\n(adapter)" fillcolor="#F5F3FF" color="#7C3AED" width=2.5];
+    service [label="External Service\n(GitHub, DB,\nNotion, etc.)" fillcolor="#ECFDF5" color="#059669" width=2.5];
+
+    // Bidirectional connections
+    claude -> mcp;
+    mcp -> service;
+}

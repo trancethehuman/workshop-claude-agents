@@ -1,0 +1,36 @@
+digraph WithSubAgents {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.5;
+    ranksep=0.6;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=9, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=8];
+
+    // Title
+    label="With Sub-agents: Clean Context";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main agent context container
+    subgraph cluster_main {
+        label="Main Agent Context";
+        style="rounded,filled";
+        fillcolor="#ECFDF5";
+        color="#059669";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        task [label="Task: Research 10 companies" fillcolor="#FEF3C7" color="#D97706" shape=box];
+        result1 [label="Company 1 result:\n\"Acme Corp, 500 employees, Series B...\"" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        result2 [label="Company 2 result:\n\"TechCo, 200 employees, bootstrapped...\"" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        clean [label="... clean, manageable context ..." fillcolor="#ECFDF5" color="#059669" shape=box];
+    }
+
+    task -> result1 [style=invis];
+    result1 -> result2 [style=invis];
+    result2 -> clean [style=invis];
+}

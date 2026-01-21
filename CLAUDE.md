@@ -32,3 +32,11 @@ When working in this repo, Claude should:
 - Explain reasoning before taking action
 - Format outputs as markdown tables when appropriate
 - Ask clarifying questions when requirements are unclear
+
+## Document Generation
+
+When generating DOCX or slide deck files for this workshop:
+
+- **Use the document-generator skill** from `/Users/hainghiem/development/claude-code-automations/` for professional DOCX output
+- **Use the slide-deck-generator skill** from `/Users/hainghiem/development/claude-code-automations/` for presentation slides
+- Do NOT manually create these files - always use the skills for consistent formatting and branding

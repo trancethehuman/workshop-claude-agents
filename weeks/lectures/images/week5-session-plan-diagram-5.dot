@@ -1,0 +1,29 @@
+digraph AgentCommunication {
+    rankdir=TB;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Agent Communication Flow";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Communication flow
+    main_request [label="Main Agent:\n\"Use lead-enricher to research Acme Corp\"" fillcolor="#EFF6FF" color="#2563EB"];
+
+    sub_work [label="Sub-agent:\n[researches, finds info]" fillcolor="#F5F3FF" color="#7C3AED"];
+
+    sub_return [label="Sub-agent:\nReturns: \"Acme Corp: 250 employees, Series B...\"" fillcolor="#FEF3C7" color="#D97706"];
+
+    main_continue [label="Main Agent:\n[receives result, continues workflow]" fillcolor="#ECFDF5" color="#059669"];
+
+    // Flow
+    main_request -> sub_work;
+    sub_work -> sub_return;
+    sub_return -> main_continue;
+}

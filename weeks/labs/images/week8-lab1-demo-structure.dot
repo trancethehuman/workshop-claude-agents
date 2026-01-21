@@ -1,0 +1,33 @@
+digraph DemoStructure {
+    rankdir=LR;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=1.2;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Demo Structure Flow";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Flow components
+    problem [label="The Problem\n(30 sec)" fillcolor="#EFF6FF" color="#2563EB"];
+    solution [label="The Solution\n(1 min)" fillcolor="#F5F3FF" color="#7C3AED"];
+    demo [label="Live Demo\n(2.5 min)" fillcolor="#FEF3C7" color="#D97706"];
+    learnings [label="Learnings\n(1 min)" fillcolor="#ECFDF5" color="#059669"];
+
+    // Key Insight
+    insight [label="Key Insight: Your opening line sets the tone. Lead with the\nimpact, not the technology." shape=box fillcolor="#FEF3C7" color="#D97706" style="filled"];
+
+    // Connections
+    problem -> solution;
+    solution -> demo;
+    demo -> learnings;
+
+    // Insight below demo
+    {rank=same; demo; insight}
+    demo -> insight [style=invis];
+}

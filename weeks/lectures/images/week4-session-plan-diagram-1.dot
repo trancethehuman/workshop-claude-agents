@@ -1,0 +1,46 @@
+digraph TraditionalVsSkillsApproach {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=10, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Traditional vs Skills Approach";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Traditional approach container
+    subgraph cluster_traditional {
+        label="Traditional approach";
+        style="rounded,filled";
+        fillcolor="#FEE2E2";
+        color="#DC2626";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        trad_prompt [label="System prompt with ALL instructions\n+ ALL examples + ALL rubrics + ALL formats\n\n← Context bloat" fillcolor="#FEF3C7" color="#D97706" shape=box];
+    }
+
+    // Skills approach container
+    subgraph cluster_skills {
+        label="Skills approach";
+        style="rounded,filled";
+        fillcolor="#ECFDF5";
+        color="#059669";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        lean_prompt [label="Lean system prompt\n+ Skill names and descriptions (lightweight)" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+
+        load_skill [label="Load specific SKILL.md\n→ Load references/ as needed\n\n← On-demand" fillcolor="#F5F3FF" color="#7C3AED" shape=box];
+    }
+
+    // Flow from lean prompt to load skill
+    lean_prompt -> load_skill [label="(when needed)" lhead=cluster_skills];
+}

@@ -1,0 +1,27 @@
+digraph DemoRecording {
+    rankdir=LR;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=1.2;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Demo Recording & Practice Flow";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Flow components
+    recording [label="Recording\nSetup & Capture\n(15 min)" fillcolor="#EFF6FF" color="#2563EB"];
+    practice [label="Practice\nwith Partner\n(10 min)" fillcolor="#F5F3FF" color="#7C3AED"];
+    feedback [label="Feedback\n& Iteration\n(5 min)" fillcolor="#ECFDF5" color="#059669"];
+
+    // Key Insight
+    insight [label="Key Insight: Live demos fail 30%% of the time. A backup\nrecording turns a disaster into a smooth transition." shape=box fillcolor="#FEF3C7" color="#D97706" style="filled"];
+
+    // Connections
+    recording -> practice;
+    practice -> feedback;
+}

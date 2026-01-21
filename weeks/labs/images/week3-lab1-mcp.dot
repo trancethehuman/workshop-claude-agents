@@ -1,0 +1,67 @@
+digraph MCPArchitecture {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="MCP Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_mcp {
+        label="MCP Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Claude Code at top
+        claude_code [label="Claude Code\n(Host)" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // MCP Servers layer
+        subgraph cluster_servers {
+            label="MCP Servers";
+            style="rounded,filled";
+            fillcolor="#E0E7FF";
+            color="#6366F1";
+            fontname="Arial Bold";
+            fontsize=11;
+
+            node [shape=box fillcolor="#DDD6FE" color="#7C3AED"];
+
+            {rank=same; github_server; notion_server; db_server; custom_server}
+
+            github_server [label="GitHub\nServer"];
+            notion_server [label="Notion\nServer"];
+            db_server [label="Database\nServer"];
+            custom_server [label="Your MCP\nServer"];
+        }
+
+        // API layer
+        node [shape=box fillcolor="#ECFDF5" color="#059669"];
+        {rank=same; github_api; notion_api; db_api; external_api}
+
+        github_api [label="GitHub\nAPI"];
+        notion_api [label="Notion\nAPI"];
+        db_api [label="PostgreSQL\n/ MySQL"];
+        external_api [label="External\nService"];
+    }
+
+    // Connections: Claude Code → MCP Servers
+    claude_code -> github_server [xlabel="MCP Protocol" lhead=cluster_servers];
+
+    // Connections: Each server → Its API
+    github_server -> github_api;
+    notion_server -> notion_api;
+    db_server -> db_api;
+    custom_server -> external_api;
+}

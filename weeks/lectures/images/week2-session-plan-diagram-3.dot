@@ -1,0 +1,32 @@
+digraph OnDemandContextRetrieval {
+    rankdir=TB;
+    splines=ortho;
+    nodesep=0.6;
+    ranksep=0.6;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10, style="rounded,filled", shape=box];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="On-Demand Context Retrieval";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Workflow steps
+    task [label="Agent receives task" fillcolor="#EFF6FF" color="#2563EB"];
+    explore [label="Explores filesystem\n(ls, find)" fillcolor="#F5F3FF" color="#7C3AED"];
+    search [label="Searches for content\n(grep)" fillcolor="#F5F3FF" color="#7C3AED"];
+    read [label="Reads specific files\n(cat)" fillcolor="#F5F3FF" color="#7C3AED"];
+    query [label="Queries databases\n(sqlite3)" fillcolor="#F5F3FF" color="#7C3AED"];
+    send [label="Sends only what's needed\nto the model" fillcolor="#FEF3C7" color="#D97706"];
+    output [label="Returns structured output" fillcolor="#ECFDF5" color="#059669"];
+
+    // Flow
+    task -> explore;
+    explore -> search;
+    search -> read;
+    read -> query;
+    query -> send;
+    send -> output;
+}

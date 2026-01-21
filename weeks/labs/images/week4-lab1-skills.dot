@@ -1,0 +1,48 @@
+digraph AgentSkills {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Agent Skills Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_skills {
+        label="Agent Skills Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Top flow: Request → Claude Code → Claude API
+        {rank=same; request; claude_code; claude_api}
+
+        request [label="Your\nRequest"];
+        claude_code [label="Claude\nCode"];
+        claude_api [label="Claude\nAPI"];
+
+        // Skill match decision
+        skill_match [label="Skill Match?" shape=diamond fillcolor="#FEF3C7" color="#D97706"];
+
+        // Skills directory
+        skills_dir [label=".claude/skills/\n├── skill-name/\n│   └── SKILL.md ← Loaded as instructions\n└── ..." fillcolor="#ECFDF5" color="#059669" fontname="Courier New" fontsize=10];
+    }
+
+    // Connections
+    request -> claude_code;
+    claude_code -> claude_api;
+    claude_code -> skill_match;
+    skill_match -> skills_dir [xlabel="Yes"];
+}

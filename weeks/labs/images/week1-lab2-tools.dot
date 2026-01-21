@@ -1,0 +1,53 @@
+digraph ClaudeCodeTools {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.6;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Claude Code Built-in Tools";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Claude Code Environment container
+    subgraph cluster_env {
+        label="Claude Code Environment";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Built-in Tools sub-container
+        subgraph cluster_tools {
+            label="Built-in Tools";
+            style="rounded,filled";
+            fillcolor="#E0E7FF";
+            color="#6366F1";
+            fontname="Arial Bold";
+            fontsize=11;
+
+            node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+            // Four horizontal tools
+            {rank=same; glob; read; grep; bash}
+
+            glob [label="Glob\n(find)"];
+            read [label="Read\n(files)"];
+            grep [label="Grep\n(search)"];
+            bash [label="Bash\n(shell)"];
+        }
+
+        // Workshop Files below the tools
+        workshop_files [label="Workshop Files\nCLAUDE.md | data/startup-funding.db | weeks/ | scripts/" shape=box fillcolor="#ECFDF5" color="#059669"];
+    }
+
+    // Arrow from tools cluster down to workshop files
+    read -> workshop_files [ltail=cluster_tools];
+}

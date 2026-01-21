@@ -1,0 +1,30 @@
+digraph SkillFileStructure {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.4;
+    ranksep=0.4;
+    bgcolor="white";
+    node [fontname="Courier", fontsize=10, shape=plaintext];
+
+    // Title
+    label="Multi-File Skill Structure";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    root [label=".claude/skills/data-analyst/" fontname="Courier Bold"];
+
+    skill [label="├── SKILL.md              # Main instructions"];
+    refs_dir [label="├── references/"];
+    sql_patterns [label="│   ├── sql-patterns.md   # Query templates"];
+    analysis_loop [label="│   └── analysis-loop.md  # Methodology"];
+    scripts_dir [label="└── scripts/"];
+    validate [label="    └── validate.py       # Validation script"];
+
+    root -> skill [style=invis];
+    skill -> refs_dir [style=invis];
+    refs_dir -> sql_patterns [style=invis];
+    sql_patterns -> analysis_loop [style=invis];
+    analysis_loop -> scripts_dir [style=invis];
+    scripts_dir -> validate [style=invis];
+}

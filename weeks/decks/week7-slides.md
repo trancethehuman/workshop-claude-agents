@@ -5,298 +5,278 @@ paginate: true
 ---
 
 # Week 7: Evals
-## Testing Your Agent Before Demo Day
+## Measuring and Improving Agent Quality
 
 ---
 
 # Session Goals
 
-- Understand why you need to test your agent
-- Create a "golden dataset" of 5 input/output pairs
-- Run your agent against real test cases
+- Understand why evals are critical for agent development
+- Build golden datasets for your use case
+- Create eval runners to test agent behavior
+- Iterate based on eval results
 
 ---
 
-# The Problem
+# Why Evals Matter
 
-Traditional software: input → same output every time
+You can't improve what you don't measure.
 
-AI agents: input → different output each time
+**Without evals:**
+- "It works on my machine"
+- Manual testing for every change
+- Regressions go unnoticed
+- No objective quality bar
 
-How do you test that?
-
----
-
-# The Solution: A Golden Dataset
-
-A list of inputs you expect your agent to handle, paired with outputs you'd consider "good enough."
-
-That's it. No infrastructure.
-
----
-
-# Example Golden Dataset
-
-| Input | What Good Looks Like |
-|-------|---------------------|
-| "Score this lead: VP at 500-person tech" | Score 70-90, mentions seniority |
-| "Summarize this 3-page PDF" | Main points, under 200 words |
-| "Classify this support ticket" | Correct category, priority |
+**With evals:**
+- Automated quality checks
+- Catch regressions before they ship
+- Quantify improvements
+- Build confidence in your agent
 
 ---
 
-# Why Off-the-Shelf Evals Don't Work
+# The Problem: Non-Deterministic Outputs
 
-| Off-the-Shelf Eval | Why It Fails |
-|-------------------|--------------|
-| "Helpfulness score 1-10" | What does "helpful" mean for YOU? |
-| "Coherence rating" | Could be coherent but wrong |
-| "Safety check" | Passes safety, gives bad advice |
-
----
-
-# Generic Metrics = False Confidence
-
-Your agent could score 95% on a generic eval and still be useless for your actual workflow.
-
----
-
-# The Right Approach
-
-1. Run your agent 20-50 times on real inputs
-2. Manually look at the outputs
-3. Ask: "Would I accept this from a human?"
-
----
-
-# Define YOUR Pass/Fail Criteria
-
-Not "good summary" but "captures the 3 main points."
-
-Be specific. Write it down.
-
----
-
-# Create 5 Input/Output Pairs
-
-- Pick 5 representative inputs from your domain
-- For each, write what a "passing" output looks like
-- Include at least one edge case
-
----
-
-# Use Binary Pass/Fail, Not Scales
-
-| Approach | Problem |
-|----------|---------|
-| "Rate this 1-10" | What's the difference between 6 and 7? |
-| "Pass or fail?" | Clear, actionable, comparable |
-
----
-
-# If You Use LLM-as-Judge
-
-**Always require reasoning BEFORE the verdict.**
-
+Traditional software:
 ```
-Bad:  "Pass: true"
+input("hello") → "hello"  (always)
+```
 
-Good: "The output correctly identified the company size...
-      However, it failed to note industry fit.
-      Verdict: FAIL"
+Agents:
+```
+agent("Analyze this company") → ???
+```
+
+Different each time. How do you test that?
+
+---
+
+# The Solution: Define Success Criteria
+
+Instead of expecting exact outputs, define what "good" looks like:
+
+**For data analysis:**
+- Must include at least 3 insights
+- Insights must reference specific data
+- Must include a recommendation
+
+**For lead scoring:**
+- Score must be 0-100
+- Must cite at least 2 data points
+- Must categorize as Hot/Warm/Cold
+
+---
+
+# Golden Datasets
+
+A golden dataset is a collection of test cases with expected behavior.
+
+```json
+{
+  "test_id": "basic-001",
+  "input": "Query the database for AI startups",
+  "pass_criteria": [
+    "Must use Bash with sqlite3",
+    "Must filter for AI/ML industry",
+    "Must return at least 5 results"
+  ]
+}
 ```
 
 ---
 
-# Don't Aim for 100% Pass Rate
+# Types of Test Cases
 
-> "A 70% pass rate might indicate you're testing meaningful things. A 100% pass rate might mean your tests are too easy."
+**Basic functionality:**
+- Can the agent complete simple tasks?
+- Does it use the right tools?
+
+**Edge cases:**
+- How does it handle missing data?
+- What if the database is empty?
+
+**Complex scenarios:**
+- Can it handle multi-step workflows?
+- Does it maintain context across turns?
 
 ---
 
-# Lab 1: Create Your Golden Dataset
+# Eval Runner Architecture
 
-Create `golden-dataset.md`:
-
-```markdown
-# Golden Dataset for [Your Agent]
-
-## Test Case 1: [Name]
-**Input:** [What you'll give the agent]
-**Expected Output:** [What "good" looks like]
-**Pass Criteria:**
-- [ ] Criterion 1
-- [ ] Criterion 2
+```
+┌─────────────────────────────────────────────────┐
+│ Eval Runner                                     │
+│ 1. Load test cases from golden dataset          │
+│ 2. For each test:                               │
+│    - Send input to agent                        │
+│    - Capture output                             │
+│    - Check against pass criteria                │
+│    - Record PASS/FAIL                           │
+│ 3. Generate report                              │
+└─────────────────────────────────────────────────┘
 ```
 
 ---
 
-# Fill in 5 Test Cases
+# Pass Criteria Types
 
-- 2-3 "happy path" cases (normal inputs)
-- 1-2 edge cases (unusual but valid)
-- 1 potential failure case
+**Contains check:**
+```javascript
+output.includes("Series A")
+```
 
----
+**Numeric range:**
+```javascript
+score >= 0 && score <= 100
+```
 
-# Examples by Domain
+**Tool usage:**
+```javascript
+usedTools.includes("Bash")
+```
 
-| Domain | Happy Path | Edge Case |
-|--------|-----------|-----------|
-| GTM/Sales | Well-documented lead | Missing company info |
-| Developer Tools | Clean PR | PR with 50+ files |
-| Customer Support | Billing question | Ticket in another language |
-
----
-
-# Run Your Agent on Each Input
-
-1. Open Claude Code
-2. Trigger your agent with test input #1
-3. Copy the output
-4. Compare to expected output
-5. Mark pass/fail for each criterion
-
----
-
-# Record Results
-
-```markdown
-## Results
-
-| Test Case | Pass/Fail | Notes |
-|-----------|-----------|-------|
-| 1: Happy path | ✓ Pass | Score was 82, in range |
-| 2: Missing data | ✓ Pass | Correctly noted missing |
-| 3: Edge case | ✗ Fail | Timed out on large input |
-
-**Pass Rate:** 4/5 (80%)
+**Custom logic:**
+```javascript
+const insights = extractInsights(output);
+return insights.length >= 3;
 ```
 
 ---
 
-# Automating Your Evals
+# Lab 1: Build a Golden Dataset
 
-Manual is fine for 5 test cases.
+**Duration:** 45 minutes
 
-For 50+ cases or after every code change, automate.
-
----
-
-# Workshop Eval Runner
-
-`scripts/run-funding-evals.py` demonstrates:
-
-- Streaming output (see Claude work in real-time)
-- Tool call visibility (shows SQL queries)
-- Boolean pass/fail scoring
-- JSON result export
+**What you'll do:**
+- Define 10 test cases for your agent
+- Write pass criteria for each
+- Include basic, edge, and complex scenarios
+- Save as JSON
 
 ---
 
-# How It Works
+# **BREAK**
+## 10 minutes
 
-```python
-cmd = [
-    'claude', '-p', prompt,
-    '--output-format', 'stream-json',
-    '--verbose',
-    '--allowedTools', 'Bash(sqlite3:*),Read'
-]
+---
+
+# Writing an Eval Runner
+
+```typescript
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+for (const test of goldenDataset) {
+  const result = await query({ prompt: test.input });
+
+  const passed = test.passCriteria.every(
+    criteria => evaluateCriteria(result, criteria)
+  );
+
+  results.push({
+    testId: test.id,
+    passed,
+    output: result
+  });
+}
+
+console.log(`Pass rate: ${passCount}/${total}`);
 ```
 
 ---
 
-# Lab 2: Run the Eval Script
+# Evaluating Outputs
 
-**Step 1:** Preview evals
-```bash
-python3 scripts/run-funding-evals.py --dry-run
+**Structured outputs are easier to eval:**
+
+```typescript
+// Hard to eval: free text
+"This company looks promising, maybe 70-80% score"
+
+// Easy to eval: structured
+{
+  "score": 75,
+  "category": "warm",
+  "reasons": ["strong growth", "recent funding"]
+}
 ```
 
-**Step 2:** Run a single eval
-```bash
-python3 scripts/run-funding-evals.py --id=basic-001
-```
+Use JSON output when possible.
 
 ---
 
-# Run Evals by Difficulty
+# Improving Based on Evals
 
-```bash
-# Easy evals (should mostly pass)
-python3 scripts/run-funding-evals.py --filter=easy
+**The iteration loop:**
 
-# Medium evals
-python3 scripts/run-funding-evals.py --filter=medium
+1. Run evals → 60% pass rate
+2. Analyze failures
+3. Update skill/prompt/tools
+4. Run evals → 75% pass rate
+5. Repeat until satisfactory
 
-# Hard evals (expect some failures)
-python3 scripts/run-funding-evals.py --filter=hard
-```
-
----
-
-# What You'll See
-
-```
-[basic-001] Basic Count
-──────────────────────────────────────────────────
-
-┌─ Bash
-│ sqlite3 data/startup-funding.db "SELECT COUNT(*)..."
-│ 200
-└─
-
-**Answer:** There are **200 startups** in the database.
-
-→ ✓ PASS (8s)
-```
+Track pass rate over time. It should trend up.
 
 ---
 
-# Analyze Results
+# Common Failure Patterns
 
-```bash
-cat output/eval-results.json | python3 -m json.tool
-```
+**Tool selection errors:**
+- Agent uses Grep when it should use Bash
+- Fix: Add examples to skill
 
-Check:
-- Overall pass rate by difficulty
-- Which evals failed and why
+**Missing context:**
+- Agent doesn't reference data
+- Fix: Add "cite specific data" to prompt
+
+**Format violations:**
+- Agent returns text when JSON expected
+- Fix: Add schema to skill
 
 ---
 
-# The Key Insight
+# Lab 2: Build an Eval Runner
 
-Your eval is only as good as your pass/fail criteria.
+**Duration:** 45 minutes
 
-Spend more time on defining good criteria than on automation.
+**What you'll do:**
+- Write TypeScript eval runner
+- Run your golden dataset
+- Generate pass/fail report
+- Identify improvement opportunities
 
 ---
 
 # Key Takeaways
 
-1. Golden dataset = expected inputs + outputs
-2. Generic evals don't work for your use case
-3. Start with error analysis before automation
-4. 5 test cases is enough to start
+1. **Evals = Quality Assurance** - You can't improve what you don't measure
+2. **Golden Datasets** - Test cases with defined success criteria
+3. **Pass Criteria** - Define "good" instead of expecting exact outputs
+4. **Iterate** - Run evals, analyze failures, improve, repeat
 
 ---
 
 # Homework
 
-**Part 1:** Expand golden dataset to 10 test cases
+**Expand Your Eval Suite:**
 
-**Part 2:** Automate your evals with a script
+1. Add 10 more test cases to your golden dataset
+2. Focus on edge cases and failure modes
+3. Run evals and track pass rate
+4. Iterate on your agent until pass rate > 80%
 
-**Part 3:** Document findings in eval-report.md
-
-**Part 4:** Prepare your demo for Week 8
+Document:
+- Initial pass rate
+- Changes you made
+- Final pass rate
+- Example failures and how you fixed them
 
 ---
 
 # Next Week Preview
 
-**Week 8: Demos**
-- Present your projects
-- Learn from each other
+**Week 8: Demo Day**
+- Present your capstone project
+- Show what you built
+- Learn from others
+- Celebrate!

@@ -1,0 +1,56 @@
+digraph SDKArchitecture {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=10, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Agent SDK Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Your Application
+    subgraph cluster_app {
+        label="Your Application";
+        style="rounded,filled";
+        fillcolor="#FEF3C7";
+        color="#D97706";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        code [label="const result = await query({\n  prompt: \"Analyze this data\",\n  options: { tools, permissions, ... }\n});" fillcolor="#FEF3C7" color="#D97706" shape=box fontname="Courier" fontsize=9];
+    }
+
+    // Agent SDK
+    subgraph cluster_sdk {
+        label="Agent SDK";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=11;
+
+        {rank=same; tools; sessions; hooks; mcp}
+
+        tools [label="Tools" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        sessions [label="Sessions" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        hooks [label="Hooks" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+        mcp [label="MCP" fillcolor="#EFF6FF" color="#2563EB" shape=box];
+    }
+
+    // Claude API
+    claude_api [label="Claude API" fillcolor="#ECFDF5" color="#059669" shape=box];
+
+    // Connections
+    code -> tools [lhead=cluster_sdk];
+    tools -> claude_api;
+    sessions -> claude_api;
+    hooks -> claude_api;
+    mcp -> claude_api;
+}

@@ -17,46 +17,49 @@ paginate: true
 
 ---
 
-# The Shift: Chatbots to Agents
+# The Shift from Chatbots to Agents
 
 **Chatbot (2022-2023):**
-- Human asks question, AI responds, Human acts
-- AI is a consultant
+Human asks question → AI responds → Human acts
 
 **Agent (2024+):**
-- Human defines goal, AI plans and acts, Human reviews outcome
-- AI is a worker
+Human defines goal → AI plans, acts, iterates → Human reviews outcome
 
 ---
 
 # The Agent Loop
 
 ```
-INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE
-                    ↑                      │
-                    └──────────────────────┘
-                         (repeat until done)
+┌──────────────────────────────────────────────────────┐
+│                                                      │
+│   INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE    │
+│              ↑                              │        │
+│              └──────────────────────────────┘        │
+│                    (repeat until done)               │
+└──────────────────────────────────────────────────────┘
 ```
 
 ---
 
-# Core Concepts We'll Cover
+# 8-Week Roadmap
 
-| Week | Concept | What It Is |
-|------|---------|------------|
+| Week | Concept | What You'll Learn |
+|------|---------|-------------------|
+| 1 | Setup & Basics | Environment ready, project defined |
 | 2 | Tool Calling | How Claude executes actions |
-| 3 | MCP | Protocol for connecting to external services |
+| 3 | MCP | Universal protocol for external services |
 | 4 | Agent Skills | Markdown files that teach Claude new capabilities |
 
 ---
 
-# Core Concepts (Continued)
+# 8-Week Roadmap (continued)
 
-| Week | Concept | What It Is |
-|------|---------|------------|
+| Week | Concept | What You'll Learn |
+|------|---------|-------------------|
 | 5 | Sub-agents | Specialized agents for focused subtasks |
-| 6 | Agent SDK | Run agents headlessly at scale |
+| 6 | Agent SDK | Run agents headlessly at scale (TypeScript) |
 | 7 | Evals | Measure and improve agent quality |
+| 8 | Demo Day | Present your project |
 
 ---
 
@@ -70,31 +73,21 @@ INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE
 
 # The Rise of GTM Engineering
 
-- New role: **GTM Engineer** - builds AI agents for sales/marketing teams
-- GTM engineering jobs grew **205% YoY** in 2025
-- Vercel pays **$202K-$302K** for this role
+**Vercel's story:** Replaced 9 of 10 inbound SDRs with an AI agent in six weeks
 
----
+> "We had 10 SDRs doing this inbound workflow, and now we just have one that is effectively QAing the agent."
+> - Jeanne DeWitt Grosser, COO at Vercel
 
-# Vercel Case Study
-
-> "We had 10 SDRs doing inbound workflow, and now we just have one that is QAing the agent. The other nine, we deployed on outbound."
-
-*- Jeanne DeWitt Grosser, COO at Vercel*
+GTM engineering jobs grew **205% year-over-year** in 2025
 
 ---
 
 # Claude Code: Beyond Coding
 
-![width:800px](../md/images/week1-boris-cherny-claude-code-non-technical.png)
+![width:800px](../lectures/images/week1-boris-cherny-claude-code-non-technical.png)
 
----
-
-# Key Insight
-
-> "Increasingly, code is no longer the bottleneck."
-
-*- Boris Cherny, Creator of Claude Code*
+"People are using it for all sorts of things from coding, to devops, to research, to non-technical use cases."
+- Boris Cherny, creator of Claude Code
 
 ---
 
@@ -102,21 +95,27 @@ INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE
 
 | Today | Tomorrow |
 |-------|----------|
-| "Let me check the dashboard" | "What's our conversion rate?" |
-| "I need to pull a report" | "Show me deals at risk" |
-| "Can someone query this?" | "Which customers should I call?" |
+| "Let me check the dashboard" | "What's our conversion rate this week?" |
+| "I need to pull a report" | "Show me deals at risk of slipping" |
+| "Can someone query this?" | "Which customers should I call today?" |
+
+You won't manage dashboards. You'll ask for insights.
 
 ---
 
 # Why Claude Code Over Alternatives?
 
-**The short answer:** Claude Code is arguably the best general-purpose agent harness available today.
+**The insight:** LLMs are filesystem-native
 
-**Key insight:** LLMs are filesystem-native. They've seen grep, find, cat billions of times during training.
+They've seen grep, find, cat, and bash billions of times during training
+
+Claude Code gives Claude a filesystem and bash - that's the core loop
 
 ---
 
-# Vercel's Results After Removing 80% of Tools
+# Vercel's Results: Fewer Tools = Better Performance
+
+After removing 80% of their agent's tools:
 
 | Metric | Before | After |
 |--------|--------|-------|
@@ -126,114 +125,41 @@ INPUT → THINK → SELECT TOOL → EXECUTE → OBSERVE
 
 ---
 
-# Framework Comparison
+# The Alternatives
 
 | Framework | Approach | Problem |
 |-----------|----------|---------|
-| LangChain | Prompt chaining | Doesn't leverage LLM knowledge |
-| LangGraph | Low-level DAG control | Overkill - you're building plumbing |
-| CrewAI | Role-based agents | Too many abstractions |
-
----
-
-# Why Claude Code Works
-
-- **Claude Code:** Filesystem + bash + tools
-- Works with how LLMs think, not against it
-- Debuggable: see exactly which files and commands
-
----
-
-# Why Filesystems Work
-
-- Training distribution: LLMs have seen Unix commands billions of times
-- Natural structure: Data maps to directories
-- Precise retrieval: Load only what you need
-
----
-
-# Real Example: Sales Call Summarization
-
-Vercel structured data as files:
-```
-/customers/cust_12345/
-  ├── profile.json
-  ├── tickets/
-  └── conversations/2024-01-15.txt
-```
-
-**Result:** Cost dropped from $1.00 to $0.25 per call
+| **LangChain** | Prompt chaining | Simple chains don't leverage what LLMs know |
+| **LangGraph** | Low-level DAG control | Overkill. You're building plumbing, not solutions |
+| **CrewAI** | Role-based agents | Too many abstractions |
+| **Claude Code** | Filesystem + bash + tools | Works with how LLMs think |
 
 ---
 
 # What If You Don't Like Terminals?
 
-**Claude Cowork** - Same agentic capabilities in a desktop GUI
+**Claude Cowork** - Same capabilities, desktop GUI
+
 - Runs in Claude Desktop app (macOS)
-- Can create Excel, PowerPoint, formatted documents
-- Same filesystem-native approach, friendlier interface
-
----
-
-# Demo: Claude Code in Action
-
-Watch how Claude:
-1. Uses **tools** to read the file
-2. Reasons about what to do
-3. Executes code to analyze
-4. Iterates until complete
+- Read and write files directly on your computer
+- Create Excel, PowerPoints, formatted documents
+- No command line required
 
 ---
 
 # Lab 1: Environment Setup
 
-Pre-Lab Checklist:
-- Claude Pro subscription active
-- Node.js 18+ installed
-- Git installed
+**Duration:** 30 minutes
+
+**What you'll do:**
+- Install Claude Code CLI
+- Clone workshop repository
+- Authenticate and test
 
 ---
 
-# Model Requirements
-
-| Model | Best For | Speed | Cost |
-|-------|----------|-------|------|
-| Claude Sonnet 4.5 | Most agent work (recommended) | Fast | $$ |
-| Claude Opus 4.5 | Complex reasoning | Slower | $$$$ |
-| Claude Haiku | Simple tasks, sub-agents | Fastest | $ |
-
----
-
-# Task 1: Install Claude Code
-
-```bash
-# macOS/Linux
-curl -fsSL https://claude.ai/install.sh | sh
-
-# Verify
-claude --version
-```
-
----
-
-# Task 2: Clone Workshop Repo
-
-```bash
-git clone [REPO_URL_PROVIDED_BY_FACILITATOR]
-cd workshop-claude-agents
-```
-
----
-
-# Task 3: Authenticate & Test
-
-```bash
-# Start Claude Code
-claude
-
-# Test it's working
-> What files are in this repository?
-```
+# **BREAK**
+## 10 minutes
 
 ---
 
@@ -250,6 +176,8 @@ claude
 │              MCP Servers                │  ← Week 3
 ├─────────────────────────────────────────┤
 │             Tool Calling                │  ← Week 2
+├─────────────────────────────────────────┤
+│               Claude                    │
 └─────────────────────────────────────────┘
 ```
 
@@ -259,10 +187,13 @@ claude
 
 | Tool | What It Does |
 |------|--------------|
-| Read | Read files |
-| Write | Create new files |
-| Edit | Modify existing files |
-| Bash | Run terminal commands |
+| **Read** | Read files |
+| **Write** | Create new files |
+| **Edit** | Modify existing files |
+| **Bash** | Run terminal commands |
+| **Glob** | Find files by pattern |
+| **Grep** | Search file contents |
+| **WebSearch** | Search the web |
 
 ---
 
@@ -272,7 +203,12 @@ Connect Claude to external services:
 
 ```bash
 # Add a GitHub MCP server
-claude mcp add --transport http github https://api.githubcopilot.com/mcp/
+claude mcp add --transport http github \
+  https://api.githubcopilot.com/mcp/
+
+# Add a database server
+claude mcp add --transport stdio db \
+  -- npx -y @bytebase/dbhub --dsn "postgresql://..."
 ```
 
 ---
@@ -284,22 +220,26 @@ Skills are Markdown files that teach Claude new capabilities:
 ```
 .claude/skills/
 └── lead-scorer/
-    ├── SKILL.md
-    ├── references/
-    └── scripts/
+    ├── SKILL.md         # Instructions
+    ├── references/      # Supporting docs
+    └── scripts/         # Utility code
 ```
+
+Claude automatically discovers and uses skills when relevant.
 
 ---
 
 # Layer 4: Sub-agents
 
-Specialized agents that handle focused subtasks:
+The Task tool spawns specialized agents:
 
-```typescript
-> "Use the code-reviewer agent to review this PR"
-// code-reviewer runs with focused context
-// Returns results to main agent
 ```
+> Use the code-reviewer agent to review this PR
+```
+
+- Main agent delegates to specialist
+- Sub-agent runs with focused context
+- Returns results to main agent
 
 ---
 
@@ -312,6 +252,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
   prompt: "Process all leads in data/leads.csv",
+  options: { allowedTools: ["Read", "Write", "Bash"] }
 })) {
   console.log(message);
 }
@@ -319,57 +260,25 @@ for await (const message of query({
 
 ---
 
-# CLI vs SDK: Key Differences
+# Claude Code CLI vs Agent SDK
 
-| Aspect | Claude Code CLI | Claude Agent SDK |
+| Aspect | Claude Code CLI | Agent SDK |
 |--------|-----------------|------------------|
-| What it is | Complete CLI tool | Library for your app |
-| Control | Shell commands | Full programmatic control |
-| Custom tools | MCP servers only | In-process MCP servers |
+| **What it is** | Complete CLI tool | Library for your app |
+| **Control** | Shell commands, parse output | Full programmatic control |
+| **Custom tools** | MCP servers only | In-process MCP servers |
+| **Integration** | Subprocess | First-class SDK |
 
 ---
 
 # Lab 2: First Steps with Claude Code
 
-Task 1: Customize Your CLAUDE.md
-```markdown
-## My Project Context
-I'm building agents for [data analytics / GTM / other].
-My focus area: [describe your use case]
-```
+**Duration:** 45 minutes
 
----
-
-# Lab 2: Explore Built-in Tools
-
-Try these commands:
-```
-> What files are in the data folder?
-> Read the startup-funding.db and summarize it
-> Search for files that mention "revenue"
-```
-
----
-
-# The 8-Week Journey
-
-| Week | What You'll Learn |
-|------|-------------------|
-| 1 | Setup and basics |
-| 2 | Tool calling |
-| 3 | MCP integrations |
-| 4 | Agent Skills |
-
----
-
-# The 8-Week Journey (Continued)
-
-| Week | What You'll Learn |
-|------|-------------------|
-| 5 | Sub-agents |
-| 6 | Agent SDK |
-| 7 | Evals |
-| 8 | Demo day |
+**What you'll do:**
+- Explore the repo structure with Claude
+- Test built-in tools (Glob, Read, Grep, Bash)
+- Customize CLAUDE.md with project context
 
 ---
 
@@ -378,28 +287,32 @@ Try these commands:
 Write a 1-paragraph description of an agent you want to build.
 
 **Requirements:**
-- Must involve a repeatable workflow to automate
-- Must be something useful to you
-- Must be achievable in 7 weeks
+- Repeatable workflow you want to automate
+- Something useful to you (real or realistic)
+- Achievable in 7 weeks of incremental building
+
+**Due before Week 2**
 
 ---
 
-# Example Projects by Domain
+# Example Project Ideas
 
-| Domain | Example Project |
-|--------|-----------------|
-| GTM/Sales | Research companies, score leads, draft outreach |
-| Data Analytics | Profile datasets, identify anomalies |
-| Developer Tools | Review PRs, generate documentation |
+| Domain | Example |
+|--------|---------|
+| GTM/Sales | Research companies, score leads, draft personalized outreach |
+| Data Analytics | Profile datasets, identify anomalies, generate quality reports |
+| Developer Tools | Review PRs, generate documentation, track technical debt |
+| Content/Marketing | Research topics, draft blog posts, repurpose content |
 
 ---
 
 # Resources
 
-- Claude Code Documentation: code.claude.com/docs
-- Agent SDK Documentation: platform.claude.com/docs
-- Agent Skills Specification: agentskills.io
-- MCP Protocol: modelcontextprotocol.io
+- [Claude Code Documentation](https://code.claude.com/docs)
+- [Claude Models Overview](https://platform.claude.com/docs/en/about-claude/models/overview)
+- [Agent SDK Documentation](https://platform.claude.com/docs/en/agent-sdk/overview)
+- [Agent Skills Specification](https://agentskills.io)
+- [MCP Protocol](https://modelcontextprotocol.io)
 
 ---
 
@@ -409,4 +322,4 @@ Write a 1-paragraph description of an agent you want to build.
 - How Claude decides which tools to use
 - Tool schemas and input validation
 - Building custom tools
-- Lab: Data analysis tools
+- Lab: Data analysis workflows

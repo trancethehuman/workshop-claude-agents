@@ -1,0 +1,55 @@
+digraph EvalRunner {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Eval Runner Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_eval {
+        label="Eval Runner Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Eval Dataset
+        subgraph cluster_dataset {
+            label="Eval Dataset (JSON)";
+            style="rounded,filled";
+            fillcolor="#E0E7FF";
+            color="#6366F1";
+            fontname="Arial Bold";
+            fontsize=11;
+
+            node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+            {rank=same; basic; agg; pred; custom}
+
+            basic [label="basic-\n001"];
+            agg [label="agg-\n001"];
+            pred [label="pred-\n001"];
+            custom [label="custom-\n001"];
+        }
+
+        // Eval Runner
+        runner [label="Eval Runner\n1. Send input to agent\n2. Capture output\n3. Check against pass criteria\n4. Record PASS/FAIL" shape=box fillcolor="#F5F3FF" color="#7C3AED"];
+
+        // Results
+        results [label="Results (JSON)\nPass: 4/5 (80%)    Failures: Test 3 - timeout" shape=box fillcolor="#ECFDF5" color="#059669"];
+    }
+
+    // Connections
+    basic -> runner [ltail=cluster_dataset];
+    runner -> results;
+}

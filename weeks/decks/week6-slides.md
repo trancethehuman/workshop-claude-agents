@@ -11,382 +11,277 @@ paginate: true
 
 # Session Goals
 
-- Understand the Claude Agent SDK architecture
-- Use the `query()` function in TypeScript and Python
-- Build headless agents for automation
-- Deploy agents in sandboxed environments
+- Understand when to use the Agent SDK vs CLI
+- Run agents headlessly from TypeScript
+- Build custom tools in code
+- Create production workflows with streaming and session management
 
 ---
 
-# Why Run Agents Programmatically?
+# CLI vs SDK: When to Use Which
 
-Claude Code is interactive. But for production:
-- Need to run without human in the loop
-- Need to process batches of tasks
-- Need to integrate into existing systems
+**Claude Code CLI:**
+- Interactive development work
+- One-off tasks and experiments
+- Terminal-based workflows
 
----
-
-# SDK Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Your Application                         │
-│   const result = await query({ prompt: "..." });            │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Agent SDK                                │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │ Tools   │  │Sessions │  │ Hooks   │  │  MCP    │        │
-└─────────────────────────────────────────────────────────────┘
-```
+**Claude Agent SDK:**
+- Building products on top of Claude
+- Automation and batch processing
+- Custom tools and integrations
+- Production deployments
 
 ---
 
-# The `query()` Function (TypeScript)
+# Your First Agent SDK Script
 
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
-const result = await query({
-  prompt: "Research Acme Corp and summarize findings",
-  options: { maxTurns: 10 }
-});
-console.log(result.text);
-```
-
----
-
-# The `query()` Function (Python)
-
-```python
-import asyncio
-from claude_agent_sdk import query, ClaudeAgentOptions
-
-async def main():
-    async for message in query(
-        prompt="Research Acme Corp and summarize findings",
-        options=ClaudeAgentOptions(max_turns=10)
-    ):
-        if hasattr(message, "result"):
-            print(message.result)
-
-asyncio.run(main())
-```
-
----
-
-# Key Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| prompt | string | The task for the agent |
-| options.maxTurns | number | Maximum agentic loops |
-| options.model | string | Model to use |
-
----
-
-# More Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| options.tools | Tool[] | Available tools |
-| options.mcpServers | McpServer[] | MCP connections |
-| options.permissions | Permission[] | Auto-granted permissions |
-
----
-
-# Model Selection
-
-| Model | Best For | Cost |
-|-------|----------|------|
-| Sonnet 4.5 | Most agent work (default) | $$ |
-| Opus 4.5 | Complex reasoning | $$$$ |
-| Haiku | Fast, simple tasks | $ |
-
----
-
-# Built-in Tools
-
-| Tool | Purpose |
-|------|---------|
-| Read | Read files |
-| Write | Write files |
-| Bash | Execute commands |
-| WebSearch | Search the web |
-
----
-
-# Custom Tools with MCP
-
-```typescript
-const crmServer = createSdkMcpServer({
-  name: "crm-tools",
-  tools: [
-    tool("search_crm", "Search CRM", { ... })
-  ]
-});
-```
-
----
-
-# When to Create Custom Tools
-
-| Scenario | Example |
-|----------|---------|
-| Internal APIs | Company CRM, billing |
-| Third-party | Stripe, Twilio, HubSpot |
-| Specialized logic | Lead scoring algorithm |
-
----
-
-# Lab 1: Your First SDK Agent
-
-```typescript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-async function analyzeFile(filePath: string) {
-  const result = await query({
-    prompt: `Analyze the CSV file at ${filePath}`,
-    options: { maxTurns: 5 }
-  });
-  return result.text;
-}
-```
-
----
-
-# Sessions for Context Preservation
-
-```typescript
-import { query, Session } from "@anthropic-ai/claude-agent-sdk";
-
-const session = new Session({
-  systemPrompt: "You are a data analyst.",
-});
-
-await query({ prompt: "I'm working on leads.", session });
-await query({ prompt: "What columns matter?", session });
-```
-
----
-
-# When to Use Sessions
-
-| Scenario | Use Session? |
-|----------|--------------|
-| One-off task | No |
-| Multi-step workflow | Yes |
-| Batch processing (independent) | No |
-
----
-
-# Streaming Responses
-
-```typescript
 for await (const message of query({
-  prompt: "Research the top 5 CRM platforms",
-  options: { maxTurns: 10 }
+  prompt: "Analyze the startup funding database",
+  options: { allowedTools: ["Read", "Bash"] }
 })) {
-  if (message.type === 'text') {
-    process.stdout.write(message.content);
+  console.log(message.content);
+}
+```
+
+That's it. Full agent loop with streaming.
+
+---
+
+# Streaming: Watch Your Agent Work
+
+The SDK streams every message from Claude:
+
+```typescript
+for await (const message of query({ prompt: "..." })) {
+  if (message.role === "assistant") {
+    console.log("Claude:", message.content);
+  }
+
+  if (message.type === "tool_use") {
+    console.log("Using tool:", message.name);
   }
 }
 ```
 
----
-
-# Message Types in Stream
-
-| Type | Description |
-|------|-------------|
-| text | Text being generated |
-| tool_use | Tool being called |
-| tool_result | Tool response |
-| error | Error occurred |
+You see thinking, tool calls, and results in real-time.
 
 ---
 
-# Permission Handling
+# Tool Permissions
+
+Control which tools the agent can use:
 
 ```typescript
-const result = await query({
-  prompt: "Update the config file",
+await query({
+  prompt: "Analyze this data",
   options: {
-    permissions: {
-      allow: [{ tool: 'Read', pattern: '*' }],
-      deny: [{ tool: 'Bash', pattern: 'rm:*' }],
-    },
+    allowedTools: ["Read", "Bash(sqlite3:*)"],
+    permissionMode: "acceptEdits"
   }
 });
+```
+
+**Permission modes:**
+- `default`: Prompts for approval
+- `acceptEdits`: Auto-approves file edits
+- `bypassPermissions`: No prompts (trusted environments only)
+
+---
+
+# Building Custom Tools
+
+Define tools as TypeScript functions:
+
+```typescript
+import { tool } from "@anthropic-ai/claude-agent-sdk";
+
+const customerLookup = tool({
+  name: "customerLookup",
+  description: "Look up customer info by email",
+  schema: z.object({
+    email: z.string().email()
+  }),
+  execute: async ({ email }) => {
+    const customer = await db.customers.findByEmail(email);
+    return JSON.stringify(customer);
+  }
+});
+```
+
+---
+
+# Using Custom Tools
+
+Pass tools to the query:
+
+```typescript
+await query({
+  prompt: "Look up customer jane@example.com",
+  options: {
+    tools: [customerLookup]
+  }
+});
+```
+
+Claude automatically calls your tool when needed.
+
+---
+
+# Session Management
+
+Sessions persist conversation state:
+
+```typescript
+const sessionId = await query({
+  prompt: "Start analyzing company data",
+  options: { sessionId: "company-analysis-123" }
+});
+
+// Later, continue the session
+await query({
+  prompt: "Now compare to last quarter",
+  options: { sessionId }
+});
+```
+
+---
+
+# Lab 1: Set Up TypeScript Environment
+
+**Duration:** 30 minutes
+
+**What you'll do:**
+- Initialize TypeScript project
+- Install Agent SDK
+- Write and run your first agent script
+- Observe streaming output
+
+---
+
+# **BREAK**
+## 10 minutes
+
+---
+
+# Batch Processing Pattern
+
+Process multiple items efficiently:
+
+```typescript
+const leads = await readLeadsFile();
+
+for (const lead of leads) {
+  const result = await query({
+    prompt: `Research ${lead.company} and score this lead`,
+    options: {
+      model: "haiku",  // Fast for simple tasks
+      maxTurns: 5
+    }
+  });
+
+  await saveResult(lead.id, result);
+}
 ```
 
 ---
 
 # Error Handling
 
+Handle agent failures gracefully:
+
 ```typescript
 try {
-  const result = await query({ prompt: "Risky op..." });
+  const result = await query({ prompt: "..." });
 } catch (error) {
-  if (error instanceof ToolError) {
-    console.error(`Tool failed: ${error.message}`);
-  } else if (error instanceof AgentError) {
-    console.error(`Agent error: ${error.message}`);
+  if (error.code === "max_turns_exceeded") {
+    console.log("Agent hit turn limit, retrying...");
+  } else if (error.code === "tool_execution_failed") {
+    console.log("Tool failed:", error.message);
   }
 }
 ```
 
 ---
 
-# Lab 2: Headless Lead Enrichment
+# Hooks: Intercept Tool Calls
 
-Build a service that enriches leads automatically:
-
-```typescript
-async function enrichLead(lead: Lead) {
-  const result = await query({
-    prompt: `Research ${lead.company}...`,
-    options: { maxTurns: 8, tools: ['WebSearch'] }
-  });
-  return parseResult(result.text);
-}
-```
-
----
-
-# Batch Processing with Concurrency
+Add logging or validation:
 
 ```typescript
-async function enrichBatch(leads: Lead[], concurrency = 3) {
-  for (let i = 0; i < leads.length; i += concurrency) {
-    const batch = leads.slice(i, i + concurrency);
-    await Promise.all(batch.map(enrichLead));
+await query({
+  prompt: "Process this data",
+  options: {
+    hooks: {
+      onToolUse: (tool) => {
+        console.log(`Using tool: ${tool.name}`);
+        logToMonitoring(tool);
+      }
+    }
   }
-}
+});
 ```
 
 ---
 
-# Sandboxing with Daytona
+# Production Considerations
 
-Run agents safely in isolated environments:
+**Sandboxing:**
+- Run in isolated containers (Docker, Firecracker)
+- Use `permissionMode: "bypassPermissions"` only in sandboxed environments
+- Never run untrusted code on host system
 
-| Feature | Benefit |
-|---------|---------|
-| Isolated filesystems | Agents can't access host |
-| Resource limits | CPU, memory, time |
-| Code execution | Run Python, TypeScript, bash safely |
-| Preview URLs | Expose web apps from sandbox |
-
----
-
-# Creating a Daytona Sandbox
-
-**Python:**
-```python
-from daytona_sdk import Daytona
-
-daytona = Daytona()  # Uses DAYTONA_API_KEY env var
-sandbox = daytona.create()
-```
-
-**TypeScript:**
-```typescript
-import { Daytona } from "@daytonaio/sdk";
-const daytona = new Daytona();
-const sandbox = await daytona.create({ language: "python" });
-```
+**Monitoring:**
+- Track token usage per session
+- Log tool calls for debugging
+- Monitor success/failure rates
 
 ---
 
-# Executing Code with `code_run()`
+# Lab 2: Build a Batch Processor
 
-```python
-# Execute Python code directly in sandbox
-response = sandbox.process.code_run("""
-import pandas as pd
-df = pd.read_csv('/workspace/leads.csv')
-print(f"Rows: {len(df)}")
-print(df.describe())
-""")
-print(response.result)
-```
+**Duration:** 45 minutes
 
----
-
-# File Operations
-
-```python
-# Upload to sandbox
-sandbox.fs.upload_file("leads.csv", "/workspace/leads.csv")
-
-# Download from sandbox
-sandbox.fs.download_file("/workspace/output.json", "./output.json")
-
-# Preview URL for web apps
-preview_url = sandbox.get_preview_link(3000)
-```
-
----
-
-# Claude + Daytona Pattern
-
-```python
-import anthropic
-from daytona_sdk import Daytona
-
-client = anthropic.Anthropic()
-sandbox = Daytona().create()
-
-# 1. Claude generates code
-message = client.messages.create(
-    model="claude-sonnet-4-20250514",
-    messages=[{"role": "user", "content": "Write Python to analyze leads.csv"}]
-)
-
-# 2. Execute in sandbox
-response = sandbox.process.code_run(message.content[0].text)
-print(response.result)
-```
-
----
-
-# When to Sandbox
-
-| Scenario | Sandbox? |
-|----------|----------|
-| Development | No (direct is faster) |
-| User-provided data | Yes (can't trust input) |
-| Production pipelines | Yes (defense in depth) |
-| Code generation | Yes (always sandbox) |
+**What you'll do:**
+- Create a batch lead processor script
+- Implement custom scoring tool
+- Add error handling and retries
+- Log results to CSV
 
 ---
 
 # Key Takeaways
 
-1. `query()` works in TypeScript and Python
-2. Sessions preserve context across queries
-3. Stream for long-running tasks
-4. Sandbox production agents with Daytona
+1. **SDK for Production** - Programmatic control, custom tools, automation
+2. **Streaming** - Real-time visibility into agent actions
+3. **Sessions** - Persist conversation state across calls
+4. **Custom Tools** - Extend Claude with your business logic
 
 ---
 
 # Homework
 
-Build an automated report generator:
-1. Reads a data file
-2. Analyzes the data
-3. Generates a markdown report
-4. Saves to output folder
+**Build a Production Pipeline:**
+
+1. Choose a use case that needs batch processing:
+   - GTM: Process 100 leads
+   - Data: Analyze 50 datasets
+   - Content: Generate 20 social posts
+
+2. Implement with SDK:
+   - Custom tools for your domain
+   - Error handling
+   - Progress logging
+   - Output to structured format
 
 ---
 
 # Next Week Preview
 
 **Week 7: Evals**
-- Building tests to validate your agent
-- Creating golden datasets
-- Regression testing for production-ready AI
+- Measure and improve agent quality
+- Build golden datasets
+- Create eval runners
+- Iterate based on results

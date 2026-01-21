@@ -21,63 +21,31 @@ paginate: true
 
 When you give Claude access to tools, it stops being a chatbot and becomes an agent.
 
-**The most important tool?** Bash.
+The most important tool is one you might not expect: **bash**
 
 ---
 
 # The Tool Calling Loop
 
 ```
-THINK → SELECT TOOL → EXECUTE → OBSERVE → THINK AGAIN
-                                    ↑         │
-                                    └─────────┘
-                                 (repeat until done)
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   THINK → SELECT TOOL → EXECUTE → OBSERVE → THINK AGAIN     │
+│                                          ↑         │        │
+│                                          └─────────┘        │
+│                                       (repeat until done)   │
+└─────────────────────────────────────────────────────────────┘
 ```
-
----
-
-# Example: "Analyze top 10 customers by revenue"
-
-1. **Think:** I need to read the CSV file first
-2. **Select:** Use the `Read` tool
-3. **Execute:** Read the file contents
-4. **Observe:** I see 500 rows with columns...
-
----
-
-# Example (Continued)
-
-5. **Think:** Now I need to sort by revenue and take top 10
-6. **Select:** Use `Bash` to sort and filter
-7. **Execute:** Run the command
-8. **Observe:** Here are the results...
 
 ---
 
 # Why Bash Is the Most Important Tool
 
-Vercel removed 80% of their agent's tools and got better results.
+**Vercel removed 80% of their agent's tools and got better results**
 
-**What did they keep?** Bash.
+What replaced all of them? An agent that can execute bash commands and explore files.
 
----
-
-# What Vercel Removed
-
-- Schema lookup tool
-- Query validation tool
-- Error recovery tool
-- Entity join finder
-- Results formatter
-- ...and 7 more specialized tools
-
----
-
-# Why Bash Works
-
-LLMs have seen grep, cat, find, and ls **billions of times** during training.
-
-These are native operations, not bolted-on behaviors.
+LLMs have seen grep, cat, find, and ls **billions of times** during training
 
 ---
 
@@ -87,191 +55,167 @@ These are native operations, not bolted-on behaviors.
 |---------|----------------|
 | `ls` | "What data do I have to work with?" |
 | `cat` | "Let me look at this file" |
-| `grep` | "Find all mentions of 'pricing objection'" |
-
----
-
-# How Agents Use Bash (Continued)
-
-| Command | Agent Use Case |
-|---------|----------------|
-| `head/tail` | "Show me the first 10 rows" |
-| `sort` | "Sort by revenue descending" |
-| `wc` | "How many records are in this file?" |
+| `grep` | "Find all mentions of 'Series A'" |
+| `sqlite3` | "Run SQL on the funding database" |
 
 ---
 
 # On-Demand Context Retrieval
+
+Instead of stuffing everything into the prompt upfront:
 
 ```
 Agent receives task
     → Explores filesystem (ls, find)
     → Searches for relevant content (grep)
     → Reads specific files (cat)
+    → Queries databases (sqlite3)
     → Sends only what's needed to the model
 ```
 
----
-
-# The Philosophy
-
-> "Every agent needs filesystem and bash. If you're building an agent, resist the urge to create custom tools. Instead, ask: can I represent this as files?"
+This is why cost dropped from $1.00 to $0.25 per analysis
 
 ---
 
 # Built-in Tools
 
-| Tool | What It Does |
-|------|--------------|
-| Read | Read files |
-| Write | Create files |
-| Edit | Modify files |
-| Bash | Run commands |
+| Tool | Business Use Cases |
+|------|-------------------|
+| **Read** | Analyze data, read reports, review documents |
+| **Bash** | Execute scripts, run SQL, process data |
+| **Grep** | Find mentions, search across files |
+| **WebSearch** | Research companies, find market data |
 
 ---
 
-# Built-in Tools (Continued)
-
-| Tool | What It Does |
-|------|--------------|
-| Glob | Find files by pattern |
-| Grep | Search content |
-| WebSearch | Search the web |
-| WebFetch | Fetch web pages |
-
----
-
-# How Claude Decides Which Tool
+# How Claude Decides Which Tool to Use
 
 | Your Request | Tool Selected |
 |--------------|---------------|
-| "What's in this CSV?" | Read |
-| "Find all mentions of 'revenue'" | Grep |
-| "Research Acme Corp" | WebSearch |
+| "What's in this database?" | Bash (sqlite3) |
+| "Find all AI startups" | Bash (sqlite3) |
+| "Research Cursor AI funding" | WebSearch |
+| "Create a summary report" | Write |
 
 ---
 
-# AI-Assisted SQL Querying
+# The Data Analysis Loop
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   MONITOR → EXPLORE → CRAFT STORY → IMPACT                  │
+│      ↑                                  │                   │
+│      └──────────────────────────────────┘                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+1. **Monitor:** Run recurring queries to check key metrics
+2. **Explore:** Dig deeper when you spot anomalies
+3. **Craft Story:** Synthesize findings into 3-5 key insights
+4. **Impact:** Recommend concrete next actions
+
+---
+
+# AI-Assisted SQL and Data Warehouse Querying
 
 | Business Question | Claude Generates |
 |-------------------|------------------|
-| "Top 10 customers by revenue" | `SELECT ... ORDER BY revenue DESC LIMIT 10` |
-| "Month-over-month growth" | Window functions with LAG() |
-| "Deals stuck > 30 days" | Date filtering with DATEDIFF() |
+| "Top 10 funded AI startups" | `SELECT` with `JOIN`, `GROUP BY`, `ORDER BY` |
+| "Funding velocity by stage" | Window functions with `LAG()` |
+| "Series A to B conversion rate" | CTEs with cohort analysis |
 
 ---
 
-# Workshop Dataset: Startup Funding
+# About the Workshop Dataset
 
-`data/startup-funding.db` - Real VC data from 2018-2025
+`data/startup-funding.db` - A SQLite database with:
 
-- **200 startups** across AI/ML, Fintech, Healthcare, Dev Tools
-- **66 investors** (Y Combinator, Sequoia, a16z, Accel...)
+- **200 startups** across industries
+- **66 investors** (Y Combinator, Sequoia, a16z, Accel)
 - **~480 funding rounds** from Pre-Seed through Series C
-- Includes AI coding tools: Cursor, Replit, Codeium
+- **Growth metrics** for ~50 startups
 
-Claude queries it directly via Bash + sqlite3.
-
----
-
-# Bash vs. SQL vs. Other Approaches
-
-| Approach | Best For |
-|----------|----------|
-| Prompt stuffing | Hits token limits fast |
-| Vector search | Imprecise for structured data |
-| SQL + AI | Data warehouses, precise queries |
-| Bash + filesystem | Local files, debuggable |
+Modeled on real VC data from 2018-2025
 
 ---
 
-# Lab 1: Exploring Built-in Tools
+# Intermediate SQL Patterns
 
-**Exercise 1: File Discovery**
+**Window functions:**
+```sql
+RANK() OVER (PARTITION BY industry ORDER BY amount DESC)
 ```
-> What data files are available in this repository?
+
+**CTEs:**
+```sql
+WITH round_sequence AS (
+  SELECT startup_id, LAG(funding_date) ...
+)
 ```
-Notice: Claude uses **Glob** to find files.
 
----
-
-# Lab 1: Data Profiling
-
-**Exercise 2:**
-```
-> Read the startup-funding.db file and give me:
-> - Total rows and columns
-> - Column names and what they contain
-> - Distribution of the 'status' field
+**Cohort analysis:**
+```sql
+WITH series_a AS (...), series_b AS (...)
+SELECT conversion_rate...
 ```
 
 ---
 
-# Lab 1: Data Analysis
+# Bash vs. Other Approaches
 
-**Exercise 3:**
-```
-> What percentage of leads are in Technology?
-> What's the correlation between size and score?
-> Which lead sources produce highest-scoring leads?
-```
-
----
-
-# Lab 1: Cross-file Analysis
-
-**Exercise 4:**
-```
-> Compare startup-funding.db with mock-crm.json.
-> Which leads also appear in the CRM contacts?
-```
+| Approach | How It Works | Problem |
+|----------|--------------|---------|
+| **Prompt stuffing** | Load everything into context | Hits token limits fast |
+| **Vector search** | Find semantically similar chunks | Imprecise for structured data |
+| **SQL + AI** | Translate questions to queries | ✓ Precise, scalable, production-ready |
 
 ---
 
-# Discussion Questions
+# Lab 1: Exploring the Startup Funding Database
 
-1. Which tools did Claude use for each task?
-2. Did Claude ever use multiple tools in sequence?
-3. How did Claude handle the analysis?
+**Duration:** 45 minutes
 
----
-
-# Web Tools: Why They Matter
-
-Your data lives in files. But context lives on the web:
-- Company websites
-- News articles
-- Industry reports
+**What you'll do:**
+- Schema discovery with Claude
+- Basic aggregations (GROUP BY, COUNT, SUM)
+- Trend analysis with time-series queries
+- Investor analysis with JOINs
 
 ---
 
-# WebSearch: Finding Information
+# **BREAK**
+## 10 minutes
 
-Good prompts for WebSearch:
+---
+
+# Web Tools for Research
+
+**WebSearch:** Finding information
+
 ```
-> Search for recent news about Acme Corp funding
-> Find information about CRM software market size 2024
-> Look up reviews of competitor product X
+> Search for recent news about Cursor AI funding
+> Find information about the AI coding tools market size 2024
+```
+
+**WebFetch:** Getting page content
+
+```
+1. WebSearch → find relevant URLs
+2. WebFetch → get detailed content from best result
+3. Analyze → synthesize findings
 ```
 
 ---
 
-# WebFetch: Getting Page Content
+# Combining Data and Web Research
 
-When to use WebFetch:
-- You have a specific URL to read
-- You need detailed content from a page
-- You want to extract structured data
+**Example Workflow:**
 
----
-
-# Combining Tools for Research
-
-**Company Research Workflow:**
-1. WebSearch: "TechCorp company news 2024"
-2. WebFetch: Company about page
-3. WebSearch: "TechCorp leadership team"
-4. Synthesize: Compile research brief
+1. Query database: "Show me AI coding startups that raised Series A in 2024"
+2. For top results, WebSearch: "[startup name] latest news"
+3. WebFetch: Get detailed info from relevant articles
+4. Synthesize: "Cursor raised $60M Series B, growing 3x YoY"
 
 ---
 
@@ -279,81 +223,51 @@ When to use WebFetch:
 
 | Research Goal | Tool Sequence |
 |---------------|---------------|
-| Company overview | WebSearch → WebFetch |
-| Recent news | WebSearch with date filter |
-| Competitive analysis | WebSearch → WebFetch each |
+| Validate funding data | Query DB → WebSearch for announcements |
+| Company deep dive | Query DB → WebFetch company site → WebSearch news |
+| Market sizing | Query DB aggregates → WebSearch industry reports |
 
 ---
 
-# External Web Services
+# Lab 2: Building a Research Workflow
 
-| Service | When to Use |
-|---------|-------------|
-| Tavily | Structured search results for agents |
-| Firecrawl | Extract data from complex sites |
-| Bright Data | Sites that block automated access |
+**Duration:** 45 minutes
 
----
-
-# Lab 2: Company Research Workflow
-
-**Step 1: Single Company Research**
-```
-> Research Stripe for a sales call. I need:
-> 1. What they do
-> 2. Company size and headquarters
-> 3. Recent news (last 3 months)
-```
-
----
-
-# Lab 2: Structured Output
-
-**Step 2:**
-```
-> Format the research as a pre-call brief:
-> - Company Snapshot
-> - What They Do
-> - Recent Developments
-> - Talking Points
-> Save it to output/stripe-research.md
-```
-
----
-
-# Lab 2: Batch Research
-
-**Step 3:**
-```
-> Research these 3 companies from startup-funding.db:
-> 1. Acme Corp
-> 2. GlobalTech Inc
-> 3. HealthFirst Solutions
-> Format as a markdown table.
-```
+**What you'll do:**
+- Build database foundation for AI coding tools
+- Enrich with web research (news, employee counts)
+- Apply Data Analysis Loop to synthesize findings
+- Create investment brief with predictions
 
 ---
 
 # Key Takeaways
 
-1. Claude is an agent, not a chatbot - It uses tools
-2. The loop: Think → Select Tool → Execute → Observe
-3. Built-in tools: Read, Write, Bash, Glob, Grep, WebSearch
+1. **Claude is an agent, not a chatbot** - It uses tools to take action
+2. **The loop:** Think → Select Tool → Execute → Observe → Repeat
+3. **The Data Analysis Loop:** Monitor → Explore → Craft Story → Impact
 
 ---
 
 # Homework
 
-1. Pick 5 entities relevant to your project
-2. Use Claude to research each one
-3. Document which tools Claude used
-4. Create a "Research Playbook" with your best prompts
+**Data Analysis Assignment:**
+
+1. Pick a domain from the startup-funding.db to analyze
+2. Apply the Data Analysis Loop:
+   - Monitor: Run 3 baseline queries
+   - Explore: Dig into one anomaly or trend
+   - Craft: Write 3-5 insights with supporting data
+   - Impact: Make one concrete prediction
+
+Save to `output/week2-homework-[your-domain].md`
 
 ---
 
 # Next Week Preview
 
 **Week 3: MCP Integration**
-- Connect Claude to databases, APIs, and services
-- Build persistent integrations
+- Connect Claude to external services
+- Build a data MCP with context management
 - Access private data sources
+- Create connected workflows

@@ -1,0 +1,59 @@
+digraph SubAgents {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Sub-agent Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_subagents {
+        label="Sub-agent Architecture";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Main Agent
+        main_agent [label="Main Agent\n\"Research these three topics in parallel\"" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Three explore agents
+        node [shape=box fillcolor="#F5F3FF" color="#7C3AED"];
+        {rank=same; explore1; explore2; explore3}
+
+        explore1 [label="Explore\nAgent\n(Topic 1)"];
+        explore2 [label="Explore\nAgent\n(Topic 2)"];
+        explore3 [label="Explore\nAgent\n(Topic 3)"];
+
+        // Results
+        node [shape=box fillcolor="#ECFDF5" color="#059669"];
+        {rank=same; result1; result2; result3}
+
+        result1 [label="[Results 1]"];
+        result2 [label="[Results 2]"];
+        result3 [label="[Results 3]"];
+
+        // Key Insight box
+        insight [label="Key Insight: Each sub-agent has its own context. Intermediate\nwork (web scrapes, file reads) stays isolated. Only final\nresults return to the main agent, keeping context clean." shape=box fillcolor="#FEF3C7" color="#D97706" style="filled"];
+    }
+
+    // Connections: Main Agent fans out to three explore agents
+    main_agent -> explore1;
+    main_agent -> explore2;
+    main_agent -> explore3;
+
+    // Each explore agent produces results
+    explore1 -> result1;
+    explore2 -> result2;
+    explore3 -> result3;
+}

@@ -1,0 +1,28 @@
+digraph CustomerDataStructure {
+    rankdir=TB;
+    splines=false;
+    nodesep=0.4;
+    ranksep=0.4;
+    bgcolor="white";
+    node [fontname="Courier", fontsize=10, shape=plaintext];
+
+    // Title
+    label="Customer Data File Structure";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    root [label="/customers/cust_12345/" fontname="Courier Bold"];
+
+    profile [label="├── profile.json"];
+    tickets_dir [label="├── tickets/"];
+    ticket1 [label="│   ├── ticket_001.md"];
+    ticket2 [label="│   └── ticket_002.md"];
+    convo [label="└── conversations/2024-01-15.txt"];
+
+    root -> profile [style=invis];
+    profile -> tickets_dir [style=invis];
+    tickets_dir -> ticket1 [style=invis];
+    ticket1 -> ticket2 [style=invis];
+    ticket2 -> convo [style=invis];
+}

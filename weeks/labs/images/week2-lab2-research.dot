@@ -1,0 +1,67 @@
+digraph ResearchWorkflow {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.6;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="Research Workflow";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Main container
+    subgraph cluster_workflow {
+        label="Research Workflow";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        // Available Tools section
+        subgraph cluster_tools {
+            label="Available Tools";
+            style="rounded,filled";
+            fillcolor="#E0E7FF";
+            color="#6366F1";
+            fontname="Arial Bold";
+            fontsize=11;
+
+            node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+            {rank=same; bash_tool; websearch; webfetch; read_tool; write_tool}
+
+            bash_tool [label="Bash\n(sqlite3)"];
+            websearch [label="WebSearch"];
+            webfetch [label="WebFetch"];
+            read_tool [label="Read"];
+            write_tool [label="Write"];
+        }
+
+        // Data Sources section
+        subgraph cluster_sources {
+            label="Data Sources";
+            style="rounded,filled";
+            fillcolor="#FEF3C7";
+            color="#D97706";
+            fontname="Arial Bold";
+            fontsize=11;
+
+            node [shape=box fillcolor="#FEFCE8" color="#CA8A04"];
+
+            {rank=same; db_source; web_source}
+
+            db_source [label="startup-funding.db\n(200 startups, 480 rounds)"];
+            web_source [label="Web (news, sites)\n(company info, market data)"];
+        }
+
+        // Data Analysis Loop section
+        analysis_loop [label="Data Analysis Loop\nMONITOR → EXPLORE → CRAFT STORY → IMPACT" shape=box fillcolor="#ECFDF5" color="#059669" style="rounded,filled"];
+    }
+}

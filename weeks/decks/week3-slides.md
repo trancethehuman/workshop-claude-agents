@@ -13,47 +13,34 @@ paginate: true
 
 - Understand MCP (Model Context Protocol) architecture
 - Configure MCP servers for various services
-- Connect Claude to CRM, databases, and APIs
+- Learn context management for data-heavy applications
+- Connect Claude to external tools and data sources
 
 ---
 
 # The Problem MCP Solves
 
-Before MCP, connecting AI agents required:
+Before MCP, connecting AI agents to external services required:
 - Custom API integrations for each service
 - OAuth flows and token management
 - Tool definitions for every endpoint
+- Maintenance as APIs change
 
----
-
-# MCP = Universal Protocol
-
-One standard way to connect Claude to any external service.
+**MCP provides a universal protocol**
 
 ---
 
 # The Story Behind MCP
 
 **November 2024:** Anthropic open-sourced MCP
-**March 2025:** OpenAI adopted MCP
+
+**March 2025:** OpenAI adopted MCP across their products
+
 **April 2025:** Google DeepMind confirmed MCP support
-**December 2025:** Donated to Linux Foundation
 
----
+**December 2025:** MCP donated to Linux Foundation
 
-# Why This Matters
-
-MCP went from internal experiment to industry standard in one year.
-
-All major AI labs now back it.
-
----
-
-# Current Scale
-
-- Over 10,000 public MCP servers
-- 97 million monthly SDK downloads
-- Enterprise support from AWS, Google Cloud, Azure
+All major AI labs now back it. When you learn MCP, you're learning infrastructure that works across Claude, ChatGPT, Gemini, and Microsoft Copilot.
 
 ---
 
@@ -62,14 +49,12 @@ All major AI labs now back it.
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   Claude Code   │────▶│   MCP Server    │────▶│ External Service│
-│                 │◀────│   (adapter)     │◀────│ (GitHub, DB)    │
+│                 │◀────│   (adapter)     │◀────│ (GitHub, DB,    │
+│                 │     │                 │     │  Notion, etc.)  │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
----
-
-# What an MCP Server Does
-
+**MCP Server:** A lightweight adapter that:
 - Exposes tools Claude can use
 - Handles authentication
 - Translates requests to service-specific APIs
@@ -80,182 +65,133 @@ All major AI labs now back it.
 
 | Transport | Use Case |
 |-----------|----------|
-| HTTP | Cloud-hosted services |
-| stdio | Local tools, CLI wrappers |
-| SSE | Real-time services (deprecated) |
+| **HTTP** | Cloud-hosted services |
+| **stdio** | Local tools, CLI wrappers |
+| **SSE** | Real-time services (deprecated) |
 
 ---
 
 # Scopes
 
-| Scope | Location | Shared? |
-|-------|----------|---------|
-| local | ~/.claude.json (project) | No |
-| project | .mcp.json in repo | Yes (git) |
-| user | ~/.claude.json (global) | No |
+| Scope | Location | Shared? | Use Case |
+|-------|----------|---------|----------|
+| **local** | `~/.claude.json` (project path) | No | Personal, sensitive credentials |
+| **project** | `.mcp.json` in repo | Yes (git) | Team-shared services |
+| **user** | `~/.claude.json` (global) | No | Personal tools across projects |
 
 ---
 
-# Lab 1: Your First MCP Integration
+# Current Scale
 
-**Step 1: Add the GitHub MCP server**
-```bash
-claude mcp add --transport http github \
-  https://api.githubcopilot.com/mcp/
+- Over **10,000 public MCP servers**
+- **97 million monthly SDK downloads**
+- Enterprise support from AWS, Google Cloud, Azure
+
+MCP went from internal experiment to industry standard in one year.
+
+---
+
+# Context Management for Data
+
+**The problem:**
+
+A single query can return massive amounts of data, instantly filling your context window.
+
+`SELECT * FROM users` could return 2 million rows.
+
+---
+
+# The Solution: Query Strategically
+
+**1. Always use LIMIT for exploration**
+```sql
+SELECT * FROM funding_rounds LIMIT 100;
 ```
 
----
-
-# Lab 1: Authenticate
-
-**Step 2: In Claude Code**
-```
-> /mcp
-```
-Select GitHub and follow the OAuth flow.
-
----
-
-# Lab 1: Test the Integration
-
-**Step 3:**
-```
-> List my open pull requests
-> Show me issues labeled "bug" in this repo
-> What PRs have been merged this week?
+**2. Aggregate first, then drill down**
+```sql
+SELECT industry, COUNT(*) FROM startups GROUP BY industry;
+-- Then drill into specifics
 ```
 
----
-
-# Common MCP Servers for GTM
-
-| Server | Use Case |
-|--------|----------|
-| Notion | CRM, databases |
-| PostgreSQL | Analytics DB |
-| Gmail | Email |
-
----
-
-# Common MCP Servers (Continued)
-
-| Server | Use Case |
-|--------|----------|
-| Slack | Team comms |
-| HubSpot | CRM |
-| Airtable | Structured data |
-
----
-
-# Adding Database Connections
-
-```bash
-claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
-  --dsn "postgresql://user:pass@host:5432/database"
+**3. Be specific about what you need**
+```sql
+-- Good: specific columns, filtered, limited
+SELECT name, stage, amount_usd FROM funding_rounds
+WHERE stage = 'Series A' ORDER BY amount_usd DESC LIMIT 20;
 ```
 
 ---
 
-# Now Claude Can:
+# The Data Analysis Loop + Context Management
 
-```
-> What tables are in the database?
-> Show me the schema for the leads table
-> Find all leads created this month
-```
-
----
-
-# Adding Notion
-
-```bash
-claude mcp add --transport http notion \
-  https://mcp.notion.com/mcp
-```
-
-After OAuth:
-```
-> Search for opportunities in the CRM
-> Update deal "Acme Corp" to "Proposal Sent"
-```
+| Phase | Context Management Strategy |
+|-------|---------------------------|
+| **Monitor** | Run aggregation queries first (safe, bounded) |
+| **Explore** | Drill down with LIMIT, explore segments one at a time |
+| **Craft** | Work with summarized insights, not raw data |
+| **Impact** | Present recommendations, not data dumps |
 
 ---
 
-# Environment Variables
-
-```bash
-claude mcp add --transport stdio airtable \
-  --env AIRTABLE_API_KEY=your_key \
-  -- npx -y airtable-mcp-server
-```
+# **BREAK**
+## 10 minutes
 
 ---
 
-# MCP Resources
+# Lab 1: Connect External Services
 
-Reference data with `@`:
-```
-@github:issue://123
-@notion:page://abc123
-@postgres:schema://users
-```
+**Duration:** 45 minutes
 
----
-
-# Lab 2: Building a GTM Integration Stack
-
-**Goal:** Connect multiple services for lead research
-1. Query leads from a data source
-2. Research companies on the web
-3. Store findings in structured format
+**What you'll do:**
+- Connect GitHub MCP (Option A)
+- Connect Notion MCP (Option B)
+- Connect a database MCP (Option C)
+- Verify connections with `/mcp`
 
 ---
 
-# Option A: Using Sample Data
+# Lab 2: Combined Workflow
 
-Create a local MCP server wrapper for mock-crm.json
+**Duration:** 30 minutes
 
-No API keys required.
-
----
-
-# Option B: Using Real Services
-
-**Step 1:** Add Notion for CRM
-```bash
-claude mcp add --transport http notion \
-  https://mcp.notion.com/mcp
-```
-
----
-
-# GTM Workflow Test
-
-```
-> I need to prepare for a call with Acme Corp.
-> Find their contact info, recent activity, and any open deals.
-> Then search the web for their latest news.
-```
+**What you'll do:**
+- Funding + Web Research (AI coding tools comparison)
+- Data-driven research with multiple sources
+- Create comparison table with findings
 
 ---
 
 # Key Takeaways
 
-1. MCP = Universal Protocol for external services
-2. Three transports: HTTP (cloud), stdio (local), SSE
-3. Three scopes: local, project, user
+1. **MCP = Universal Protocol** - One way to connect to any service
+2. **Three transports** - HTTP (cloud), stdio (local), SSE (deprecated)
+3. **Context management is critical** - Aggregate first, limit always
+4. **Combine sources** - Real analysis needs data + context from multiple places
 
 ---
 
 # Homework
 
-1. Add at least 2 MCP servers relevant to your project
-2. Document which servers you added
-3. List 3 useful queries you can now run
+**Part 1: Expand Your MCP Stack**
+
+Add at least 1 more MCP server relevant to your project
+
+**Part 2: Document Your Stack**
+
+- Which servers you added and why
+- How you configured them (transport, scope)
+- 3 useful queries you can now run
+
+**Part 3: Multi-Source Analysis**
+
+Combine the startup funding database with at least one external MCP
 
 ---
 
 # Next Week Preview
 
 **Week 4: Agent Skills**
-- Teaching Claude new capabilities with SKILL.md files
+- Encode domain expertise as reusable skills
+- Create a data analysis skill with guardrails
+- Progressive disclosure and skill organization

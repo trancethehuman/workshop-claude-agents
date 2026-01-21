@@ -13,83 +13,71 @@ paginate: true
 
 - Understand sub-agent architecture and use cases
 - Use the Task tool to spawn specialized agents
+- Define custom agents with focused capabilities
 - Build multi-agent workflows for GTM pipelines
-- Connect to vector databases with Vectorize.io
 
 ---
 
 # The Problem with Single Agents
 
 Complex workflows strain a single agent:
-- Context window fills up
+- Context window fills up with intermediate steps
 - Focus dilutes across tasks
 - Errors cascade
 
----
-
-# The Real Killer: Context Flooding
-
-Research 10 companies without sub-agents:
-- Every search result floods context
-- By company #5, agent forgot company #1
+**The real killer: context flooding.**
 
 ---
 
 # What Are Sub-agents?
 
-A separate agent instance that handles a focused subtask.
+A sub-agent is a separate agent instance that handles a focused subtask within a larger workflow.
 
-Like a boss delegating to employees.
+Think of it like a boss delegating to employees: you give them a clear brief, they work independently, and they report back with results.
 
----
-
-# Key Insight
-
-**Sub-agents are black boxes for context management.**
-
-All intermediate steps stay in the sub-agent's context. Only the final result returns.
+**You don't see every step they took, just the output.**
 
 ---
 
-# Without Sub-agents
+# The Key Insight: Sub-agents Are Black Boxes
 
 ```
-Main Agent Context:
-- Task: Research 10 companies
-- WebSearch result Company 1 (500 tokens)
-- WebFetch page content (2000 tokens)
-- WebSearch result Company 2 (500 tokens)
-- ... context explodes ...
-```
+Without sub-agents:
+┌────────────────────────────────────────────────────────┐
+│ Main Agent Context                                     │
+│ - Task: Research 10 companies                          │
+│ - WebSearch result for Company 1 (500 tokens)          │
+│ - WebFetch page content (2000 tokens)                  │
+│ - ... context explodes ...                             │
+└────────────────────────────────────────────────────────┘
 
----
-
-# With Sub-agents
-
-```
-Main Agent Context:
-- Task: Research 10 companies
-- Company 1 result: "Acme Corp, 500 employees..."
-- Company 2 result: "TechCo, 200 employees..."
-- ... clean, manageable context ...
+With sub-agents:
+┌────────────────────────────────────────────────────────┐
+│ Main Agent Context                                     │
+│ - Task: Research 10 companies                          │
+│ - Company 1 result: "Acme Corp, 500 employees..."      │
+│ - ... clean, manageable context ...                    │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-# Sub-agent Characteristics
+# Key Characteristics
 
-- Isolated context: each starts fresh
-- Own conversation: doesn't pollute main agent
-- Specialized tools: can restrict per sub-agent
-- Single level: cannot spawn their own sub-agents
+- **Isolated context:** Each sub-agent starts fresh, focused only on its task
+- **Own conversation:** Sub-agent messages don't pollute the main agent's context
+- **Specialized tools:** You can restrict which tools a sub-agent can use
+- **Defined model:** Sub-agents can use different models (Haiku for speed, Opus for complexity)
+- **Single level:** Sub-agents cannot spawn their own sub-agents
 
 ---
 
-# Multi-Agent Architecture
+# Sub-agents Solve This
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Main Agent                           │
+│  "Process these 50 leads"                               │
 └─────────────────────────────────────────────────────────┘
           │              │              │
           ▼              ▼              ▼
@@ -99,87 +87,97 @@ Main Agent Context:
 └─────────────┘  └─────────────┘  └─────────────┘
 ```
 
----
-
-# Benefits of Sub-agents
-
-- Focused context per task
-- Parallel execution possible
-- Specialized tools per agent
-- Isolated failures
+**Benefits:** Focused context, parallel execution, specialized tools, isolated failures
 
 ---
 
 # The Task Tool
 
+The Task tool spawns sub-agents in Claude Code.
+
 ```
 > Use the code-reviewer agent to review this PR
 ```
 
-Creates isolated context for sub-agent.
-
----
-
-# Task Tool Parameters
-
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| prompt | Yes | Task for sub-agent |
-| description | Yes | Short summary (3-5 words) |
-| subagent_type | Yes | Which agent type |
-
----
-
-# Optional Parameters
-
-| Parameter | Description |
-|-----------|-------------|
-| model | Override model (sonnet, opus, haiku) |
-| max_turns | Limit API round-trips |
-| run_in_background | Run asynchronously |
+**How it works:**
+1. Creates isolated context for sub-agent
+2. Passes the prompt and configuration
+3. Sub-agent runs independently until completion
+4. Returns final result to main agent
 
 ---
 
 # Built-in Sub-agent Types
 
-| Agent Type | Model | Use Case |
-|------------|-------|----------|
-| Explore | Haiku | Codebase exploration |
-| Plan | Inherited | Architecture planning |
-| Bash | Inherited | Command execution |
-| general-purpose | Inherited | Flexible tasks |
+| Agent Type | Model | Best For | Tools |
+|------------|-------|----------|-------|
+| `Explore` | Haiku | Codebase exploration | Glob, Grep, Read (read-only) |
+| `Plan` | Inherited | Architecture planning | All except Edit/Write |
+| `Bash` | Inherited | Command execution | Bash only |
+| `general-purpose` | Inherited | Complex multi-step work | All tools |
 
 ---
 
-# When to Use Each
+# Three Ways to Create Sub-agents
 
-- **Explore:** Fast research, finding files
-- **Plan:** Design before implementing
-- **Bash:** Git operations, running scripts
-- **General-purpose:** Complex multi-step work
+**1. Built-in agents (Claude Code CLI):**
+Use the types above. No configuration needed.
+
+**2. Filesystem-based agents (Claude Code CLI):**
+Create agent definitions in `.claude/agents/`
+
+**3. Programmatic agents (Agent SDK):**
+Define agents in code when using the SDK
 
 ---
 
-# Creating Custom Agents
-
-Create `.claude/agents/company-researcher.md`:
+# Filesystem-Based Agent Example
 
 ```markdown
 ---
-name: company-researcher
-description: Research a company for sales prep.
+name: lead-enricher
+description: Research companies and enrich lead data
 model: haiku
-tools: ["Read", "WebSearch", "WebFetch"]
+tools: ["Read", "WebSearch", "WebFetch", "Write"]
 ---
+
+# Lead Enricher
+
+Research the company thoroughly. Find:
+- Company size and employee count
+- Industry and sub-industry
+- Recent news and announcements
+- Key decision makers and their roles
 ```
 
 ---
 
-# Don't Over-Engineer
+# Agent Configuration Options
 
-![bg right:50% contain](../md/images/week5-too-many-agents-anti-pattern.png)
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Identifier for the agent (lowercase, hyphens) |
+| `description` | Yes | What it does and when to use it |
+| `tools` | No | Array of allowed tools. Omit for all tools. |
+| `model` | No | `haiku`, `sonnet`, or `opus` |
+| `permissionMode` | No | `default`, `acceptEdits`, or `bypassPermissions` |
 
-*"Whimsy-injector.md" is not a real agent you need.*
+---
+
+# Lab 1: Using Built-in Sub-agents
+
+**Duration:** 30 minutes
+
+**What you'll do:**
+- Use the Explore agent for codebase discovery
+- Observe parallel sub-agent execution
+- Create a custom company-researcher agent
+- Test custom agent invocation
+
+---
+
+# **BREAK**
+## 10 minutes
 
 ---
 
@@ -190,10 +188,7 @@ tools: ["Read", "WebSearch", "WebFetch"]
 Lead → [Enrichment] → [Scoring] → [Email Draft] → Output
 ```
 
----
-
-# Parallel Processing
-
+**Parallel Processing:**
 ```
         ┌─→ [Agent 1] ─→┐
 Lead ───┼─→ [Agent 2] ─→┼─→ Combine
@@ -202,118 +197,31 @@ Lead ───┼─→ [Agent 2] ─→┼─→ Combine
 
 ---
 
-# Good Decomposition
+# Designing Agent Responsibilities
 
+**Good decomposition:**
 - Each agent has clear, focused purpose
 - Minimal overlap between agents
 - Well-defined inputs and outputs
 
----
-
-# Anti-patterns
-
+**Anti-patterns:**
 - Too many tiny agents (overhead)
 - Agents that do "everything"
 - Circular dependencies
 
 ---
 
-# Error Handling
+# Context, Memory, and Retrieval
 
-When sub-agents fail:
-```
-> If enrichment fails for a company,
-> note it as "Research Failed" and continue
-```
+**RAG (Retrieval-Augmented Generation):**
 
----
-
-# Lab 1: Using Built-in Sub-agents
-
-```
-> How does the authentication system work in this codebase?
-```
-
-Watch Claude spawn an Explore agent using Haiku.
-
----
-
-# Lab 1: Parallel Exploration
-
-```
-> I need to understand three things in parallel:
-> 1. How data validation works
-> 2. How errors are handled
-> 3. How logging is configured
-```
-
----
-
-# Lab 1: Create Custom Agent
-
-Create `.claude/agents/company-researcher.md`
-
-Then test:
-```
-> Use company-researcher to research Stripe
-```
-
----
-
-# Lab 2: Build a GTM Pipeline
-
-Create a lead processing pipeline:
-1. Takes a list of leads
-2. Enriches each with company research
-3. Scores based on your rubric
-4. Drafts personalized outreach
-
----
-
-# Create Lead Enricher Agent
-
-```markdown
----
-name: lead-enricher
-description: Enrich a lead with company research.
-model: haiku
-tools: ["Read", "WebSearch", "WebFetch"]
----
-```
-
----
-
-# Create Email Drafter Agent
-
-```markdown
----
-name: email-drafter
-description: Draft personalized outreach emails.
-model: sonnet
-tools: ["Read", "Write"]
----
-```
-
----
-
-# Test the Pipeline
-
-```
-> Run the lead pipeline on the top 5 leads
-> from startup-funding.db
-```
-
----
-
-# Context, Memory, and RAG
-
-For large knowledge bases, use retrieval-augmented generation.
+Modern agents treat retrieval as just another tool. Claude can decide when to search, what to search for, and how to use results.
 
 | Traditional RAG | Agentic Search |
 |-----------------|----------------|
-| Fixed retrieval | Agent decides when to retrieve |
-| Same query for all | Agent reformulates queries |
-| Top-K stuffed in prompt | Agent filters and synthesizes |
+| Fixed retrieval pipeline | Agent decides when to retrieve |
+| Same query for all questions | Agent reformulates queries |
+| One-shot retrieval | Iterative search and refinement |
 
 ---
 
@@ -321,61 +229,50 @@ For large knowledge bases, use retrieval-augmented generation.
 
 | Use Case | Best Approach |
 |----------|---------------|
-| Structured data (CSV, DB) | SQL/grep - precise matching |
-| Unstructured docs (PDFs) | Vector search - semantic |
-| Finding similar past deals | Vector search - similarity |
+| Structured data (CSVs, databases) | SQL/grep - precise matching |
+| Unstructured docs (PDFs, notes) | Vector search - semantic similarity |
+| Code search | Grep + embeddings hybrid |
+| Finding similar past deals/cases | Vector search - similarity matching |
 
 ---
 
-# Vectorize.io for RAG
+# Lab 2: Build a GTM Pipeline
 
-Visual workflow builder with Claude Code MCP integration:
-- Upload docs in the UI (PDFs, Word, Markdown)
-- Automatic vectorization
-- MCP agent connects directly to Claude Code
+**Duration:** 45 minutes
 
----
-
-# Connect Vectorize to Claude Code
-
-```bash
-claude mcp add vectorize-mcp \
-  --env VECTORIZE_API_KEY=YOUR_KEY \
-  -- npx -y mcp-remote@latest \
-  https://agents.vectorize.io/api/agents/ID/mcp \
-  --header "Authorization: Bearer ${VECTORIZE_API_KEY}"
-```
-
----
-
-# RAG Lab: Knowledge Enrichment
-
-1. Create Vectorize.io account
-2. Upload sales playbooks and deal notes
-3. Create MCP agent and connect to Claude Code
-4. Query: "Find similar deals in Healthcare industry"
+**What you'll do:**
+- Create specialized agents (lead-enricher, email-drafter)
+- Build a lead-pipeline skill for orchestration
+- Test the pipeline with startup funding database
+- Iterate and refine the workflow
 
 ---
 
 # Key Takeaways
 
-1. Sub-agents = Focused Workers with isolated context
-2. Task Tool = Built-in way to spawn sub-agents
-3. Design Matters = Clear responsibilities, defined I/O
-4. RAG + Agents = Proprietary knowledge enrichment
+1. **Sub-agents = Focused Workers** - Isolated context, specialized tools
+2. **Task Tool** - Built-in way to spawn sub-agents
+3. **Design Matters** - Clear responsibilities, defined I/O
+4. **Orchestration** - Main agent coordinates, sub-agents execute
 
 ---
 
 # Homework
 
-1. Add a new stage to your pipeline
-2. Create a custom agent definition
-3. Test with 10+ items from your dataset
+**Part 1: Extend Your Pipeline**
+
+Add a new stage to your pipeline:
+- GTM/Sales: Competitor research, intent signals
+- Developer Tools: Security scanning, test coverage analysis
+- Content: SEO analysis, competitor content audit
+
+Create a custom agent definition for this stage. Test with 10+ items.
 
 ---
 
 # Next Week Preview
 
-**Week 6: Agent SDK**
-- Running agents headlessly in TypeScript and Python
-- Sandboxed execution with Daytona
+**Week 6: Agent SDK (TypeScript)**
+- Running agents headlessly at scale
+- Programmatic control of agents
+- Building production systems
