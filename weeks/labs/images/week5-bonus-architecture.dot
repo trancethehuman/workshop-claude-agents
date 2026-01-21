@@ -1,0 +1,48 @@
+digraph RAGPipeline {
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=0.8;
+    bgcolor="white";
+    compound=true;
+    node [fontname="Arial", fontsize=11, style="rounded,filled"];
+    edge [fontname="Arial", fontsize=9];
+
+    // Title
+    label="RAG-Enhanced Pipeline Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+
+    // Vectorize.io - the container with 3 document types arranged horizontally
+    subgraph cluster_vectorize {
+        label="Vectorize.io";
+        style="rounded,filled";
+        fillcolor="#F5F3FF";
+        color="#7C3AED";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Rank constraint inside cluster for horizontal layout
+        {rank=same; playbooks; deal_notes; win_loss}
+
+        playbooks [label="Playbooks"];
+        deal_notes [label="Deal Notes"];
+        win_loss [label="Win/Loss\nAnalysis"];
+    }
+
+    // Knowledge Enricher Agent (below Vectorize.io)
+    enricher [label="Knowledge Enricher Agent\n\"Find similar deals and playbook\nguidance for this lead\"" shape=box fillcolor="#ECFDF5" color="#059669"];
+
+    // Pipeline Output (below Knowledge Enricher)
+    output [label="Pipeline Output\nLead + Enrichment + Historical Context\n+ Recommendations" shape=box fillcolor="#FEF3C7" color="#D97706"];
+
+    // Arrow from Vectorize.io cluster (center) down to Knowledge Enricher
+    deal_notes -> enricher [ltail=cluster_vectorize];
+
+    // Arrow from Knowledge Enricher to Pipeline Output
+    enricher -> output;
+}
