@@ -181,15 +181,37 @@ This bootcamp uses Claude Code because it's more powerful for automation and int
 
 ### Demo: Claude Code in Action
 
-Live demo: Give Claude Code a multi-step task and watch it work.
+Live demo: Give Claude Code a CSV and a multi-step analysis task. Watch it work through the problem like an analyst would.
 
-Example: "Analyze this CSV, find the top 10 customers by revenue, and create a summary"
+**The prompt (copy-paste this):**
 
-Watch how Claude:
-1. Uses **tools** to read the file
-2. Reasons about what to do
-3. Executes code to analyze
-4. Iterates until complete
+> Analyze data/customer-metrics.csv. This is 2 years of monthly customer data for a SaaS company. I need you to:
+>
+> 1. Profile the dataset — what are we looking at, how big is it, what time range, any data quality issues?
+> 2. Calculate net revenue retention by segment (Enterprise, Mid-Market, SMB) — include expansion and churn
+> 3. Build a churn risk model: find the leading indicators that predict churn (look at usage drops, NPS dips, support ticket spikes in the months before customers churned)
+> 4. Identify the 3 accounts most likely to churn next based on those patterns
+> 5. Write a one-page executive summary as a markdown file with the key findings, a risk table, and recommended actions for each at-risk account
+
+**What the class will see Claude do:**
+
+| Step | What Claude Does | Tools Used |
+|------|-----------------|------------|
+| 1 | Reads the CSV and profiles it — row counts, columns, time range, missing values | **Read**, **Bash** |
+| 2 | Explores segment distribution, revenue ranges, churn rates | **Bash** (python/pandas) |
+| 3 | Calculates cohort-level retention by comparing MRR over time | **Bash** (python) |
+| 4 | Analyzes churned accounts in reverse — looks at the 2-3 months before churn to find patterns | *(reasoning)* + **Bash** |
+| 5 | Scores active accounts against those churn signals | **Bash** (python) |
+| 6 | Writes a polished executive summary with tables and recommendations | **Write** |
+
+**Why this demo is effective:**
+
+- **Accessible format** — everyone knows CSV. No setup, no schema explanation needed
+- **Multi-step reasoning** — Claude has to profile, compute metrics, reverse-engineer churn patterns, then apply them forward. That's 4 distinct analytical steps, not just one query
+- **Real business output** — net revenue retention and churn prediction are exactly what a CS or RevOps team cares about
+- **The "aha" moment** — when Claude identifies specific at-risk accounts and explains *why* based on patterns it found itself, the room will get it
+
+**Facilitator tip:** Let Claude run without interruption. The audience should see the full agent loop: explore → reason → compute → synthesize → write. Resist the urge to help. That's the point.
 
 ---
 

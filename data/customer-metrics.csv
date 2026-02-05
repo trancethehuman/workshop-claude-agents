@@ -1,0 +1,683 @@
+month,company,industry,region,segment,product,account_owner,acquisition_channel,mrr_usd,arr_usd,monthly_logins,features_used,support_tickets,nps_score,months_as_customer,status
+2023-02-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,8996,107952,73,8,11,,1,Active
+2023-03-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9073,108876,109,6,16,32,2,Active
+2023-04-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9485,113820,82,9,13,15,3,Active
+2023-05-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9281,111372,93,4,10,17,4,Active
+2023-06-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9576,114912,94,8,12,30,5,Active
+2023-07-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10120,121440,106,4,13,7,6,Active
+2023-08-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10460,125520,111,6,14,11,7,Active
+2023-09-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9589,115068,86,6,10,32,8,Active
+2023-10-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10988,131856,96,6,13,25,9,Active
+2023-11-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,9987,119844,94,5,15,13,10,Active
+2023-12-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10970,131640,82,8,15,12,11,Active
+2024-01-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10855,130260,89,9,15,22,12,Active
+2024-02-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,11535,138420,75,5,16,6,13,Active
+2024-03-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,11044,132528,76,5,14,33,14,Active
+2024-04-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10704,128448,103,7,15,19,15,Active
+2024-05-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,10977,131724,87,9,14,22,16,Active
+2024-06-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,12558,150696,99,8,13,16,17,Active
+2024-07-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,13572,162864,80,8,13,7,18,Active
+2024-08-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,13380,160560,81,9,11,,19,Active
+2024-09-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,12686,152232,96,7,14,19,20,Active
+2024-10-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,14267,171204,72,9,15,8,21,Active
+2024-11-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,13741,164892,93,4,12,18,22,Active
+2024-12-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,12688,152256,88,8,16,10,23,Active
+2025-01-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,14620,175440,91,9,14,24,24,Active
+2025-02-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,11697,140364,82,8,16,34,25,Active
+2025-03-01,Acme Corp,Technology,North America,Enterprise,Analytics Suite,Bob Smith,Inbound,13858,166296,103,4,10,34,26,Active
+2023-05-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,16088,193056,271,6,10,94,1,Active
+2023-06-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,16614,199368,258,8,14,,2,Active
+2023-07-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,17176,206112,261,3,10,72,3,Active
+2023-08-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,16908,202896,270,7,10,83,4,Active
+2023-09-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,16649,199788,273,3,10,67,5,Active
+2023-10-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,18431,221172,237,7,10,,6,Active
+2023-11-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,17430,209160,241,8,13,,7,Active
+2023-12-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,17729,212748,263,6,10,68,8,Active
+2024-01-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19151,229812,255,6,12,79,9,Active
+2024-02-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19564,234768,239,3,12,88,10,Active
+2024-03-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,20380,244560,239,4,10,,11,Active
+2024-04-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,18280,219360,244,5,12,72,12,Active
+2024-05-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19731,236772,268,3,9,85,13,Active
+2024-06-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,22363,268356,248,4,12,,14,Active
+2024-07-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19239,230868,258,3,10,77,15,Active
+2024-08-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,23377,280524,249,6,11,,16,Active
+2024-09-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19373,232476,251,4,9,83,17,Active
+2024-10-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,22965,275580,236,3,13,80,18,Active
+2024-11-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,19199,230388,265,3,15,70,19,Active
+2024-12-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,22786,273432,248,6,9,95,20,Active
+2025-01-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,23026,276312,235,7,9,78,21,Active
+2025-02-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,25849,310188,246,8,14,75,22,Active
+2025-03-01,GlobalTech Inc,Technology,Europe,Enterprise,AI Copilot,Alice Johnson,Inbound,21426,257112,241,8,14,,23,Active
+2023-06-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2131,25572,60,12,5,35,1,Active
+2023-07-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2172,26064,76,10,4,18,2,Active
+2023-08-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2171,26052,47,13,3,19,3,Active
+2023-09-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2205,26460,54,13,1,21,4,Active
+2023-10-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2284,27408,57,8,0,,5,Active
+2023-11-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2407,28884,43,8,1,39,6,Active
+2023-12-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2406,28872,57,9,4,,7,Active
+2024-01-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2428,29136,48,8,4,43,8,Active
+2024-02-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2466,29592,64,12,3,,9,Active
+2024-03-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2336,28032,60,10,5,42,10,Active
+2024-04-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2714,32568,54,13,0,36,11,Active
+2024-05-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2501,30012,76,11,3,38,12,Active
+2024-06-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2845,34140,56,9,5,40,13,Active
+2024-07-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2878,34536,42,9,4,44,14,Active
+2024-08-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2874,34488,67,13,13,23,15,Active
+2024-09-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2931,35172,14,11,10,-3,16,Active
+2024-10-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,2569,30828,21,10,9,-8,17,Active
+2024-11-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,0,0,0,0,0,,18,Churned
+2024-12-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,0,0,0,0,0,-40,19,Churned
+2025-01-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,0,0,0,0,0,-9,20,Churned
+2025-02-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,0,0,0,0,0,,21,Churned
+2025-03-01,HealthFirst Solutions,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Inbound,0,0,0,0,0,-6,22,Churned
+2023-09-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5102,61224,92,8,4,,1,Active
+2023-10-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5217,62604,68,11,7,,2,Active
+2023-11-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5296,63552,57,9,5,,3,Active
+2023-12-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5495,65940,95,12,5,,4,Active
+2024-01-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5452,65424,70,11,6,80,5,Active
+2024-02-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5675,68100,75,11,8,75,6,Active
+2024-03-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5396,64752,72,12,5,62,7,Active
+2024-04-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5499,65988,59,8,6,74,8,Active
+2024-05-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5839,70068,97,11,4,,9,Active
+2024-06-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5973,71676,72,8,8,77,10,Active
+2024-07-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6509,78108,63,10,4,,11,Active
+2024-08-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,5641,67692,72,7,6,,12,Active
+2024-09-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6495,77940,92,11,5,,13,Active
+2024-10-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6535,78420,89,10,9,,14,Active
+2024-11-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,7071,84852,87,10,5,79,15,Active
+2024-12-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,7119,85428,74,11,6,75,16,Active
+2025-01-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6295,75540,61,12,5,62,17,Active
+2025-02-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6482,77784,91,7,4,59,18,Active
+2025-03-01,GreenEnergy Co,Manufacturing,Europe,Mid-Market,Platform Pro,Carol Williams,Referral,6655,79860,66,12,4,,19,Active
+2023-07-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1468,17616,36,10,4,,1,Active
+2023-08-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1514,18168,48,12,0,80,2,Active
+2023-09-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1521,18252,45,8,1,,3,Active
+2023-10-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1596,19152,43,9,2,82,4,Active
+2023-11-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1658,19896,51,12,3,65,5,Active
+2023-12-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1653,19836,22,11,0,66,6,Active
+2024-01-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1632,19584,27,11,0,,7,Active
+2024-02-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1635,19620,40,10,4,,8,Active
+2024-03-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1589,19068,48,8,0,72,9,Active
+2024-04-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1826,21912,16,8,0,71,10,Active
+2024-05-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1812,21744,29,9,1,86,11,Active
+2024-06-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1825,21900,27,11,3,73,12,Active
+2024-07-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1706,20472,52,13,3,68,13,Active
+2024-08-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,2050,24600,20,12,0,94,14,Active
+2024-09-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1923,23076,38,11,3,71,15,Active
+2024-10-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1962,23544,54,9,0,87,16,Active
+2024-11-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,2121,25452,52,8,4,83,17,Active
+2024-12-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1897,22764,41,13,0,67,18,Active
+2025-01-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,1737,20844,40,11,0,78,19,Active
+2025-02-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,2114,25368,43,13,0,78,20,Active
+2025-03-01,MediaGroup Digital,Retail,North America,SMB,Data Connector,Alice Johnson,Outbound,2207,26484,31,12,4,,21,Active
+2023-08-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,22575,270900,164,8,14,23,1,Active
+2023-09-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,22966,275592,189,11,10,32,2,Active
+2023-10-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,23630,283560,163,6,9,,3,Active
+2023-11-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,24033,288396,166,11,11,,4,Active
+2023-12-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,24383,292596,152,6,10,,5,Active
+2024-01-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,25457,305484,170,11,12,,6,Active
+2024-02-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,25556,306672,173,9,13,32,7,Active
+2024-03-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,25307,303684,180,8,10,23,8,Active
+2024-04-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,24760,297120,163,8,8,38,9,Active
+2024-05-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,25352,304224,181,8,13,33,10,Active
+2024-06-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,29526,354312,163,8,9,26,11,Active
+2024-07-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,26560,318720,185,7,10,16,12,Active
+2024-08-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,28371,340452,159,11,14,,13,Active
+2024-09-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,36632,439584,169,9,11,29,14,Expanded
+2024-10-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,38409,460908,181,6,14,,15,Expanded
+2024-11-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,51233,614796,154,7,9,40,16,Expanded
+2024-12-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,41360,496320,186,9,12,34,17,Expanded
+2025-01-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,52917,635004,179,8,14,,18,Expanded
+2025-02-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,51561,618732,190,11,8,45,19,Expanded
+2025-03-01,Quantum Dynamics,Technology,Asia Pacific,Enterprise,Integration Hub,Carol Williams,Outbound,50345,604140,156,7,9,20,20,Expanded
+2023-03-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,8186,98232,146,12,9,84,1,Active
+2023-04-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,8516,102192,136,7,9,80,2,Active
+2023-05-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,8618,103416,168,9,11,,3,Active
+2023-06-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,8856,106272,157,9,12,,4,Active
+2023-07-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,8845,106140,170,7,11,78,5,Active
+2023-08-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9158,109896,133,7,9,85,6,Active
+2023-09-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9784,117408,149,11,8,79,7,Active
+2023-10-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9342,112104,160,9,9,,8,Active
+2023-11-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9738,116856,163,7,11,,9,Active
+2023-12-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9434,113208,138,8,10,,10,Active
+2024-01-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9489,113868,157,11,8,69,11,Active
+2024-02-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9667,116004,152,7,14,67,12,Active
+2024-03-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,10521,126252,166,10,11,56,13,Active
+2024-04-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,10393,124716,171,10,13,69,14,Active
+2024-05-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9793,117516,167,8,10,,15,Active
+2024-06-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,9695,116340,172,11,14,62,16,Active
+2024-07-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,10316,123792,132,11,11,57,17,Active
+2024-08-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,12431,149172,139,10,8,75,18,Active
+2024-09-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,11155,133860,150,11,22,,19,Active
+2024-10-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,12875,154500,44,10,19,31,20,Active
+2024-11-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,12719,152628,44,10,23,7,21,Active
+2024-12-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,0,0,0,0,0,31,22,Churned
+2025-01-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,0,0,0,0,0,,23,Churned
+2025-02-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,0,0,0,0,0,,24,Churned
+2025-03-01,Pacific Health Systems,Healthcare,Asia Pacific,Enterprise,AI Copilot,David Brown,Partner,0,0,0,0,0,,25,Churned
+2023-07-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,13365,160380,253,14,15,13,1,Active
+2023-08-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,13567,162804,274,16,9,32,2,Active
+2023-09-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14037,168444,283,14,11,,3,Active
+2023-10-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14409,172908,251,15,9,12,4,Active
+2023-11-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14928,179136,254,14,9,29,5,Active
+2023-12-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14454,173448,268,11,9,15,6,Active
+2024-01-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14426,173112,272,14,10,,7,Active
+2024-02-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,15198,182376,260,12,10,,8,Active
+2024-03-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,15600,187200,264,14,13,9,9,Active
+2024-04-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,15479,185748,265,14,11,26,10,Active
+2024-05-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,16979,203748,278,13,14,22,11,Active
+2024-06-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,14772,177264,271,15,11,,12,Active
+2024-07-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,17002,204024,278,13,10,,13,Active
+2024-08-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,24740,296880,271,15,11,27,14,Expanded
+2024-09-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,28502,342024,274,13,9,23,15,Expanded
+2024-10-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,34806,417672,267,12,13,30,16,Expanded
+2024-11-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,24464,293568,265,16,15,28,17,Expanded
+2024-12-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,35455,425460,251,13,15,19,18,Expanded
+2025-01-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,33679,404148,254,13,11,,19,Expanded
+2025-02-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,24398,292776,283,13,13,21,20,Expanded
+2025-03-01,Atlas Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Eva Martinez,Referral,31455,377460,279,13,14,32,21,Expanded
+2023-02-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2662,31944,92,12,3,26,1,Active
+2023-03-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2717,32604,91,14,5,34,2,Active
+2023-04-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2796,33552,92,13,8,,3,Active
+2023-05-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2745,32940,54,10,5,20,4,Active
+2023-06-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2772,33264,86,11,6,19,5,Active
+2023-07-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2983,35796,86,13,7,28,6,Active
+2023-08-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3123,37476,58,13,7,18,7,Active
+2023-09-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2838,34056,75,11,6,19,8,Active
+2023-10-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3254,39048,58,15,5,22,9,Active
+2023-11-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2909,34908,69,11,3,,10,Active
+2023-12-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2956,35472,65,15,8,24,11,Active
+2024-01-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,2961,35532,73,11,4,30,12,Active
+2024-02-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3002,36024,87,11,7,11,13,Active
+2024-03-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3222,38664,61,14,3,13,14,Active
+2024-04-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3783,45396,86,12,9,10,15,Active
+2024-05-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3587,43044,53,11,3,16,16,Active
+2024-06-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3584,43008,53,11,5,6,17,Active
+2024-07-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3785,45420,85,10,8,,18,Active
+2024-08-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3558,42696,75,14,7,,19,Active
+2024-09-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3666,43992,91,10,8,30,20,Active
+2024-10-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3668,44016,53,10,6,,21,Active
+2024-11-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3682,44184,58,13,8,,22,Active
+2024-12-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3306,39672,57,12,7,9,23,Active
+2025-01-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3402,40824,91,15,7,22,24,Active
+2025-02-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3768,45216,90,14,5,,25,Active
+2025-03-01,Nordic Retail Group,Retail,Europe,Mid-Market,Analytics Suite,David Brown,Referral,3431,41172,59,15,8,33,26,Active
+2023-07-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,23403,280836,245,5,5,48,1,Active
+2023-08-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,23992,287904,275,2,9,55,2,Active
+2023-09-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,24396,292752,266,4,11,,3,Active
+2023-10-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,25290,303480,243,4,9,34,4,Active
+2023-11-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,24171,290052,272,3,6,,5,Active
+2023-12-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,24777,297324,246,4,11,42,6,Active
+2024-01-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,24758,297096,257,6,6,,7,Active
+2024-02-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,27702,332424,279,6,10,45,8,Active
+2024-03-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,27346,328152,257,2,6,33,9,Active
+2024-04-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,29277,351324,262,2,6,52,10,Active
+2024-05-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,28143,337716,265,2,6,48,11,Active
+2024-06-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,26033,312396,273,3,8,,12,Active
+2024-07-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,45058,540696,260,6,9,27,13,Expanded
+2024-08-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,49984,599808,243,7,5,,14,Expanded
+2024-09-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,51996,623952,268,5,7,31,15,Expanded
+2024-10-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,42472,509664,277,5,9,46,16,Expanded
+2024-11-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,44240,530880,278,2,5,31,17,Expanded
+2024-12-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,64476,773712,256,4,7,28,18,Expanded
+2025-01-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,52131,625572,248,5,9,47,19,Expanded
+2025-02-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,60640,727680,262,2,8,52,20,Expanded
+2025-03-01,Pinnacle Financial,Financial Services,North America,Enterprise,Integration Hub,David Brown,Event,53223,638676,244,4,9,,21,Expanded
+2023-07-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3007,36084,51,7,2,92,1,Active
+2023-08-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3089,37068,32,9,5,70,2,Active
+2023-09-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3121,37452,25,11,3,71,3,Active
+2023-10-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3143,37716,27,8,0,69,4,Active
+2023-11-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3148,37776,56,8,5,89,5,Active
+2023-12-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3182,38184,58,10,2,,6,Active
+2024-01-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3429,41148,54,12,4,84,7,Active
+2024-02-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3585,43020,58,9,0,79,8,Active
+2024-03-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3456,41472,58,9,5,73,9,Active
+2024-04-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3444,41328,22,9,2,79,10,Active
+2024-05-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3303,39636,36,7,4,92,11,Active
+2024-06-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3730,44760,50,10,2,83,12,Active
+2024-07-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3669,44028,54,12,0,,13,Active
+2024-08-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3768,45216,21,10,0,90,14,Active
+2024-09-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,4251,51012,23,11,4,70,15,Active
+2024-10-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3647,43764,46,10,3,81,16,Active
+2024-11-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3807,45684,36,10,2,89,17,Active
+2024-12-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,4192,50304,21,12,4,75,18,Active
+2025-01-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,3870,46440,53,12,2,74,19,Active
+2025-02-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,4383,52596,56,8,1,67,20,Active
+2025-03-01,Sunrise Education,Education,North America,Mid-Market,Platform Pro,Carol Williams,Outbound,4694,56328,37,12,4,,21,Active
+2023-03-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1670,20040,4,8,7,70,1,Active
+2023-04-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1691,20292,0,7,1,64,2,Active
+2023-05-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1743,20916,25,11,5,56,3,Active
+2023-06-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1825,21900,30,7,5,67,4,Active
+2023-07-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1752,21024,30,7,6,69,5,Active
+2023-08-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1823,21876,6,9,5,,6,Active
+2023-09-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1812,21744,6,8,7,,7,Active
+2023-10-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2013,24156,3,8,6,,8,Active
+2023-11-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1928,23136,9,9,5,,9,Active
+2023-12-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2126,25512,3,10,2,82,10,Active
+2024-01-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1843,22116,21,8,5,84,11,Active
+2024-02-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2121,25452,24,6,3,57,12,Active
+2024-03-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,1974,23688,23,7,7,68,13,Active
+2024-04-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2309,27708,5,9,3,84,14,Active
+2024-05-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2095,25140,16,10,3,,15,Active
+2024-06-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2430,29160,14,7,1,65,16,Active
+2024-07-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2392,28704,12,7,2,56,17,Active
+2024-08-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2482,29784,21,11,7,,18,Active
+2024-09-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2236,26832,0,6,1,63,19,Active
+2024-10-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2521,30252,26,11,5,,20,Active
+2024-11-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2066,24792,9,7,3,58,21,Active
+2024-12-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2178,26136,31,10,4,57,22,Active
+2025-01-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2654,31848,22,10,5,55,23,Active
+2025-02-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2605,31260,9,9,1,74,24,Active
+2025-03-01,TechBridge Solutions,Technology,Latin America,SMB,Data Connector,Carol Williams,Outbound,2252,27024,17,7,6,76,25,Active
+2023-09-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2619,31428,59,7,9,56,1,Active
+2023-10-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2683,32196,58,7,4,46,2,Active
+2023-11-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2755,33060,48,11,7,,3,Active
+2023-12-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2785,33420,45,6,9,,4,Active
+2024-01-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2691,32292,49,6,10,41,5,Active
+2024-02-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2803,33636,56,10,7,,6,Active
+2024-03-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2823,33876,49,8,6,62,7,Active
+2024-04-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3112,37344,58,8,4,60,8,Active
+2024-05-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2984,35808,62,11,7,,9,Active
+2024-06-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2982,35784,48,9,9,50,10,Active
+2024-07-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3354,40248,70,8,10,,11,Active
+2024-08-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2908,34896,75,7,8,44,12,Active
+2024-09-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,2954,35448,57,11,6,,13,Active
+2024-10-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3342,40104,64,7,9,49,14,Active
+2024-11-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3279,39348,59,10,7,43,15,Active
+2024-12-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3023,36276,77,9,6,51,16,Active
+2025-01-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3815,45780,46,10,9,,17,Active
+2025-02-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3045,36540,41,7,10,55,18,Active
+2025-03-01,MedCore Analytics,Healthcare,North America,Mid-Market,AI Copilot,Eva Martinez,Referral,3390,40680,73,6,8,,19,Active
+2023-06-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,668,8016,56,9,0,49,1,Active
+2023-07-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,688,8256,34,13,0,,2,Active
+2023-08-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,684,8208,29,9,1,,3,Active
+2023-09-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,735,8820,41,14,0,47,4,Active
+2023-10-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,725,8700,39,11,4,30,5,Active
+2023-11-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,758,9096,53,10,0,31,6,Active
+2023-12-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,724,8688,52,9,0,42,7,Active
+2024-01-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,758,9096,56,10,2,53,8,Active
+2024-02-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,723,8676,46,14,3,,9,Active
+2024-03-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,823,9876,57,9,0,35,10,Active
+2024-04-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,794,9528,54,11,0,53,11,Active
+2024-05-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,856,10272,29,12,2,54,12,Active
+2024-06-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,884,10608,54,10,0,30,13,Active
+2024-07-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,808,9696,35,11,2,53,14,Active
+2024-08-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,922,11064,37,10,3,55,15,Active
+2024-09-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,788,9456,40,13,2,27,16,Active
+2024-10-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,900,10800,58,10,0,46,17,Active
+2024-11-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,974,11688,57,9,4,52,18,Active
+2024-12-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,802,9624,57,11,3,,19,Active
+2025-01-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,950,11400,22,12,3,42,20,Active
+2025-02-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,972,11664,40,12,0,,21,Active
+2025-03-01,EcoSystems Ltd,Manufacturing,Europe,SMB,AI Copilot,Bob Smith,Referral,887,10644,25,14,0,,22,Active
+2023-07-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,24156,289872,274,12,6,,1,Active
+2023-08-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,24581,294972,265,9,8,,2,Active
+2023-09-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,25820,309840,285,10,12,83,3,Active
+2023-10-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,26374,316488,295,14,8,61,4,Active
+2023-11-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,26249,314988,291,12,9,83,5,Active
+2023-12-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,26723,320676,264,12,10,69,6,Active
+2024-01-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,26256,315072,281,9,6,,7,Active
+2024-02-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,28058,336696,289,11,10,55,8,Active
+2024-03-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,27866,334392,275,14,8,,9,Active
+2024-04-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,28000,336000,284,9,10,72,10,Active
+2024-05-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,28395,340740,277,9,9,,11,Active
+2024-06-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,31109,373308,276,13,11,74,12,Active
+2024-07-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,27768,333216,265,12,8,80,13,Active
+2024-08-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,30936,371232,282,10,7,,14,Active
+2024-09-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,31027,372324,261,9,7,77,15,Active
+2024-10-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,33825,405900,292,12,7,74,16,Active
+2024-11-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,30585,367020,298,11,7,67,17,Active
+2024-12-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,33264,399168,291,13,10,70,18,Active
+2025-01-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,32708,392496,260,11,8,76,19,Active
+2025-02-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,37995,455940,296,11,12,83,20,Active
+2025-03-01,DataStream Corp,Technology,North America,Enterprise,Integration Hub,Eva Martinez,Outbound,34862,418344,275,14,12,79,21,Active
+2023-01-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3458,41496,58,6,4,,1,Active
+2023-02-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3582,42984,48,8,1,71,2,Active
+2023-03-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3612,43344,75,7,3,65,3,Active
+2023-04-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3656,43872,79,5,4,66,4,Active
+2023-05-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3772,45264,57,4,2,72,5,Active
+2023-06-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3691,44292,64,5,5,,6,Active
+2023-07-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3784,45408,67,7,6,78,7,Active
+2023-08-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3824,45888,81,8,4,,8,Active
+2023-09-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,4201,50412,54,5,0,64,9,Active
+2023-10-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3970,47640,73,8,2,,10,Active
+2023-11-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3929,47148,79,5,4,77,11,Active
+2023-12-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3915,46980,84,8,4,62,12,Active
+2024-01-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3882,46584,78,4,5,62,13,Active
+2024-02-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3966,47592,66,8,3,58,14,Active
+2024-03-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,3910,46920,80,4,3,,15,Active
+2024-04-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,4458,53496,57,5,2,64,16,Active
+2024-05-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5021,60252,50,8,4,62,17,Active
+2024-06-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5123,61476,56,6,6,60,18,Active
+2024-07-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5328,63936,70,6,1,84,19,Active
+2024-08-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5266,63192,45,5,4,74,20,Active
+2024-09-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5433,65196,66,5,3,,21,Active
+2024-10-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5471,65652,53,7,3,63,22,Active
+2024-11-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5440,65280,66,4,5,69,23,Active
+2024-12-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,5382,64584,45,8,2,80,24,Active
+2025-01-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,9659,115908,56,7,6,,25,Expanded
+2025-02-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,9808,117696,50,6,5,58,26,Expanded
+2025-03-01,ClearView Health,Healthcare,Europe,Mid-Market,AI Copilot,David Brown,Outbound,10309,123708,60,3,2,67,27,Expanded
+2023-08-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,17145,205740,203,12,1,35,1,Active
+2023-09-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,17329,207948,198,8,2,30,2,Active
+2023-10-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,17707,212484,222,9,4,,3,Active
+2023-11-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,18432,221184,197,8,6,39,4,Active
+2023-12-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,18465,221580,217,12,3,17,5,Active
+2024-01-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,17876,214512,219,11,2,33,6,Active
+2024-02-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,18306,219672,217,10,1,36,7,Active
+2024-03-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,20008,240096,215,7,5,29,8,Active
+2024-04-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,19622,235464,216,10,4,33,9,Active
+2024-05-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,20294,243528,203,12,1,27,10,Active
+2024-06-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,21598,259176,197,11,1,,11,Active
+2024-07-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,20142,241704,188,11,1,44,12,Active
+2024-08-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,23219,278628,214,7,3,28,13,Active
+2024-09-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,22698,272376,210,9,4,,14,Active
+2024-10-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,21147,253764,218,8,6,42,15,Active
+2024-11-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,20063,240756,218,10,5,19,16,Active
+2024-12-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,24348,292176,185,9,4,,17,Active
+2025-01-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,22969,275628,198,8,4,26,18,Active
+2025-02-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,21684,260208,191,7,7,,19,Active
+2025-03-01,Apex Industries,Manufacturing,Asia Pacific,Enterprise,AI Copilot,Eva Martinez,Inbound,24217,290604,185,8,2,17,20,Active
+2023-01-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,1917,23004,30,11,2,93,1,Active
+2023-02-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,1987,23844,43,11,3,74,2,Active
+2023-03-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,1939,23268,47,15,1,,3,Active
+2023-04-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2034,24408,13,12,5,,4,Active
+2023-05-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2117,25404,30,15,3,78,5,Active
+2023-06-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2056,24672,21,14,3,72,6,Active
+2023-07-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2086,25032,19,13,0,,7,Active
+2023-08-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2316,27792,45,14,1,77,8,Active
+2023-09-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2130,25560,31,15,0,,9,Active
+2023-10-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2381,28572,15,14,5,91,10,Active
+2023-11-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2103,25236,34,15,4,84,11,Active
+2023-12-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,2494,29928,22,14,5,86,12,Active
+2024-01-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4521,54252,31,12,0,71,13,Expanded
+2024-02-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,3887,46644,40,11,5,84,14,Expanded
+2024-03-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,3673,44076,30,12,3,79,15,Expanded
+2024-04-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,3814,45768,41,13,0,,16,Expanded
+2024-05-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4266,51192,23,12,2,78,17,Expanded
+2024-06-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,3974,47688,19,10,2,,18,Expanded
+2024-07-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,3706,44472,24,13,4,91,19,Expanded
+2024-08-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4706,56472,31,12,6,,20,Expanded
+2024-09-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,5410,64920,41,13,1,88,21,Expanded
+2024-10-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4448,53376,41,11,4,85,22,Expanded
+2024-11-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,5251,63012,14,15,0,89,23,Expanded
+2024-12-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,5139,61668,24,10,5,69,24,Expanded
+2025-01-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4267,51204,13,14,5,,25,Expanded
+2025-02-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4236,50832,44,14,3,65,26,Expanded
+2025-03-01,BrightPath Education,Education,North America,SMB,Platform Pro,Bob Smith,Inbound,4566,54792,28,10,4,,27,Expanded
+2023-03-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,2829,33948,68,17,5,45,1,Active
+2023-04-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,2855,34260,87,15,3,40,2,Active
+2023-05-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,2979,35748,73,12,2,,3,Active
+2023-06-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3044,36528,84,16,5,28,4,Active
+2023-07-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,2992,35904,99,15,1,26,5,Active
+2023-08-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3185,38220,80,16,3,46,6,Active
+2023-09-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3054,36648,83,12,0,43,7,Active
+2023-10-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3347,40164,88,12,1,30,8,Active
+2023-11-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3324,39888,87,17,3,,9,Active
+2023-12-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3489,41868,71,17,4,27,10,Active
+2024-01-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3128,37536,90,13,5,27,11,Active
+2024-02-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3528,42336,102,16,2,49,12,Active
+2024-03-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3173,38076,80,15,2,32,13,Active
+2024-04-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3611,43332,87,15,0,,14,Active
+2024-05-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3279,39348,102,14,5,32,15,Active
+2024-06-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3308,39696,72,15,4,50,16,Active
+2024-07-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,3964,47568,83,14,0,27,17,Active
+2024-08-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,7062,84744,80,12,0,27,18,Expanded
+2024-09-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,6546,78552,95,15,0,25,19,Expanded
+2024-10-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,5446,65352,101,14,5,37,20,Expanded
+2024-11-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,6067,72804,68,17,3,53,21,Expanded
+2024-12-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,6163,73956,87,13,0,33,22,Expanded
+2025-01-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,5614,67368,73,15,1,38,23,Expanded
+2025-02-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,5937,71244,79,13,4,,24,Expanded
+2025-03-01,FinEdge Analytics,Financial Services,Europe,Mid-Market,Analytics Suite,Bob Smith,Outbound,6545,78540,69,13,1,,25,Expanded
+2023-06-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,4815,57780,95,8,6,80,1,Active
+2023-07-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,4854,58248,72,8,4,58,2,Active
+2023-08-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5006,60072,89,6,7,79,3,Active
+2023-09-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5245,62940,84,10,3,69,4,Active
+2023-10-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5324,63888,59,8,7,70,5,Active
+2023-11-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5338,64056,70,7,7,,6,Active
+2023-12-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5547,66564,59,8,6,,7,Active
+2024-01-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5476,65712,81,9,2,80,8,Active
+2024-02-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5715,68580,89,9,7,84,9,Active
+2024-03-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5271,63252,70,10,7,66,10,Active
+2024-04-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5884,70608,57,9,7,,11,Active
+2024-05-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,6353,76236,76,8,2,55,12,Active
+2024-06-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5625,67500,87,10,6,72,13,Active
+2024-07-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5943,71316,80,8,8,76,14,Active
+2024-08-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5890,70680,56,8,2,,15,Active
+2024-09-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,6835,82020,60,5,8,85,16,Active
+2024-10-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,6054,72648,76,8,16,,17,Active
+2024-11-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,6134,73608,18,8,19,33,18,Active
+2024-12-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,5671,68052,18,5,18,42,19,Active
+2025-01-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,0,0,0,0,0,37,20,Churned
+2025-02-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,0,0,0,0,0,17,21,Churned
+2025-03-01,RetailNext Global,Retail,Asia Pacific,Mid-Market,Integration Hub,David Brown,Referral,0,0,0,0,0,29,22,Churned
+2023-08-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,515,6180,33,12,4,,1,Active
+2023-09-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,531,6372,39,8,1,,2,Active
+2023-10-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,543,6516,21,12,3,7,3,Active
+2023-11-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,542,6504,17,10,0,10,4,Active
+2023-12-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,569,6828,34,11,2,24,5,Active
+2024-01-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,574,6888,29,9,2,25,6,Active
+2024-02-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,584,7008,33,10,0,10,7,Active
+2024-03-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,618,7416,41,8,5,16,8,Active
+2024-04-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,599,7188,14,11,3,,9,Active
+2024-05-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,601,7212,33,11,4,,10,Active
+2024-06-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,619,7428,7,12,0,30,11,Active
+2024-07-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,605,7260,19,9,3,14,12,Active
+2024-08-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,678,8136,38,13,5,,13,Active
+2024-09-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,658,7896,9,12,0,13,14,Active
+2024-10-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,668,8016,4,13,2,22,15,Active
+2024-11-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,751,9012,8,13,5,25,16,Active
+2024-12-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,647,7764,4,11,1,16,17,Active
+2025-01-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,681,8172,9,9,0,30,18,Active
+2025-02-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,772,9264,41,13,2,10,19,Active
+2025-03-01,CloudVista,Technology,North America,SMB,Analytics Suite,Bob Smith,Partner,770,9240,15,8,3,16,20,Active
+2023-09-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,1994,23928,13,13,6,65,1,Active
+2023-10-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2038,24456,23,15,2,73,2,Active
+2023-11-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2072,24864,22,15,1,75,3,Active
+2023-12-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2081,24972,15,17,3,,4,Active
+2024-01-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2101,25212,0,17,1,,5,Active
+2024-02-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2205,26460,20,12,7,,6,Active
+2024-03-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2136,25632,25,13,4,63,7,Active
+2024-04-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2353,28236,19,16,5,,8,Active
+2024-05-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2391,28692,1,12,1,,9,Active
+2024-06-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2141,25692,8,15,4,,10,Active
+2024-07-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2240,26880,6,17,3,60,11,Active
+2024-08-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2217,26604,21,14,1,66,12,Active
+2024-09-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2219,26628,38,14,6,77,13,Active
+2024-10-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2446,29352,3,17,1,55,14,Active
+2024-11-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2509,30108,6,16,2,,15,Active
+2024-12-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2257,27084,19,12,7,68,16,Active
+2025-01-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2586,31032,12,15,1,78,17,Active
+2025-02-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2362,28344,21,14,2,67,18,Active
+2025-03-01,Horizon Health,Healthcare,Latin America,SMB,Integration Hub,Carol Williams,Referral,2783,33396,7,12,5,73,19,Active
+2023-03-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,23077,276924,277,7,3,23,1,Active
+2023-04-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,23091,277092,295,10,7,34,2,Active
+2023-05-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,24141,289692,258,11,4,21,3,Active
+2023-06-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,24659,295908,275,11,2,40,4,Active
+2023-07-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,24651,295812,264,7,5,35,5,Active
+2023-08-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,25187,302244,257,8,4,,6,Active
+2023-09-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,26692,320304,293,9,4,32,7,Active
+2023-10-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,26950,323400,261,6,6,17,8,Active
+2023-11-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,25497,305964,259,6,8,27,9,Active
+2023-12-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,27481,329772,289,9,5,,10,Active
+2024-01-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,25293,303516,291,10,6,19,11,Active
+2024-02-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,25561,306732,262,10,3,40,12,Active
+2024-03-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,28462,341544,282,10,7,39,13,Active
+2024-04-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,27507,330084,284,11,8,22,14,Active
+2024-05-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,27428,329136,284,6,5,34,15,Active
+2024-06-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,28227,338724,268,6,2,37,16,Active
+2024-07-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,31580,378960,267,9,4,31,17,Active
+2024-08-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,27804,333648,265,11,8,42,18,Active
+2024-09-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,32925,395100,264,6,4,,19,Active
+2024-10-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,29344,352128,261,8,7,33,20,Active
+2024-11-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,31801,381612,289,8,2,30,21,Active
+2024-12-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,30980,371760,273,6,6,36,22,Active
+2025-01-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,29933,359196,289,6,2,42,23,Active
+2025-02-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,30433,365196,287,8,5,44,24,Active
+2025-03-01,Sterling Manufacturing,Manufacturing,North America,Enterprise,Analytics Suite,Bob Smith,Event,30032,360384,259,10,8,,25,Active
+2023-04-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1386,16632,38,7,0,,1,Active
+2023-05-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1379,16548,31,7,2,40,2,Active
+2023-06-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1452,17424,34,8,0,,3,Active
+2023-07-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1514,18168,31,10,2,39,4,Active
+2023-08-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1439,17268,45,5,0,32,5,Active
+2023-09-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1536,18432,19,7,0,,6,Active
+2023-10-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,1607,19284,38,5,0,31,7,Active
+2023-11-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3063,36756,28,10,0,17,8,Expanded
+2023-12-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3289,39468,52,8,3,43,9,Expanded
+2024-01-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2978,35736,56,5,2,,10,Expanded
+2024-02-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2649,31788,46,10,0,22,11,Expanded
+2024-03-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2539,30468,44,10,4,38,12,Expanded
+2024-04-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2562,30744,23,6,0,39,13,Expanded
+2024-05-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2397,28764,48,7,1,18,14,Expanded
+2024-06-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2966,35592,38,8,0,42,15,Expanded
+2024-07-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3028,36336,38,10,3,34,16,Expanded
+2024-08-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3215,38580,28,5,3,22,17,Expanded
+2024-09-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,2555,30660,38,7,4,20,18,Expanded
+2024-10-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,4012,48144,54,10,2,22,19,Expanded
+2024-11-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3523,42276,27,5,0,16,20,Expanded
+2024-12-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3239,38868,42,10,3,45,21,Expanded
+2025-01-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3102,37224,23,5,0,,22,Expanded
+2025-02-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3151,37812,40,5,0,,23,Expanded
+2025-03-01,EduForward,Education,Europe,SMB,Integration Hub,Carol Williams,Inbound,3340,40080,46,10,1,30,24,Expanded
+2023-07-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3509,42108,72,7,3,,1,Active
+2023-08-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3502,42024,54,12,9,21,2,Active
+2023-09-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3646,43752,76,7,6,30,3,Active
+2023-10-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3682,44184,73,9,7,21,4,Active
+2023-11-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3718,44616,53,7,5,24,5,Active
+2023-12-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3631,43572,59,7,9,20,6,Active
+2024-01-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4020,48240,56,8,3,12,7,Active
+2024-02-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3833,45996,45,8,7,,8,Active
+2024-03-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3940,47280,53,8,4,23,9,Active
+2024-04-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4307,51684,64,11,3,27,10,Active
+2024-05-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4502,54024,78,8,7,35,11,Active
+2024-06-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4510,54120,73,11,5,,12,Active
+2024-07-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,3892,46704,45,8,7,12,13,Active
+2024-08-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4396,52752,42,9,7,11,14,Active
+2024-09-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4276,51312,53,9,3,5,15,Active
+2024-10-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4602,55224,51,7,9,21,16,Active
+2024-11-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,5110,61320,65,12,8,17,17,Active
+2024-12-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4443,53316,62,8,4,,18,Active
+2025-01-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,5091,61092,73,12,5,10,19,Active
+2025-02-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4402,52824,79,8,6,14,20,Active
+2025-03-01,MarketPulse Inc,Retail,North America,Mid-Market,Analytics Suite,Bob Smith,Partner,4314,51768,42,12,7,17,21,Active
+2023-03-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,18709,224508,290,6,3,36,1,Active
+2023-04-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,19375,232500,275,1,6,,2,Active
+2023-05-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,20051,240612,301,4,6,,3,Active
+2023-06-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,19313,231756,305,5,8,49,4,Active
+2023-07-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,19648,235776,279,1,5,25,5,Active
+2023-08-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,20110,241320,281,1,5,,6,Active
+2023-09-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,20131,241572,279,5,3,,7,Active
+2023-10-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,21978,263736,302,6,4,,8,Active
+2023-11-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,20606,247272,281,3,4,,9,Active
+2023-12-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,22839,274068,309,3,8,34,10,Active
+2024-01-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,21416,256992,278,4,7,,11,Active
+2024-02-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,21317,255804,298,1,6,27,12,Active
+2024-03-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,24769,297228,315,5,6,31,13,Active
+2024-04-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,21139,253668,285,6,5,,14,Active
+2024-05-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,25855,310260,294,4,6,40,15,Active
+2024-06-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,21912,262944,309,4,14,,16,Active
+2024-07-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,23873,286476,90,1,17,1,17,Active
+2024-08-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,27296,327552,93,1,19,-4,18,Active
+2024-09-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,,19,Churned
+2024-10-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,,20,Churned
+2024-11-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,-15,21,Churned
+2024-12-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,10,22,Churned
+2025-01-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,-24,23,Churned
+2025-02-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,2,24,Churned
+2025-03-01,Nexus Financial,Financial Services,Asia Pacific,Enterprise,AI Copilot,Alice Johnson,Event,0,0,0,0,0,-1,25,Churned
+2023-02-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,21158,253896,130,3,10,23,1,Active
+2023-03-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,21782,261384,127,5,13,,2,Active
+2023-04-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,22152,265824,129,7,13,6,3,Active
+2023-05-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,22002,264024,102,7,14,,4,Active
+2023-06-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,21833,261996,114,8,11,,5,Active
+2023-07-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,24249,290988,116,3,12,31,6,Active
+2023-08-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,23069,276828,124,8,15,8,7,Active
+2023-09-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,22819,273828,121,5,12,,8,Active
+2023-10-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,24837,298044,98,4,13,,9,Active
+2023-11-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,25858,310296,126,5,16,6,10,Active
+2023-12-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,23294,279528,125,6,11,29,11,Active
+2024-01-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,24066,288792,105,3,11,,12,Active
+2024-02-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,23682,284184,116,8,11,13,13,Active
+2024-03-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,28394,340728,125,6,15,34,14,Active
+2024-04-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,28058,336696,108,5,13,,15,Active
+2024-05-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,25209,302508,123,7,14,16,16,Active
+2024-06-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,25390,304680,109,8,16,27,17,Active
+2024-07-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,26572,318864,117,3,11,32,18,Active
+2024-08-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,31400,376800,107,8,11,,19,Active
+2024-09-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,29113,349356,93,6,11,25,20,Active
+2024-10-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,30298,363576,93,4,12,24,21,Active
+2024-11-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,31771,381252,110,6,13,32,22,Active
+2024-12-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,29856,358272,106,6,12,,23,Active
+2025-01-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,31501,378012,93,7,15,35,24,Active
+2025-02-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,31712,380544,131,7,12,14,25,Active
+2025-03-01,ProHealth Systems,Healthcare,North America,Enterprise,AI Copilot,Carol Williams,Partner,31293,375516,114,5,15,15,26,Active
+2023-05-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3613,43356,40,13,7,,1,Active
+2023-06-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3718,44616,59,16,8,71,2,Active
+2023-07-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3722,44664,36,16,8,,3,Active
+2023-08-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3941,47292,44,15,6,72,4,Active
+2023-09-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4017,48204,57,12,6,,5,Active
+2023-10-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3809,45708,38,16,10,62,6,Active
+2023-11-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4260,51120,43,16,4,52,7,Active
+2023-12-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,3953,47436,41,14,10,73,8,Active
+2024-01-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4098,49176,59,13,7,72,9,Active
+2024-02-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4230,50760,62,15,8,75,10,Active
+2024-03-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4300,51600,34,15,4,,11,Active
+2024-04-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4418,53016,48,11,10,72,12,Active
+2024-05-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4130,49560,34,13,7,,13,Active
+2024-06-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4181,50172,33,11,7,55,14,Active
+2024-07-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4407,52884,25,11,7,53,15,Active
+2024-08-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4972,59664,32,15,10,,16,Active
+2024-09-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,5091,61092,27,12,8,,17,Active
+2024-10-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4695,56340,52,14,4,46,18,Active
+2024-11-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,5199,62388,22,13,10,71,19,Active
+2024-12-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4276,51312,22,16,9,52,20,Active
+2025-01-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,5319,63828,44,13,5,,21,Active
+2025-02-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,5107,61284,41,12,4,71,22,Active
+2025-03-01,FabriTech,Manufacturing,Latin America,Mid-Market,AI Copilot,Bob Smith,Inbound,4843,58116,40,14,9,61,23,Active
+2023-07-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1518,18216,35,13,0,46,1,Active
+2023-08-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1555,18660,43,14,5,52,2,Active
+2023-09-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1601,19212,6,17,0,55,3,Active
+2023-10-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1568,18816,10,15,2,47,4,Active
+2023-11-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1660,19920,33,17,0,41,5,Active
+2023-12-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1647,19764,9,17,3,43,6,Active
+2024-01-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1696,20352,9,16,4,54,7,Active
+2024-02-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1691,20292,9,15,0,54,8,Active
+2024-03-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1848,22176,36,13,1,,9,Active
+2024-04-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1742,20904,5,16,2,64,10,Active
+2024-05-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1895,22740,33,14,0,35,11,Active
+2024-06-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1925,23100,10,16,4,50,12,Active
+2024-07-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2069,24828,35,12,4,58,13,Active
+2024-08-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2094,25128,17,15,1,,14,Active
+2024-09-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1751,21012,14,12,5,44,15,Active
+2024-10-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2129,25548,23,15,4,38,16,Active
+2024-11-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2193,26316,5,12,5,39,17,Active
+2024-12-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,1951,23412,31,16,1,63,18,Active
+2025-01-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2001,24012,24,13,0,,19,Active
+2025-02-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2382,28584,20,15,4,,20,Active
+2025-03-01,DigitalEdge Media,Retail,Europe,SMB,Integration Hub,Bob Smith,Outbound,2323,27876,13,12,0,57,21,Active
+2023-03-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5509,66108,71,9,4,35,1,Active
+2023-04-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5668,68016,100,12,3,48,2,Active
+2023-05-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5887,70644,88,11,3,47,3,Active
+2023-06-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5811,69732,82,10,1,,4,Active
+2023-07-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5758,69096,102,11,0,25,5,Active
+2023-08-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6060,72720,97,10,5,30,6,Active
+2023-09-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6355,76260,87,8,1,33,7,Active
+2023-10-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6279,75348,102,12,2,37,8,Active
+2023-11-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,5971,71652,95,11,2,,9,Active
+2023-12-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6432,77184,74,10,4,45,10,Active
+2024-01-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6125,73500,93,7,3,42,11,Active
+2024-02-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7128,85536,105,11,4,34,12,Active
+2024-03-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7031,84372,96,9,1,51,13,Active
+2024-04-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7401,88812,96,9,3,,14,Active
+2024-05-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7381,88572,90,12,2,28,15,Active
+2024-06-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7587,91044,81,7,1,36,16,Active
+2024-07-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7334,88008,90,12,0,26,17,Active
+2024-08-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7340,88080,93,7,1,44,18,Active
+2024-09-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,6820,81840,92,8,2,51,19,Active
+2024-10-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,8040,96480,73,10,0,54,20,Active
+2024-11-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,8297,99564,95,10,4,43,21,Active
+2024-12-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,8891,106692,67,11,4,,22,Active
+2025-01-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,8738,104856,97,11,5,54,23,Active
+2025-02-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,8501,102012,78,12,5,29,24,Active
+2025-03-01,CoreData Financial,Financial Services,North America,Mid-Market,Data Connector,Eva Martinez,Event,7807,93684,105,11,1,,25,Active

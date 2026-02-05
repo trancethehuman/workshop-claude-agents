@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Churn Risk Report — Customer Health Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #0a0b0f;
+    --bg-surface: #12131a;
+    --bg-card: #181a24;
+    --bg-elevated: #1e2030;
+    --border: #252838;
+    --border-subtle: #1c1e2a;
+    --text-primary: #e8e9ed;
+    --text-secondary: #8a8d9b;
+    --text-muted: #555868;
+    --teal: #3ecfb4;
+    --teal-dim: #2a9a84;
+    --teal-glow: rgba(62, 207, 180, 0.12);
+    --amber: #f0a828;
+    --amber-dim: #b07a18;
+    --amber-glow: rgba(240, 168, 40, 0.10);
+    --red: #ef4056;
+    --red-dim: #a82a3c;
+    --red-glow: rgba(239, 64, 86, 0.10);
+    --blue: #5b8af0;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'DM Sans', -apple-system, sans-serif;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* --- Noise Overlay --- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .shell {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  /* --- Header --- */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text-primary);
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--teal);
+  }
+  .header-meta {
+    text-align: right;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .header-meta strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* --- Metric Cards --- */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .metric-card.teal::before { background: linear-gradient(90deg, var(--teal), transparent); }
+  .metric-card.amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+  .metric-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .metric-card:nth-child(1) { animation-delay: 0.08s; }
+  .metric-card:nth-child(2) { animation-delay: 0.14s; }
+  .metric-card:nth-child(3) { animation-delay: 0.20s; }
+  .metric-card:nth-child(4) { animation-delay: 0.26s; }
+  .metric-card:nth-child(5) { animation-delay: 0.32s; }
+  .metric-card:nth-child(6) { animation-delay: 0.38s; }
+
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .metric-value {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .metric-value.teal { color: var(--teal); }
+  .metric-value.amber { color: var(--amber); }
+  .metric-value.red { color: var(--red); }
+  .metric-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* --- Section Titles --- */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .section-title .num {
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-right: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* --- Two Column Layout --- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  /* --- Panel --- */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  /* --- Indicators Table --- */
+  .ind-table { width: 100%; border-collapse: collapse; }
+  .ind-table th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    padding: 0 0 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+  }
+  .ind-table th:not(:first-child) { text-align: right; }
+  .ind-table td {
+    padding: 14px 0;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+  .ind-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+  .ind-table tr:last-child td { border-bottom: none; }
+  .ind-table td:first-child {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .change-bad { color: var(--red); font-weight: 600; }
+  .change-good { color: var(--teal); font-weight: 600; }
+  .signal-icon {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+  .signal-icon.red { background: var(--red); box-shadow: 0 0 8px var(--red-glow); }
+
+  /* --- Chart --- */
+  .chart-wrap {
+    position: relative;
+    height: 220px;
+    margin-top: 8px;
+  }
+  .chart-wrap canvas {
+    width: 100%;
+    height: 100%;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 14px;
+    justify-content: center;
+  }
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+  }
+  .chart-legend-dot {
+    width: 8px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  /* --- Risk Table --- */
+  .risk-table-wrap {
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: 0.45s;
+  }
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .risk-table thead th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    padding: 16px 20px;
+    font-weight: 500;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+  .risk-table tbody td {
+    padding: 16px 20px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .risk-table tbody tr:last-child td { border-bottom: none; }
+  .risk-table tbody tr:hover { background: rgba(255,255,255,0.015); }
+  .company-name {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .segment-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    background: rgba(240, 168, 40, 0.1);
+    color: var(--amber);
+    border: 1px solid rgba(240, 168, 40, 0.18);
+  }
+
+  /* Risk gauge */
+  .risk-gauge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .risk-bar-track {
+    width: 60px;
+    height: 5px;
+    background: var(--bg-deep);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .risk-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .risk-bar-fill.high { background: linear-gradient(90deg, var(--red-dim), var(--red)); }
+  .risk-bar-fill.med { background: linear-gradient(90deg, var(--amber-dim), var(--amber)); }
+  .risk-score {
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 32px;
+  }
+  .risk-score.high { color: var(--red); }
+  .risk-score.med { color: var(--amber); }
+
+  .signal-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .signal-tag {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .signal-tag.bad {
+    background: var(--red-glow);
+    color: var(--red);
+    border: 1px solid rgba(239,64,86,0.15);
+  }
+  .signal-tag.warn {
+    background: var(--amber-glow);
+    color: var(--amber);
+    border: 1px solid rgba(240,168,40,0.15);
+  }
+
+  /* --- Actions --- */
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .action-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .action-card:nth-child(1) { animation-delay: 0.55s; }
+  .action-card:nth-child(2) { animation-delay: 0.62s; }
+  .action-card:nth-child(3) { animation-delay: 0.69s; }
+  .action-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20px; bottom: 20px;
+    width: 3px;
+    border-radius: 2px;
+  }
+  .action-card:nth-child(1)::before { background: var(--red); }
+  .action-card:nth-child(2)::before { background: var(--amber); }
+  .action-card:nth-child(3)::before { background: var(--amber); }
+  .action-rank {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--border);
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    line-height: 1;
+  }
+  .action-company {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+  }
+  .action-owner {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .action-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* --- Insight Callout --- */
+  .insight-callout {
+    background: var(--amber-glow);
+    border: 1px solid rgba(240, 168, 40, 0.18);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    animation-delay: 0.75s;
+  }
+  .insight-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .insight-body strong {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .insight-body p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* --- Footer --- */
+  .footer {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding-top: 32px;
+    border-top: 1px solid var(--border-subtle);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+    animation-delay: 0.85s;
+  }
+
+  /* --- Animations --- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 960px) {
+    .metrics-row { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .actions-grid { grid-template-columns: 1fr; }
+    .risk-table { font-size: 0.8rem; }
+  }
+  @media (max-width: 600px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .header-meta { text-align: left; }
+    .shell { padding: 24px 16px 60px; }
+    .header-title { font-size: 1.9rem; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Header -->
+  <header class="header">
+    <h1 class="header-title">Customer Health<br>& <em>Churn Risk</em> Report</h1>
+    <div class="header-meta">
+      <strong>Generated</strong> Mar 2025<br>
+      <strong>Range</strong> Feb 2023 – Mar 2025<br>
+      <strong>Accounts</strong> 30 companies
+    </div>
+  </header>
+
+  <!-- Key Metrics -->
+  <div class="metrics-row">
+    <div class="metric-card teal">
+      <div class="metric-label">Overall NRR</div>
+      <div class="metric-value teal" data-count="130.3">0</div>
+      <div class="metric-sub">Net Revenue Retention</div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-label">Enterprise NRR</div>
+      <div class="metric-value teal" data-count="134.0">0</div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-label">Mid-Market NRR</div>
+      <div class="metric-value teal" data-count="118.6">0</div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-label">SMB NRR</div>
+      <div class="metric-value amber" data-count="111.6">0</div>
+      <div class="metric-sub">Lowest segment</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Churned (12mo)</div>
+      <div class="metric-value amber" data-count="4" data-suffix="" data-decimals="0">0</div>
+      <div class="metric-sub">accounts lost</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Revenue Lost</div>
+      <div class="metric-value red" data-count="47654" data-prefix="$" data-suffix="" data-decimals="0">0</div>
+      <div class="metric-sub">monthly recurring</div>
+    </div>
+  </div>
+
+  <!-- Two Column: Indicators + Chart -->
+  <div class="two-col">
+    <div class="panel">
+      <h2 class="section-title"><span class="num">01</span>Churn Leading Indicators</h2>
+      <table class="ind-table">
+        <thead>
+          <tr><th>Signal</th><th>Normal</th><th>Pre-Churn</th><th>Change</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="signal-icon red"></span>Monthly Logins</td>
+            <td>142</td>
+            <td>96</td>
+            <td class="change-bad">-33%</td>
+          </tr>
+          <tr>
+            <td><span class="signal-icon red"></span>Support Tickets</td>
+            <td>6.7 /mo</td>
+            <td>16.2 /mo</td>
+            <td class="change-bad">+144%</td>
+          </tr>
+          <tr>
+            <td><span class="signal-icon red"></span>NPS Score</td>
+            <td>55</td>
+            <td>17</td>
+            <td class="change-bad">-38 pts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel" style="animation-delay:0.38s;">
+      <h2 class="section-title"><span class="num">02</span>Pre-Churn Pattern</h2>
+      <div class="chart-wrap">
+        <canvas id="churnChart"></canvas>
+      </div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--teal)"></span>Logins (scaled)</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--amber)"></span>Tickets (scaled)</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--red)"></span>NPS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- At-Risk Accounts -->
+  <div class="risk-table-wrap">
+    <h2 class="section-title"><span class="num">03</span>At-Risk Accounts</h2>
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Segment</th>
+          <th>MRR</th>
+          <th>Risk Score</th>
+          <th>Signals</th>
+          <th>Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="company-name">MediaGroup Digital</span></td>
+          <td><span class="segment-badge">SMB</span></td>
+          <td>$2,207</td>
+          <td>
+            <div class="risk-gauge">
+              <div class="risk-bar-track"><div class="risk-bar-fill high" data-width="83"></div></div>
+              <span class="risk-score high">50.3</span>
+            </div>
+          </td>
+          <td>
+            <div class="signal-tags">
+              <span class="signal-tag bad">Logins -24%</span>
+              <span class="signal-tag bad">Tickets +50%</span>
+            </div>
+          </td>
+          <td>Alice Johnson</td>
+        </tr>
+        <tr>
+          <td><span class="company-name">EcoSystems Ltd</span></td>
+          <td><span class="segment-badge">SMB</span></td>
+          <td>$887</td>
+          <td>
+            <div class="risk-gauge">
+              <div class="risk-bar-track"><div class="risk-bar-fill high" data-width="72"></div></div>
+              <span class="risk-score high">43.3</span>
+            </div>
+          </td>
+          <td>
+            <div class="signal-tags">
+              <span class="signal-tag bad">Logins -43%</span>
+            </div>
+          </td>
+          <td>Bob Smith</td>
+        </tr>
+        <tr>
+          <td><span class="company-name">TechBridge Solutions</span></td>
+          <td><span class="segment-badge">SMB</span></td>
+          <td>$2,252</td>
+          <td>
+            <div class="risk-gauge">
+              <div class="risk-bar-track"><div class="risk-bar-fill med" data-width="68"></div></div>
+              <span class="risk-score med">40.9</span>
+            </div>
+          </td>
+          <td>
+            <div class="signal-tags">
+              <span class="signal-tag bad">Logins -41%</span>
+            </div>
+          </td>
+          <td>Carol Williams</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Recommended Actions -->
+  <h2 class="section-title" style="opacity:0;animation:fadeUp 0.5s ease forwards;animation-delay:0.5s;"><span class="num">04</span>Recommended Actions</h2>
+  <div class="actions-grid">
+    <div class="action-card">
+      <div class="action-rank">1</div>
+      <div class="action-company">MediaGroup Digital</div>
+      <div class="action-owner">Owner: Alice Johnson</div>
+      <p class="action-text">Schedule an executive check-in this week. The ticket spike suggests product friction&nbsp;&mdash; loop in a solutions engineer to review their setup and unblock adoption.</p>
+    </div>
+    <div class="action-card">
+      <div class="action-rank">2</div>
+      <div class="action-company">EcoSystems Ltd</div>
+      <div class="action-owner">Owner: Bob Smith</div>
+      <p class="action-text">Trigger a re-engagement campaign. Product walkthrough of features they&rsquo;re not using, paired with a usage health check to diagnose the 43% login decline.</p>
+    </div>
+    <div class="action-card">
+      <div class="action-rank">3</div>
+      <div class="action-company">TechBridge Solutions</div>
+      <div class="action-owner">Owner: Carol Williams</div>
+      <p class="action-text">Reach out directly. Silent disengagement is harder to recover than vocal frustration. Offer a quarterly business review to realign on value.</p>
+    </div>
+  </div>
+
+  <!-- Insight Callout -->
+  <div class="insight-callout">
+    <div class="insight-icon">&#9670;</div>
+    <div class="insight-body">
+      <strong>Key Observation</strong>
+      <p>All 3 at-risk accounts are SMB. This segment has the lowest NRR at 111.6% and appears most susceptible to quiet churn. Consider whether the SMB segment is getting adequate CSM coverage relative to Enterprise and Mid-Market.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Generated by Claude Code &middot; Source: customer-metrics.csv &middot; 682 rows &middot; 30 companies &middot; Feb 2023 – Mar 2025
+  </div>
+
+</div>
+
+<script>
+// --- Animated counters ---
+document.addEventListener('DOMContentLoaded', () => {
+  const counters = document.querySelectorAll('.metric-value[data-count]');
+  const duration = 1400;
+
+  setTimeout(() => {
+    counters.forEach(el => {
+      const target = parseFloat(el.dataset.count);
+      const decimals = el.dataset.decimals !== undefined ? parseInt(el.dataset.decimals) : 1;
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix !== undefined ? el.dataset.suffix : '%';
+      const start = performance.now();
+
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = target * ease;
+        let display = decimals > 0 ? current.toFixed(decimals) : Math.round(current).toLocaleString();
+        el.textContent = prefix + display + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, 500);
+
+  // --- Risk bar animation ---
+  setTimeout(() => {
+    document.querySelectorAll('.risk-bar-fill[data-width]').forEach(bar => {
+      bar.style.width = bar.dataset.width + '%';
+    });
+  }, 800);
+
+  // --- Churn pattern chart ---
+  const canvas = document.getElementById('churnChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    return { w: rect.width, h: rect.height };
+  }
+
+  const { w, h } = resizeCanvas();
+
+  const labels = ['-6', '-5', '-4', '-3', '-2', '-1', 'Churn'];
+  // Normalized to 0-100 scale for visual
+  // Logins: 142 baseline, 96 pre-churn, 0 churn
+  const loginsRaw = [142, 145, 139, 110, 96, 88, 0];
+  const logins = loginsRaw.map(v => v / 1.5);
+  // Tickets: 6.7 baseline, spikes to 16.2, then 0
+  const ticketsRaw = [6, 7, 7.1, 12, 16, 16.6, 0];
+  const tickets = ticketsRaw.map(v => v * 5.5);
+  // NPS: 55 baseline, drops to 17, then 0
+  const nps = [55, 53, 57, 30, 17, 12, 0];
+
+  const padL = 36, padR = 16, padT = 16, padB = 34;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  function xPos(i) { return padL + (i / (labels.length - 1)) * plotW; }
+  function yPos(v) { return padT + plotH - (v / 100) * plotH; }
+
+  function drawGrid() {
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let v = 0; v <= 100; v += 25) {
+      ctx.beginPath();
+      ctx.moveTo(padL, yPos(v));
+      ctx.lineTo(w - padR, yPos(v));
+      ctx.stroke();
+    }
+    // Vertical zone markers
+    ctx.fillStyle = 'rgba(239, 64, 86, 0.04)';
+    ctx.fillRect(xPos(3), padT, xPos(6) - xPos(3), plotH);
+
+    // X labels
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-muted');
+    ctx.font = '10px "DM Sans", sans-serif';
+    ctx.textAlign = 'center';
+    labels.forEach((l, i) => {
+      ctx.fillText(l === 'Churn' ? 'CHURN' : 'M' + l, xPos(i), h - 10);
+    });
+
+    // Zone labels
+    ctx.font = '9px "DM Sans", sans-serif';
+    ctx.fillStyle = 'rgba(138,141,155,0.5)';
+    ctx.textAlign = 'center';
+    ctx.fillText('BASELINE', xPos(1), padT + 12);
+    ctx.fillStyle = 'rgba(239,64,86,0.45)';
+    ctx.fillText('DANGER ZONE', xPos(4.5), padT + 12);
+  }
+
+  function drawLine(data, color, progress) {
+    const n = Math.floor(progress * (data.length - 1));
+    const frac = progress * (data.length - 1) - n;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(data[0]));
+
+    for (let i = 1; i <= n && i < data.length; i++) {
+      ctx.lineTo(xPos(i), yPos(data[i]));
+    }
+    if (n < data.length - 1) {
+      const nx = xPos(n) + (xPos(n + 1) - xPos(n)) * frac;
+      const ny = yPos(data[n]) + (yPos(data[n + 1]) - yPos(data[n])) * frac;
+      ctx.lineTo(nx, ny);
+    }
+    ctx.stroke();
+
+    // Dots
+    for (let i = 0; i <= n && i < data.length; i++) {
+      ctx.beginPath();
+      ctx.arc(xPos(i), yPos(data[i]), 3, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+  }
+
+  let animStart = null;
+  const animDur = 1800;
+
+  function animate(ts) {
+    if (!animStart) animStart = ts;
+    const elapsed = ts - animStart;
+    const progress = Math.min(elapsed / animDur, 1);
+    const ease = 1 - Math.pow(1 - progress, 2.5);
+
+    ctx.clearRect(0, 0, w * dpr, h * dpr);
+    drawGrid();
+    drawLine(logins, getComputedStyle(document.documentElement).getPropertyValue('--teal').trim(), ease);
+    drawLine(tickets, getComputedStyle(document.documentElement).getPropertyValue('--amber').trim(), ease);
+    drawLine(nps, getComputedStyle(document.documentElement).getPropertyValue('--red').trim(), ease);
+
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+
+  setTimeout(() => requestAnimationFrame(animate), 700);
+});
+</script>
+</body>
+</html>
