@@ -39,7 +39,7 @@ This lab establishes your development environment for the workshop.
 Before starting this lab, verify you have:
 
 - [ ] **Claude Pro subscription** - Active and able to access Claude
-- [ ] **Node.js 18+** - Run `node --version` to check
+- [ ] **Node.js 18+** - Run `node --version` to check (only required if using npm install method)
 - [ ] **Git** - Run `git --version` to check
 - [ ] **VS Code or preferred editor** - For editing files
 - [ ] **Terminal access** - macOS Terminal, iTerm2, or Windows with WSL2
@@ -99,9 +99,12 @@ Verify your prerequisites are met:
    ```bash
    # macOS/Linux
    curl -fsSL https://claude.ai/install.sh | bash
+
+   # Windows (PowerShell)
+   irm https://claude.ai/install.ps1 | iex
    ```
 
-   OR via npm:
+   OR via npm (requires Node.js 18+):
    ```bash
    npm install -g @anthropic-ai/claude-code
    ```
@@ -152,12 +155,12 @@ Verify your prerequisites are met:
    - Authorize Claude Code
    - Return to terminal
 
-3. **Test that it's working:**
+3. **Test that it's working.** Type this at the Claude Code prompt (don't include the `>`):
    ```
-   > What files are in this repository?
+   What files are in this repository?
    ```
 
-4. **Expected result:** Claude lists the files and folders in the repo, using the Glob or Bash tool.
+4. **Expected result:** Claude lists the files and folders in the repo, using the Glob or Bash tool. You'll see tool names like `Read` or `Glob` appear as Claude works.
 
 ---
 
@@ -197,6 +200,19 @@ Before proceeding to Lab 2, verify:
 - [ ] **Repository cloned** - You can `cd workshop-claude-agents` and see files
 - [ ] **Authentication working** - Claude responds to queries
 - [ ] **Test query successful** - "What files" query returns repo contents
+
+---
+
+## FAQ
+
+**Q: Do I need Node.js if I use the curl/PowerShell installer?**
+No. The official installer is standalone. Node.js is only needed if you choose the npm install method.
+
+**Q: I already have Claude Code installed. Should I reinstall?**
+No. Run `claude --version` to check your version. If you want to update, run `claude update`.
+
+**Q: Claude Code asks me to choose a permission mode. Which should I pick?**
+For this workshop, choose the default or "auto-accept" mode. You can always change it later.
 
 ---
 

@@ -75,7 +75,7 @@ By the end of this lab, you will:
 1. **Ask Claude to explain the repository:**
 
    ```
-   > Explain the structure of this repository and what each folder is for.
+   Explain the structure of this repository and what each folder is for.
    ```
 
 2. **Observe:**
@@ -89,35 +89,35 @@ By the end of this lab, you will:
 
 ## Task 2.2: Explore Built-in Tools (15 min)
 
-Try each of these commands and observe which tools Claude uses:
+Type each of these prompts in Claude Code and observe which tools it uses. You'll see tool names (like **Glob**, **Read**, **Bash**) appear in the output as Claude works.
 
 1. **File finding with Glob:**
 
    ```
-   > Find all markdown files in this repo
+   Find all markdown files in this repo
    ```
 
 2. **Reading files:**
 
    ```
-   > Read the CLAUDE.md file and summarize what it says
+   Read the CLAUDE.md file and summarize what it says
    ```
 
 3. **Searching content with Grep:**
 
    ```
-   > Search for any files that mention "revenue" or "customer"
+   Search for any files that mention "revenue" or "customer"
    ```
 
 4. **Listing folder contents:**
 
    ```
-   > What files are in the data folder?
+   What files are in the data folder?
    ```
 
 5. **Running commands with Bash:**
    ```
-   > Show me the current git status
+   Show me the current git status
    ```
 
 **Record your observations:**
@@ -144,7 +144,7 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
    # or: nano CLAUDE.md
    ```
 
-2. **Add a section for your project context:**
+2. **Add a section to the end of the file** (below the existing content):
 
    ```markdown
    ## My Project Context
@@ -167,13 +167,16 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
 
 3. **Save the file.**
 
-4. **Test that Claude uses your context:**
+4. **Important:** Run `/clear` in Claude Code so it picks up your changes.
+
+5. **Test that Claude uses your context:**
 
    ```
-   > Based on my project context, what kind of agent would be most useful for me?
+   Based on my project context, what kind of agent would be most useful for me?
    ```
+   If Claude doesn't reference your additions, make sure you ran `/clear` in step 4.
 
-5. **Expected:** Claude's response should reference the specific details you added to CLAUDE.md.
+6. **Expected:** Claude's response should reference the specific details you added to CLAUDE.md.
 
 ---
 
@@ -184,11 +187,11 @@ The workshop includes `startup-funding.db`, a SQLite database with venture capit
 1. **Ask Claude to explore the database:**
 
    ```
-   > Look at data/startup-funding.db. Tell me:
-   > 1. What tables exist
-   > 2. How many rows in each table
-   > 3. What the columns represent
-   > 4. Any observations about the data
+   Look at data/startup-funding.db. Tell me:
+   1. What tables exist
+   2. How many rows in each table
+   3. What the columns represent
+   4. Any observations about the data
    ```
 
 2. **Observe how Claude:**
@@ -198,7 +201,7 @@ The workshop includes `startup-funding.db`, a SQLite database with venture capit
 
 3. **Try a specific query:**
    ```
-   > Which AI coding tool companies are in the database? List their funding rounds.
+   Which AI coding tool companies are in the database? List their funding rounds.
    ```
 
 **This previews the data analysis workflows we'll build in Week 2.**
@@ -213,7 +216,7 @@ The workshop includes `startup-funding.db`, a SQLite database with venture capit
 | ------------------------- | ---------------------------------------------- |
 | Claude doesn't find files | Check you're in the right directory with `pwd` |
 | "No such file" errors     | Verify repo cloned correctly with `ls -la`     |
-| Database queries fail     | Ensure sqlite3 is installed: `which sqlite3`   |
+| Database queries fail     | Ensure sqlite3 is installed: `which sqlite3`. To install: **macOS** already has it, **WSL/Linux** run `sudo apt install sqlite3`, **Windows** run `choco install sqlite` or download from [sqlite.org](https://www.sqlite.org/download.html) |
 
 ### CLAUDE.md Issues
 
@@ -238,6 +241,22 @@ Before leaving this lab, verify:
 
 - [ ] Changed model with `/model sonnet` or `/model opus`
 - [ ] Explored additional Claude Code commands with `/help`
+
+---
+
+## FAQ
+
+**Q: How do I know which tool Claude is using?**
+Claude Code displays the tool name (e.g., `Glob`, `Read`, `Bash`) in the output before showing results. Look for these labels as Claude works through your request.
+
+**Q: I edited CLAUDE.md but Claude doesn't seem to notice.**
+Run `/clear` to start a fresh conversation. CLAUDE.md is loaded when a conversation starts, so mid-conversation edits need a reset.
+
+**Q: Can I ask Claude to edit CLAUDE.md for me instead of doing it manually?**
+Yes! But for this exercise, editing manually helps you understand what CLAUDE.md does and how Claude uses it.
+
+**Q: The database query is slow or seems stuck.**
+SQLite queries should complete quickly. If Claude appears stuck, press `Esc` to cancel and try a simpler prompt like "What tables are in data/startup-funding.db?"
 
 ---
 
