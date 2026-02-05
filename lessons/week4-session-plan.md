@@ -18,6 +18,16 @@ Claude is powerful but generic. Skills let you:
 - Create reusable capabilities
 - Ensure consistent behavior
 
+Without skills, teams hit three recurring problems:
+
+| Problem | What Happens | Example |
+|---------|-------------|---------|
+| **Prompt Drift** | Without consistent instructions, the agent produces different results for identical requests depending on which context it focuses on | You ask "score this lead" three times and get three different rubrics |
+| **Lost Workflow Conventions** | Your org has unique patterns for quality checks, approvals, and decision criteria that agents can't infer | The agent skips your mandatory data validation step because it doesn't know it exists |
+| **Context Bloat** | Copying detailed playbooks into every prompt overwhelms the agent's reasoning and buries critical information | You paste a 2,000-word SOP into the prompt and Claude forgets half the steps |
+
+Skills solve all three: write the instructions once, store them in a discoverable location, and the agent loads them on-demand without bloating context.
+
 ### Why Skills Matter: SOPs for Your Agent
 
 Think of skills as SOPs (Standard Operating Procedures) for Claude.
@@ -153,11 +163,37 @@ Skills you create work across this ecosystem. Put a SKILL.md in `.claude/skills/
 
 Anthropic also launched a directory with skills from commercial partners: Atlassian, Canva, Cloudflare, Figma, Notion, Ramp, and Sentry. These are production-grade examples of how companies package their workflows as skills.
 
+**Installing and discovering skills:**
+
+The community has built a public directory at [skills.sh](https://skills.sh/) for discovering and sharing skills. You can install published skills directly:
+
+```bash
+npx skills add <owner/repo>
+```
+
+Or simply place skill folders in your project's `.claude/skills/` or `.github/skills/` directory. Most agents pick them up automatically.
+
 **References:**
 - [Anthropic: Introducing Agent Skills](https://www.anthropic.com/news/skills)
 - [Anthropic Engineering: Equipping Agents for the Real World](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - [Agent Skills Open Standard](https://agentskills.io)
 - [GitHub: Agent Skills Repository](https://github.com/anthropics/skills)
+- [Vercel: Agent Skills Explained - An FAQ](https://vercel.com/blog/agent-skills-explained-an-faq)
+- [Skills Directory](https://skills.sh/)
+
+### Where Skills Fit: Agent Building Blocks
+
+Students often confuse skills with tools, MCP servers, or system prompts. Here's how they relate:
+
+| Building Block | What It Does | Analogy |
+|---------------|-------------|---------|
+| **System Prompts** | Set foundational behavior and personality | The agent's job description |
+| **Rules** | Define behavioral constraints and compliance requirements | Company policies |
+| **Tools** | Individual functions for discrete operations (read file, run query) | A hammer, a screwdriver |
+| **MCP Servers** | Standardized interfaces for accessing external services | A universal adapter for power tools |
+| **Skills** | Package complete workflows with instructions, context, and decision logic | An SOP manual for a specific job |
+
+The key distinction: tools and MCP servers give agents *capabilities* (what they can do). Skills give agents *expertise* (how to do it well). A tool lets Claude run a SQL query. A skill teaches Claude your team's methodology for data analysis, which queries to run in what order, what to look for, and how to present findings.
 
 ### Skills vs Slash Commands
 
