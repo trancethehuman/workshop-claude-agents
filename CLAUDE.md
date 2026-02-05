@@ -13,10 +13,14 @@ Claude Code is not just for writing code. It's an agent that can:
 
 ## Repository Structure
 
+- `lessons/` - Session plan MDs (week1-week8) + `images/`
+- `labs/` - Lab exercise MDs (16+ labs) + `images/`
+- `quizzes/` - Quiz MDs: `answer-key/` and `student/`
+- `evals/` - Evaluation materials
 - `data/` - Sample datasets for exercises
-- `weeks/` - Session materials and labs (week1-week8)
 - `references/` - Supporting documentation
 - `scripts/` - Setup and utility scripts
+- `admin/` - Non-instructor files (docx, decks, pdfs, diagrams)
 
 ## How to Use
 
