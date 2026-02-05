@@ -4,6 +4,8 @@
 **Duration:** 30 minutes  
 **Focus:** Setting up the Agent SDK and building a Database Analyzer agent
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture
@@ -113,7 +115,13 @@ Choose TypeScript or Python and set up your project.
    mkdir -p agents/database-analyzer
    cd agents/database-analyzer
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+   # macOS/Linux:
+   source venv/bin/activate
+   # Windows PowerShell:
+   venv\Scripts\Activate.ps1
+   # Windows CMD:
+   venv\Scripts\activate.bat
    pip install claude-agent-sdk pandas
    ```
 

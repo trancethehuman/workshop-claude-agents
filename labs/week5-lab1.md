@@ -4,6 +4,8 @@
 **Duration:** 30 minutes  
 **Focus:** Understanding and using built-in sub-agents for codebase exploration and parallel execution
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture

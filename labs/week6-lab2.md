@@ -4,6 +4,8 @@
 **Duration:** 45 minutes (+ optional bonus)  
 **Focus:** Building a batch lead enrichment service with concurrency and structured output
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture
@@ -376,7 +378,14 @@ For production agents, running code in a sandbox adds a layer of security.
 
 3. **Set environment variable:**
    ```bash
+   # macOS/Linux:
    export DAYTONA_API_KEY=your_api_key_here
+
+   # Windows PowerShell:
+   $env:DAYTONA_API_KEY = "your_api_key_here"
+
+   # Windows CMD:
+   set DAYTONA_API_KEY=your_api_key_here
    ```
 
 ### Task B.2: Run Agent in Sandbox (20 min)

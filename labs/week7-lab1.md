@@ -4,6 +4,8 @@
 **Duration:** 45 minutes  
 **Focus:** Creating a golden dataset with test cases and pass criteria to evaluate agent behavior
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture

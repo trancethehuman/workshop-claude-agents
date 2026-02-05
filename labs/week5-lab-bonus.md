@@ -4,6 +4,8 @@
 **Duration:** 30+ minutes  
 **Focus:** Adding retrieval-augmented generation (RAG) to your GTM pipeline using Vectorize.io
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture

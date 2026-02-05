@@ -4,6 +4,8 @@
 **Duration:** 40 minutes (+ optional stretch task)  
 **Focus:** Running automated evaluations and analyzing results to identify improvement areas
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture
@@ -88,7 +90,7 @@ The workshop includes a pre-built eval suite for the funding database.
 
 1. **View available evals without running them:**
    ```bash
-   python3 scripts/run-funding-evals.py --dry-run
+   python scripts/run-funding-evals.py --dry-run
    ```
 
 2. **Understand what you'll see:**
@@ -119,7 +121,7 @@ Start with one eval to understand the output format.
 
 1. **Run the basic count eval:**
    ```bash
-   python3 scripts/run-funding-evals.py --id=basic-001
+   python scripts/run-funding-evals.py --id=basic-001
    ```
 
 2. **Watch the output carefully:**
@@ -160,21 +162,21 @@ Start with one eval to understand the output format.
 
 1. **Run easy evals first:**
    ```bash
-   python3 scripts/run-funding-evals.py --filter=easy
+   python scripts/run-funding-evals.py --filter=easy
    ```
 
    **Expected:** Most should pass (95%+ target)
 
 2. **Run medium evals:**
    ```bash
-   python3 scripts/run-funding-evals.py --filter=medium
+   python scripts/run-funding-evals.py --filter=medium
    ```
 
    **Expected:** ~80% pass rate
 
 3. **Run hard evals:**
    ```bash
-   python3 scripts/run-funding-evals.py --filter=hard
+   python scripts/run-funding-evals.py --filter=hard
    ```
 
    **Expected:** ~60% pass rate (failures are expected)
@@ -194,7 +196,11 @@ Start with one eval to understand the output format.
 
 1. **Check the results file:**
    ```bash
-   cat output/eval-results.json | python3 -m json.tool
+   # macOS/Linux:
+   cat output/eval-results.json | python -m json.tool
+
+   # Windows:
+   type output\eval-results.json | python -m json.tool
    ```
 
 2. **Look for patterns:**
@@ -258,7 +264,7 @@ If you finish early, add a custom eval to the suite.
 
 3. **Run your custom eval:**
    ```bash
-   python3 scripts/run-funding-evals.py --id=custom-001
+   python scripts/run-funding-evals.py --id=custom-001
    ```
 
 4. **Did it pass or fail?** Why?
@@ -278,10 +284,10 @@ If you finish early, add a custom eval to the suite.
 
 | Problem | Solution |
 |---------|----------|
-| `python3: command not found` | Use `python` or install Python 3 |
+| `python: command not found` | Use `python` or install Python 3 |
 | `No module named 'json'` | Ensure Python 3.6+ is installed |
 | Script hangs | Press Ctrl+C and try with `--id=` for single eval |
-| Permission denied | Run `chmod +x scripts/run-funding-evals.py` |
+| Permission denied | Run `chmod +x scripts/run-funding-evals.py` (macOS/Linux). On Windows, this step is not needed -- run with `python scripts/run-funding-evals.py` |
 
 ### Claude Code Issues
 

@@ -4,6 +4,8 @@
 **Duration:** 45 minutes (+ optional bonus)  
 **Focus:** Building a multi-agent GTM pipeline with specialized agents and orchestration
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture

@@ -4,6 +4,8 @@
 **Duration:** 45 minutes  
 **Focus:** Creating an advanced skill with reference files, tool restrictions, and methodology encoding
 
+**Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
+
 ---
 
 ## Lab Architecture
