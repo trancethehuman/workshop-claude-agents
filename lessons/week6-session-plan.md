@@ -279,7 +279,7 @@ asyncio.run(main())
 
 ## Block 2: Lab (Part 1) - Your First SDK Agent (30 min)
 
-**Lab Document:** `weeks/md/week6-lab.md` or `weeks/docx/week6-lab.docx`
+**Lab Document:** `labs/week6-lab1.md` or `admin/docx/labs/week6-lab1.docx`
 
 Complete **Part 1** of the Week 6 Lab.
 
@@ -432,7 +432,7 @@ try {
 
 ## Block 4: Lab (Part 2) - Build a Headless GTM Agent (45 min)
 
-**Lab Document:** `weeks/md/week6-lab.md` or `weeks/docx/week6-lab.docx`
+**Lab Document:** `labs/week6-lab2.md` or `admin/docx/labs/week6-lab2.docx`
 
 Complete **Part 2** of the Week 6 Lab.
 

@@ -98,7 +98,7 @@ Verify your prerequisites are met:
 1. **Install via the official installer (recommended):**
    ```bash
    # macOS/Linux
-   curl -fsSL https://claude.ai/install.sh | sh
+   curl -fsSL https://claude.ai/install.sh | bash
    ```
 
    OR via npm:
@@ -110,7 +110,7 @@ Verify your prerequisites are met:
    ```bash
    claude --version
    ```
-   Expected: Version number displayed (e.g., `claude-code 1.x.x`)
+   Expected: Version number displayed (e.g., `1.0.x (Claude Code)`)
 
 3. **If you see a "command not found" error:**
    - Close and reopen your terminal

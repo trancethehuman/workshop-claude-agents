@@ -195,7 +195,7 @@ Watch how Claude:
 
 ## Block 2: Lab (Part 1) - Environment Setup (30 min)
 
-**Lab Document:** `weeks/md/week1-lab.md` or `weeks/docx/week1-lab.docx`
+**Lab Document:** `labs/week1-lab1.md` or `admin/docx/labs/week1-lab1.docx`
 
 Complete **Part 1** of the Week 1 Lab.
 
@@ -367,7 +367,7 @@ Both need sandboxing for production. The SDK does not provide isolation by itsel
 
 ## Block 4: Lab (Part 2) - First Steps with Claude Code (45 min)
 
-**Lab Document:** `weeks/md/week1-lab.md` or `weeks/docx/week1-lab.docx`
+**Lab Document:** `labs/week1-lab2.md` or `admin/docx/labs/week1-lab2.docx`
 
 Complete **Part 2** of the Week 1 Lab.
 

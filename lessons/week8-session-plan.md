@@ -10,7 +10,7 @@
 
 ## Block 1: Demo Prep and Practice (30 min)
 
-**Lab Document:** `weeks/md/week8-lab.md` or `weeks/docx/week8-lab.docx`
+**Lab Document:** `labs/week8-lab1.md` or `admin/docx/labs/week8-lab1.docx`
 
 Complete the **Week 8 Demo Preparation Lab** before the demo sessions.
 

@@ -45,7 +45,7 @@ digraph ClaudeCodeTools {
         }
 
         // Workshop Files below the tools
-        workshop_files [label="Workshop Files\nCLAUDE.md | data/startup-funding.db | weeks/ | scripts/" shape=box fillcolor="#ECFDF5" color="#059669"];
+        workshop_files [label="Workshop Files\nCLAUDE.md | data/startup-funding.db | lessons/ | labs/" shape=box fillcolor="#ECFDF5" color="#059669"];
     }
 
     // Arrow from tools cluster down to workshop files

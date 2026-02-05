@@ -180,7 +180,7 @@ Show what happens with good vs. careless queries:
 
 ## Block 3: Lab (Part 1) - Connect External Services (45 min)
 
-**Lab Document:** `weeks/md/week3-lab.md` or `weeks/docx/week3-lab.docx`
+**Lab Document:** `labs/week3-lab1.md` or `admin/docx/labs/week3-lab1.docx`
 
 Complete **Part 1** of the Week 3 Lab.
 
@@ -199,7 +199,7 @@ Complete **Part 1** of the Week 3 Lab.
 
 ## Block 4: Lab (Part 2) - Combined Workflow (30 min)
 
-**Lab Document:** `weeks/md/week3-lab.md` or `weeks/docx/week3-lab.docx`
+**Lab Document:** `labs/week3-lab2.md` or `admin/docx/labs/week3-lab2.docx`
 
 Complete **Part 2** of the Week 3 Lab.
 

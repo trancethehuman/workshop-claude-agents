@@ -174,7 +174,7 @@ Your eval questions need to be domain-specific, but not TOO specific.
 
 ## Block 2: Lab (Part 1) - Create Your Golden Dataset (45 min)
 
-**Lab Document:** `weeks/md/week7-lab.md` or `weeks/docx/week7-lab.docx`
+**Lab Document:** `labs/week7-lab1.md` or `admin/docx/labs/week7-lab1.docx`
 
 Complete **Part 1** of the Week 7 Lab.
 
@@ -266,7 +266,7 @@ Spend more time on defining good criteria than on automation infrastructure.
 
 ## Block 4: Lab (Part 2) - Run the Eval Script (40 min)
 
-**Lab Document:** `weeks/md/week7-lab.md` or `weeks/docx/week7-lab.docx`
+**Lab Document:** `labs/week7-lab2.md` or `admin/docx/labs/week7-lab2.docx`
 
 Complete **Part 2** of the Week 7 Lab.
 

@@ -27,7 +27,7 @@ This lab explores how Claude Code interacts with files and data in the workshop 
 │                              ▼                                      │
 │   ┌──────────────────────────────────────────────────────────────┐  │
 │   │                    Workshop Files                            │  │
-│   │   CLAUDE.md │ data/startup-funding.db │ lessons/ │ labs/      │  │
+│   │   CLAUDE.md │ data/startup-funding.db │ lessons/ │ labs/     │  │
 │   └──────────────────────────────────────────────────────────────┘  │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -60,19 +60,20 @@ By the end of this lab, you will:
 
 ## Time Breakdown
 
-| Task | Topic | Time |
-|------|-------|------|
-| 2.1 | Explore the Repo Structure | 5 min |
-| 2.2 | Explore Built-in Tools | 15 min |
-| 2.3 | Customize Your CLAUDE.md | 15 min |
-| 2.4 | Data Exploration Preview | 10 min |
-| | **TOTAL** | **45 min** |
+| Task | Topic                      | Time       |
+| ---- | -------------------------- | ---------- |
+| 2.1  | Explore the Repo Structure | 5 min      |
+| 2.2  | Explore Built-in Tools     | 15 min     |
+| 2.3  | Customize Your CLAUDE.md   | 15 min     |
+| 2.4  | Data Exploration Preview   | 10 min     |
+|      | **TOTAL**                  | **45 min** |
 
 ---
 
 ## Task 2.1: Explore the Repo Structure (5 min)
 
 1. **Ask Claude to explain the repository:**
+
    ```
    > Explain the structure of this repository and what each folder is for.
    ```
@@ -91,21 +92,25 @@ By the end of this lab, you will:
 Try each of these commands and observe which tools Claude uses:
 
 1. **File finding with Glob:**
+
    ```
    > Find all markdown files in this repo
    ```
 
 2. **Reading files:**
+
    ```
    > Read the CLAUDE.md file and summarize what it says
    ```
 
 3. **Searching content with Grep:**
+
    ```
    > Search for any files that mention "revenue" or "customer"
    ```
 
 4. **Listing folder contents:**
+
    ```
    > What files are in the data folder?
    ```
@@ -117,13 +122,13 @@ Try each of these commands and observe which tools Claude uses:
 
 **Record your observations:**
 
-| Query | Tool(s) Used | Result |
-|-------|--------------|--------|
-| Find markdown files | | |
-| Read CLAUDE.md | | |
-| Search for "revenue" | | |
-| List data folder | | |
-| Git status | | |
+| Query                | Tool(s) Used | Result |
+| -------------------- | ------------ | ------ |
+| Find markdown files  |              |        |
+| Read CLAUDE.md       |              |        |
+| Search for "revenue" |              |        |
+| List data folder     |              |        |
+| Git status           |              |        |
 
 ---
 
@@ -132,6 +137,7 @@ Try each of these commands and observe which tools Claude uses:
 The CLAUDE.md file provides context that Claude uses in every conversation.
 
 1. **Open CLAUDE.md in your editor:**
+
    ```bash
    code CLAUDE.md
    # or: vim CLAUDE.md
@@ -139,6 +145,7 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
    ```
 
 2. **Add a section for your project context:**
+
    ```markdown
    ## My Project Context
 
@@ -147,11 +154,13 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
    My focus area: [describe your use case in 1-2 sentences]
 
    Key metrics I care about:
+
    - [metric 1]
    - [metric 2]
    - [metric 3]
 
    Domain expertise I want to encode:
+
    - [expertise area 1]
    - [expertise area 2]
    ```
@@ -159,6 +168,7 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
 3. **Save the file.**
 
 4. **Test that Claude uses your context:**
+
    ```
    > Based on my project context, what kind of agent would be most useful for me?
    ```
@@ -172,6 +182,7 @@ The CLAUDE.md file provides context that Claude uses in every conversation.
 The workshop includes `startup-funding.db`, a SQLite database with venture capital data. We'll use this throughout the course.
 
 1. **Ask Claude to explore the database:**
+
    ```
    > Look at data/startup-funding.db. Tell me:
    > 1. What tables exist
@@ -198,18 +209,18 @@ The workshop includes `startup-funding.db`, a SQLite database with venture capit
 
 ### Query Issues
 
-| Problem | Solution |
-|---------|----------|
+| Problem                   | Solution                                       |
+| ------------------------- | ---------------------------------------------- |
 | Claude doesn't find files | Check you're in the right directory with `pwd` |
-| "No such file" errors | Verify repo cloned correctly with `ls -la` |
-| Database queries fail | Ensure sqlite3 is installed: `which sqlite3` |
+| "No such file" errors     | Verify repo cloned correctly with `ls -la`     |
+| Database queries fail     | Ensure sqlite3 is installed: `which sqlite3`   |
 
 ### CLAUDE.md Issues
 
-| Problem | Solution |
-|---------|----------|
+| Problem               | Solution                                   |
+| --------------------- | ------------------------------------------ |
 | Changes not reflected | Start a new Claude session or run `/clear` |
-| File not being read | Ensure you're in the repo root directory |
+| File not being read   | Ensure you're in the repo root directory   |
 
 ---
 
@@ -235,6 +246,7 @@ Before leaving this lab, verify:
 **Homework before Week 2:**
 
 Write a 1-paragraph description of an agent you want to build. Requirements:
+
 - Must involve a repeatable workflow you want to automate
 - Must be something useful to you (real or realistic)
 - Must be achievable in 7 weeks of incremental building

@@ -315,7 +315,7 @@ Watch how Claude:
 
 ## Block 2: Lab (Part 1) - Exploring the Startup Funding Database (45 min)
 
-**Lab Document:** `weeks/md/week2-lab.md` or `weeks/docx/week2-lab.docx`
+**Lab Document:** `labs/week2-lab1.md` or `admin/docx/labs/week2-lab1.docx`
 
 Complete **Part 1** of the Week 2 Lab.
 
@@ -430,7 +430,7 @@ These services connect to Claude through **MCP servers**. We'll cover MCP in Wee
 
 ## Block 4: Lab (Part 2) - Building a Research Workflow (45 min)
 
-**Lab Document:** `weeks/md/week2-lab.md` or `weeks/docx/week2-lab.docx`
+**Lab Document:** `labs/week2-lab2.md` or `admin/docx/labs/week2-lab2.docx`
 
 Complete **Part 2** of the Week 2 Lab.
 

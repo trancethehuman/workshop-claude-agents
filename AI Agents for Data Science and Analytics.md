@@ -72,7 +72,9 @@ workshop-claude-agents/
   README.md         # This file
   curriculum.md     # Full curriculum overview
   data/             # Sample datasets (leads, CRM)
-  weeks/            # Session materials by week (week1-week8)
+  lessons/          # Session plans by week (week1-week8)
+  labs/              # Lab exercises (2 per week)
+  quizzes/           # Weekly quizzes and answer keys
   references/       # Supporting documentation
   scripts/          # Setup and utility scripts
 ```

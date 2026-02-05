@@ -110,4 +110,4 @@ See `/references/` folder:
 
 ## Detailed Week Plans
 
-See individual files in `/weeks/` folder.
+See individual files in `/lessons/` folder. Labs are in `/labs/`.

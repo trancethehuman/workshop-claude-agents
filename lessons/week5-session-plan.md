@@ -273,7 +273,7 @@ Show a multi-agent workflow:
 
 ## Block 2: Lab (Part 1) - Using Built-in Sub-agents (30 min)
 
-**Lab Document:** `weeks/md/week5-lab.md` or `weeks/docx/week5-lab.docx`
+**Lab Document:** `labs/week5-lab1.md` or `admin/docx/labs/week5-lab1.docx`
 
 Complete **Part 1** of the Week 5 Lab.
 
@@ -444,7 +444,7 @@ for await (const message of query({
 
 ## Block 4: Lab (Part 2) - Build a GTM Pipeline (45 min)
 
-**Lab Document:** `weeks/md/week5-lab.md` or `weeks/docx/week5-lab.docx`
+**Lab Document:** `labs/week5-lab2.md` or `admin/docx/labs/week5-lab2.docx`
 
 Complete **Part 2** of the Week 5 Lab.
 

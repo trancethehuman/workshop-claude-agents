@@ -242,7 +242,7 @@ Show a skill in action:
 
 ## Block 2: Lab (Part 1) - Your First Skill (30 min)
 
-**Lab Document:** `weeks/md/week4-lab.md` or `weeks/docx/week4-lab.docx`
+**Lab Document:** `labs/week4-lab1.md` or `admin/docx/labs/week4-lab1.docx`
 
 Complete **Part 1** of the Week 4 Lab.
 
@@ -354,7 +354,7 @@ hooks:
 
 ## Block 4: Lab (Part 2) - Build a Data Analysis Skill (45 min)
 
-**Lab Document:** `weeks/md/week4-lab.md` or `weeks/docx/week4-lab.docx`
+**Lab Document:** `labs/week4-lab2.md` or `admin/docx/labs/week4-lab2.docx`
 
 Complete **Part 2** of the Week 4 Lab.
 
