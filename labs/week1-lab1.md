@@ -134,7 +134,7 @@ Verify your prerequisites are met:
    You should see:
    - `CLAUDE.md`
    - `data/` folder
-   - `weeks/` folder
+   - `lessons/`, `labs/`, `quizzes/` folders
    - Other workshop files
 
 ---

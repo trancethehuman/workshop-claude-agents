@@ -27,7 +27,7 @@ This lab explores how Claude Code interacts with files and data in the workshop 
 │                              ▼                                      │
 │   ┌──────────────────────────────────────────────────────────────┐  │
 │   │                    Workshop Files                            │  │
-│   │   CLAUDE.md │ data/startup-funding.db │ weeks/ │ scripts/    │  │
+│   │   CLAUDE.md │ data/startup-funding.db │ lessons/ │ labs/      │  │
 │   └──────────────────────────────────────────────────────────────┘  │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
