@@ -251,7 +251,7 @@ Throughout this workshop, we'll use `data/startup-funding.db` - a SQLite databas
 - **200 startups** across industries: AI/ML, Fintech, Healthcare, Developer Tools, Cybersecurity, Climate Tech, and more
 - **66 investors** including well-known names (Y Combinator, Sequoia, a16z, Accel) and sector-focused funds
 - **~480 funding rounds** from Pre-Seed through Series C, with realistic amounts and valuations
-- **Growth metrics** for ~50 startups showing ARR, employee count, and user growth over time
+- **Growth metrics** for ~30 startups showing ARR, employee count, and user growth over time
 
 **Why this dataset:**
 - It's structured like real VC/market research data you'd encounter professionally

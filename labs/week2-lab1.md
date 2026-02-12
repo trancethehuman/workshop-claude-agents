@@ -84,8 +84,8 @@ The workshop includes `data/startup-funding.db`, a SQLite database with:
 
 - **200 startups** across AI/ML, Fintech, Healthcare, Developer Tools, and more
 - **66 investors** including Y Combinator, Sequoia, a16z
-- **~480 funding rounds** from Pre-Seed through Series C (2018-2025)
-- **Growth metrics** for ~50 startups
+- **~479 funding rounds** from Pre-Seed through Series C (2018-2025)
+- **Growth metrics** for ~30 startups
 
 ---
 
@@ -108,9 +108,10 @@ Start by understanding what data is available.
 
 | Table          | Key Columns | Row Count |
 | -------------- | ----------- | --------- |
-| startups       |             |           |
-| funding_rounds |             |           |
-| investors      |             |           |
+| startups        |             |           |
+| funding_rounds  |             |           |
+| investors       |             |           |
+| startup_metrics |             |           |
 
 ---
 
