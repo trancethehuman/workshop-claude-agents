@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Health Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0c;--surface:#111115;--surface2:#18181d;--surface3:#1f1f26;
+  --border:#2a2a33;--border-light:#3a3a44;
+  --text:#e8e6e1;--text-dim:#8a8a95;--text-muted:#55555f;
+  --accent:#d4a04a;--accent-dim:#a07830;--accent-glow:rgba(212,160,74,0.15);
+  --red:#e05555;--red-dim:#a03333;--red-glow:rgba(224,85,85,0.12);
+  --green:#45b87a;--green-dim:#2a8a55;
+  --blue:#5588dd;--blue-dim:#3366aa;
+  --orange:#e0874a;
+  --purple:#9977cc;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);
+  line-height:1.6;min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:radial-gradient(ellipse at 20% 0%,rgba(212,160,74,0.04) 0%,transparent 60%),
+  radial-gradient(ellipse at 80% 100%,rgba(85,136,221,0.03) 0%,transparent 60%);
+}
+
+/* Layout */
+.dashboard{max-width:1400px;margin:0 auto;padding:40px 32px 80px}
+.header{margin-bottom:48px;position:relative}
+.header::after{content:'';position:absolute;bottom:-16px;left:0;width:80px;height:3px;background:var(--accent);border-radius:2px}
+.header h1{font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;color:var(--text);line-height:1.1}
+.header h1 span{color:var(--accent)}
+.header p{color:var(--text-dim);font-size:0.93rem;margin-top:8px;font-weight:400}
+.header .badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);padding:4px 12px;border-radius:20px;font-size:0.75rem;color:var(--text-dim);margin-top:12px;font-family:'JetBrains Mono',monospace}
+.header .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.section{margin-bottom:48px}
+.section-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:16px;font-family:'JetBrains Mono',monospace}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.3s}
+.card:hover{border-color:var(--border-light);transform:translateY(-1px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:48px}
+.kpi{text-align:center;padding:28px 16px}
+.kpi .kpi-value{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:600;letter-spacing:-0.02em;line-height:1}
+.kpi .kpi-label{font-size:0.78rem;color:var(--text-dim);margin-top:8px;font-weight:400}
+.kpi .kpi-sub{font-size:0.7rem;color:var(--text-muted);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.kpi.accent .kpi-value{color:var(--accent)}
+.kpi.green .kpi-value{color:var(--green)}
+.kpi.red .kpi-value{color:var(--red)}
+.kpi.blue .kpi-value{color:var(--blue)}
+
+/* Two column layout */
+.two-col{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:start}
+.chart-wrap{height:300px;position:relative}
+
+/* NRR Bars */
+.nrr-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.nrr-row:last-child{border-bottom:none}
+.nrr-label{width:100px;font-weight:600;font-size:0.88rem;flex-shrink:0}
+.nrr-bar-wrap{flex:1;position:relative;height:32px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.nrr-bar{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:600;transition:width 1.5s cubic-bezier(0.16,1,0.3,1)}
+.nrr-bar.enterprise{background:linear-gradient(90deg,var(--accent-dim),var(--accent))}
+.nrr-bar.midmarket{background:linear-gradient(90deg,var(--blue-dim),var(--blue))}
+.nrr-bar.smb{background:linear-gradient(90deg,var(--green-dim),var(--green))}
+.nrr-details{display:flex;gap:16px;margin-top:4px;font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.nrr-details span.up{color:var(--green)}
+.nrr-details span.down{color:var(--red)}
+
+/* Insight callout */
+.insight{background:linear-gradient(135deg,rgba(212,160,74,0.08),rgba(212,160,74,0.02));border:1px solid rgba(212,160,74,0.2);border-radius:var(--radius);padding:20px 24px;margin-top:24px;position:relative}
+.insight::before{content:'!';position:absolute;top:18px;left:-1px;width:28px;height:28px;background:var(--accent);color:var(--bg);font-weight:800;font-size:0.85rem;display:flex;align-items:center;justify-content:center;border-radius:0 6px 6px 0}
+.insight p{font-size:0.88rem;color:var(--text);line-height:1.6;padding-left:20px;font-weight:400}
+.insight strong{color:var(--accent);font-weight:600}
+
+/* Risk Table */
+.risk-table{width:100%;border-collapse:separate;border-spacing:0}
+.risk-table th{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;position:sticky;top:0;background:var(--surface)}
+.risk-table td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;vertical-align:middle}
+.risk-table tr:last-child td{border-bottom:none}
+.risk-table tr.low-risk td{opacity:0.35}
+.risk-table tr:not(.low-risk):hover td{background:rgba(255,255,255,0.02)}
+.risk-bar-cell{width:120px}
+.risk-bar-bg{width:100px;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.risk-bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(0.16,1,0.3,1)}
+.risk-bar-fill.critical{background:var(--red)}
+.risk-bar-fill.high{background:var(--orange)}
+.risk-bar-fill.medium{background:var(--accent)}
+.risk-bar-fill.low{background:var(--text-muted)}
+.risk-score{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:0.82rem}
+.risk-score.critical{color:var(--red)}
+.risk-score.high{color:var(--orange)}
+.risk-score.medium{color:var(--accent)}
+.segment-tag{font-size:0.68rem;padding:2px 8px;border-radius:4px;font-weight:500;font-family:'JetBrains Mono',monospace}
+.segment-tag.enterprise{background:rgba(212,160,74,0.12);color:var(--accent)}
+.segment-tag.midmarket{background:rgba(85,136,221,0.12);color:var(--blue)}
+.segment-tag.smb{background:rgba(69,184,122,0.12);color:var(--green)}
+.signals{display:flex;flex-wrap:wrap;gap:4px}
+.signal-chip{font-size:0.68rem;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:var(--red-glow);color:var(--red);border:1px solid rgba(224,85,85,0.15)}
+.mrr-val{font-family:'JetBrains Mono',monospace;font-weight:500}
+.table-scroll{max-height:520px;overflow-y:auto;border-radius:var(--radius)}
+.table-scroll::-webkit-scrollbar{width:4px}
+.table-scroll::-webkit-scrollbar-track{background:transparent}
+.table-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Action Cards */
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.action-card{padding:28px;position:relative;overflow:hidden}
+.action-card .urgency{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.action-card .urgency.urgent{background:rgba(224,85,85,0.15);color:var(--red);border:1px solid rgba(224,85,85,0.2)}
+.action-card .urgency.high{background:rgba(224,135,74,0.15);color:var(--orange);border:1px solid rgba(224,135,74,0.2)}
+.action-card .urgency.monitor{background:rgba(212,160,74,0.12);color:var(--accent);border:1px solid rgba(212,160,74,0.2)}
+.action-card h3{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.action-card .meta{font-size:0.75rem;color:var(--text-dim);margin-bottom:16px;font-family:'JetBrains Mono',monospace}
+.action-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.action-list li{font-size:0.82rem;color:var(--text-dim);line-height:1.5;padding-left:18px;position:relative}
+.action-list li::before{content:'';position:absolute;left:0;top:7px;width:8px;height:8px;border-radius:50%;border:2px solid var(--border-light)}
+.action-list li .time{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent);font-weight:500}
+
+/* Autopsy */
+.autopsy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.autopsy-card{padding:20px;text-align:center}
+.autopsy-card h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
+.autopsy-card .churn-date{font-size:0.7rem;color:var(--red);font-family:'JetBrains Mono',monospace;margin-bottom:14px}
+.autopsy-metric{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.autopsy-metric:last-child{border-bottom:none}
+.autopsy-metric .label{color:var(--text-dim)}
+.autopsy-metric .val{font-family:'JetBrains Mono',monospace;font-weight:500}
+.autopsy-metric .val.bad{color:var(--red)}
+.autopsy-metric .val.warn{color:var(--orange)}
+
+/* Animations */
+.fade-in{opacity:0;transform:translateY(20px);animation:fadeIn 0.7s ease forwards}
+@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+.delay-1{animation-delay:0.1s}.delay-2{animation-delay:0.2s}.delay-3{animation-delay:0.3s}
+.delay-4{animation-delay:0.4s}.delay-5{animation-delay:0.5s}.delay-6{animation-delay:0.6s}
+.delay-7{animation-delay:0.7s}.delay-8{animation-delay:0.8s}
+
+/* Responsive */
+@media(max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .actions-grid{grid-template-columns:1fr}
+  .autopsy-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .dashboard{padding:24px 16px 60px}
+  .header h1{font-size:1.6rem}
+  .autopsy-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="dashboard">
+
+  <!-- Header -->
+  <header class="header fade-in">
+    <h1>Customer Health <span>Dashboard</span></h1>
+    <p>SaaS Portfolio Analysis &mdash; 30 accounts, 27 months of behavioral data</p>
+    <div class="badge"><span class="dot"></span> Live analysis &bull; Jan 2023 &ndash; Mar 2025</div>
+  </header>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="card kpi fade-in delay-1">
+      <div class="kpi-value">30</div>
+      <div class="kpi-label">Total Accounts</div>
+      <div class="kpi-sub">6 industries</div>
+    </div>
+    <div class="card kpi accent fade-in delay-2">
+      <div class="kpi-value">130.3%</div>
+      <div class="kpi-label">Net Revenue Retention</div>
+      <div class="kpi-sub">Jan '24 → Jan '25</div>
+    </div>
+    <div class="card kpi green fade-in delay-3">
+      <div class="kpi-value">26</div>
+      <div class="kpi-label">Active Accounts</div>
+      <div class="kpi-sub">+7 expanded</div>
+    </div>
+    <div class="card kpi red fade-in delay-4">
+      <div class="kpi-value">4</div>
+      <div class="kpi-label">Churned</div>
+      <div class="kpi-sub">$38.8K MRR lost</div>
+    </div>
+    <div class="card kpi fade-in delay-5" style="border-color:rgba(224,85,85,0.3)">
+      <div class="kpi-value" style="color:var(--orange)">$29.7K</div>
+      <div class="kpi-label">MRR at Risk</div>
+      <div class="kpi-sub">$356K annualized</div>
+    </div>
+  </div>
+
+  <!-- NRR + Churn Indicators -->
+  <div class="two-col">
+    <!-- NRR by Segment -->
+    <div class="section fade-in delay-3">
+      <div class="section-label">Revenue Retention</div>
+      <div class="section-title">NRR by Segment</div>
+      <div class="card" style="padding:28px">
+        <div class="nrr-row">
+          <div class="nrr-label">Enterprise</div>
+          <div style="flex:1">
+            <div class="nrr-bar-wrap"><div class="nrr-bar enterprise" id="bar-ent" style="width:0%">134.0%</div></div>
+            <div class="nrr-details"><span>$219K → $293K</span><span class="up">+$105K expansion</span><span class="down">-$31K churned</span></div>
+          </div>
+        </div>
+        <div class="nrr-row">
+          <div class="nrr-label">Mid-Market</div>
+          <div style="flex:1">
+            <div class="nrr-bar-wrap"><div class="nrr-bar midmarket" id="bar-mid" style="width:0%">118.6%</div></div>
+            <div class="nrr-details"><span>$44K → $52K</span><span class="up">+$16K expansion</span><span class="down">-$8K churned</span></div>
+          </div>
+        </div>
+        <div class="nrr-row">
+          <div class="nrr-label">SMB</div>
+          <div style="flex:1">
+            <div class="nrr-bar-wrap"><div class="nrr-bar smb" id="bar-smb" style="width:0%">111.6%</div></div>
+            <div class="nrr-details"><span>$16K → $18K</span><span class="up">+$2K expansion</span><span style="color:var(--green)">$0 churned</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Churn Indicators Radar -->
+    <div class="section fade-in delay-4">
+      <div class="section-label">Churn Intelligence</div>
+      <div class="section-title">Leading Indicators</div>
+      <div class="card">
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight fade-in delay-5">
+    <p><strong>Key Finding:</strong> Revenue is a lagging indicator. All 4 churned accounts were <strong>increasing spend</strong> (+16% avg MRR) in the months before cancellation. The real warning signs are <strong>login collapse (-46%)</strong>, <strong>support ticket spikes (+196%)</strong>, and <strong>NPS freefall (-39 pts)</strong>.</p>
+  </div>
+
+  <!-- Risk Scoreboard -->
+  <div class="section fade-in delay-5" style="margin-top:48px">
+    <div class="section-label">Risk Assessment</div>
+    <div class="section-title">Churn Risk Scoreboard</div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-scroll">
+        <table class="risk-table">
+          <thead>
+            <tr><th>#</th><th>Account</th><th>Segment</th><th>Risk</th><th></th><th>MRR</th><th>Signals</th><th>Owner</th></tr>
+          </thead>
+          <tbody id="riskBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommended Actions -->
+  <div class="section fade-in delay-6" style="margin-top:48px">
+    <div class="section-label">Playbook</div>
+    <div class="section-title">Recommended Actions</div>
+    <div class="actions-grid">
+      <div class="card action-card">
+        <span class="urgency urgent">Urgent</span>
+        <h3>Apex Industries</h3>
+        <div class="meta">Enterprise &bull; $24,217 MRR &bull; Eva Martinez</div>
+        <ul class="action-list">
+          <li><span class="time">This week</span><br>Executive check-in to surface pain behind the ticket spike and feature disengagement</li>
+          <li><span class="time">Within 30 days</span><br>Feature adoption workshop &mdash; usage dropped 21%, they may not see value in recent changes</li>
+          <li><span class="time">Ongoing</span><br>Assign dedicated CSM for weekly syncs until NPS stabilizes above baseline</li>
+        </ul>
+      </div>
+      <div class="card action-card">
+        <span class="urgency high">High</span>
+        <h3>BrightPath Education</h3>
+        <div class="meta">SMB &bull; $4,566 MRR &bull; Bob Smith</div>
+        <ul class="action-list">
+          <li><span class="time">This week</span><br>Review open tickets for recurring themes &mdash; 50% spike signals systemic issues, not one-offs</li>
+          <li><span class="time">Within 30 days</span><br>NPS deep-dive call &mdash; 17pt drop in an Expanded account means post-upsell expectations aren't met</li>
+          <li><span class="time">Ongoing</span><br>Evaluate whether this account needs Mid-Market support given its growth trajectory</li>
+        </ul>
+      </div>
+      <div class="card action-card">
+        <span class="urgency monitor">Monitor</span>
+        <h3>EcoSystems Ltd</h3>
+        <div class="meta">SMB &bull; $887 MRR &bull; Bob Smith</div>
+        <ul class="action-list">
+          <li><span class="time">This week</span><br>Personal outreach &mdash; 38% login drop often means they've found an alternative</li>
+          <li><span class="time">Within 30 days</span><br>Offer re-engagement session: free training, use-case review to rebuild the habit</li>
+          <li><span class="time">Ongoing</span><br>Low MRR but a canary &mdash; investigate if this pattern exists across the broader SMB cohort</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Churned Account Autopsy -->
+  <div class="section fade-in delay-7" style="margin-top:48px">
+    <div class="section-label">Post-Mortem</div>
+    <div class="section-title">Churned Account Autopsy</div>
+    <div class="autopsy-grid">
+      <div class="card autopsy-card">
+        <h4>HealthFirst Solutions</h4>
+        <div class="churn-date">Churned Nov 2024</div>
+        <div class="autopsy-metric"><span class="label">Logins</span><span class="val bad">-40%</span></div>
+        <div class="autopsy-metric"><span class="label">Tickets</span><span class="val bad">+256%</span></div>
+        <div class="autopsy-metric"><span class="label">NPS</span><span class="val bad">-30 pts</span></div>
+        <div class="autopsy-metric"><span class="label">Segment</span><span class="val">Mid-Market</span></div>
+      </div>
+      <div class="card autopsy-card">
+        <h4>Pacific Health Systems</h4>
+        <div class="churn-date">Churned Dec 2024</div>
+        <div class="autopsy-metric"><span class="label">Logins</span><span class="val bad">-49%</span></div>
+        <div class="autopsy-metric"><span class="label">Tickets</span><span class="val bad">+104%</span></div>
+        <div class="autopsy-metric"><span class="label">NPS</span><span class="val bad">-53 pts</span></div>
+        <div class="autopsy-metric"><span class="label">Segment</span><span class="val">Enterprise</span></div>
+      </div>
+      <div class="card autopsy-card">
+        <h4>RetailNext Global</h4>
+        <div class="churn-date">Churned Jan 2025</div>
+        <div class="autopsy-metric"><span class="label">Logins</span><span class="val bad">-50%</span></div>
+        <div class="autopsy-metric"><span class="label">Tickets</span><span class="val bad">+218%</span></div>
+        <div class="autopsy-metric"><span class="label">NPS</span><span class="val bad">-35 pts</span></div>
+        <div class="autopsy-metric"><span class="label">Segment</span><span class="val">Mid-Market</span></div>
+      </div>
+      <div class="card autopsy-card">
+        <h4>Nexus Financial</h4>
+        <div class="churn-date">Churned Sep 2024</div>
+        <div class="autopsy-metric"><span class="label">Logins</span><span class="val bad">-44%</span></div>
+        <div class="autopsy-metric"><span class="label">Tickets</span><span class="val bad">+205%</span></div>
+        <div class="autopsy-metric"><span class="label">NPS</span><span class="val bad">-36 pts</span></div>
+        <div class="autopsy-metric"><span class="label">Segment</span><span class="val">Enterprise</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:40px 0 0;color:var(--text-muted);font-size:0.72rem;font-family:'JetBrains Mono',monospace">
+    Analysis by Claude Code &bull; Data: customer-metrics.csv &bull; 682 records &bull; 30 accounts &bull; 27 months
+  </footer>
+</div>
+
+<script>
+// NRR Bar Animation
+setTimeout(()=>{
+  document.getElementById('bar-ent').style.width='95%';
+  document.getElementById('bar-mid').style.width='78%';
+  document.getElementById('bar-smb').style.width='70%';
+},400);
+
+// Radar Chart
+const ctx=document.getElementById('radarChart').getContext('2d');
+new Chart(ctx,{
+  type:'radar',
+  data:{
+    labels:['Login Drop\n(-45.5%)','Feature Drop\n(-9.3%)','Ticket Spike\n(+196%)','NPS Drop\n(-38.6 pts)','MRR Change\n(+16.2%)'],
+    datasets:[{
+      label:'Pre-Churn Signal Strength',
+      data:[91,19,98,77,32],
+      backgroundColor:'rgba(224,85,85,0.12)',
+      borderColor:'rgba(224,85,85,0.7)',
+      borderWidth:2,
+      pointBackgroundColor:'#e05555',
+      pointBorderColor:'#e05555',
+      pointRadius:4,
+      pointHoverRadius:6
+    },{
+      label:'Healthy Baseline',
+      data:[10,10,10,10,10],
+      backgroundColor:'rgba(69,184,122,0.06)',
+      borderColor:'rgba(69,184,122,0.3)',
+      borderWidth:1,
+      borderDash:[4,4],
+      pointRadius:0
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    scales:{
+      r:{
+        beginAtZero:true,
+        max:100,
+        ticks:{display:false},
+        grid:{color:'rgba(255,255,255,0.05)'},
+        angleLines:{color:'rgba(255,255,255,0.05)'},
+        pointLabels:{color:'#8a8a95',font:{family:'JetBrains Mono',size:10}}
+      }
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#1f1f26',
+        borderColor:'#2a2a33',
+        borderWidth:1,
+        titleFont:{family:'Outfit'},
+        bodyFont:{family:'JetBrains Mono',size:12},
+        padding:12,
+        cornerRadius:8
+      }
+    }
+  }
+});
+
+// Risk Scoreboard
+const accounts=[
+  {name:'Apex Industries',seg:'Enterprise',segClass:'enterprise',risk:65,riskClass:'critical',mrr:'$24,217',signals:['Features -21%','Tickets +39%','NPS -10pts'],owner:'Eva Martinez'},
+  {name:'BrightPath Education',seg:'SMB',segClass:'smb',risk:40,riskClass:'high',mrr:'$4,566',signals:['Tickets +50%','NPS -17pts'],owner:'Bob Smith'},
+  {name:'EcoSystems Ltd',seg:'SMB',segClass:'smb',risk:25,riskClass:'medium',mrr:'$887',signals:['Logins -38%'],owner:'Bob Smith'},
+  {name:'GreenEnergy Co',seg:'Mid-Market',segClass:'midmarket',risk:20,riskClass:'medium',mrr:'$6,655',signals:['NPS -14pts'],owner:'Dave Wilson'},
+  {name:'MedCore Analytics',seg:'Mid-Market',segClass:'midmarket',risk:20,riskClass:'medium',mrr:'$3,390',signals:['Tickets +22%'],owner:'Carol Davis'},
+  {name:'DataStream Corp',seg:'Enterprise',segClass:'enterprise',risk:20,riskClass:'medium',mrr:'$34,862',signals:['Tickets +25%'],owner:'Alice Johnson'},
+  {name:'ClearView Health',seg:'Mid-Market',segClass:'midmarket',risk:20,riskClass:'medium',mrr:'$10,309',signals:['Tickets +30%'],owner:'Carol Davis'},
+  {name:'CoreData Financial',seg:'Mid-Market',segClass:'midmarket',risk:20,riskClass:'medium',mrr:'$7,807',signals:['Tickets +61%'],owner:'Dave Wilson'},
+  {name:'Acme Corp',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$13,858',signals:[],owner:'Bob Smith'},
+  {name:'GlobalTech Inc',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$21,426',signals:[],owner:'Alice Johnson'},
+  {name:'Quantum Dynamics',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$50,345',signals:[],owner:'Eva Martinez'},
+  {name:'Pinnacle Financial',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$53,223',signals:[],owner:'Alice Johnson'},
+  {name:'Atlas Manufacturing',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$31,455',signals:[],owner:'Eva Martinez'},
+  {name:'ProHealth Systems',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$31,293',signals:[],owner:'Carol Davis'},
+  {name:'Sterling Manufacturing',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$30,032',signals:[],owner:'Dave Wilson'},
+  {name:'DataStream Corp',seg:'Enterprise',segClass:'enterprise',risk:0,riskClass:'low',mrr:'$34,862',signals:[],owner:'Alice Johnson'},
+  {name:'FinEdge Analytics',seg:'Mid-Market',segClass:'midmarket',risk:0,riskClass:'low',mrr:'$6,545',signals:[],owner:'Dave Wilson'},
+  {name:'Nordic Retail Group',seg:'Mid-Market',segClass:'midmarket',risk:0,riskClass:'low',mrr:'$3,431',signals:[],owner:'Carol Davis'},
+  {name:'Sunrise Education',seg:'Mid-Market',segClass:'midmarket',risk:0,riskClass:'low',mrr:'$4,694',signals:[],owner:'Bob Smith'},
+  {name:'FabriTech',seg:'Mid-Market',segClass:'midmarket',risk:0,riskClass:'low',mrr:'$4,843',signals:[],owner:'Eva Martinez'},
+  {name:'MarketPulse Inc',seg:'Mid-Market',segClass:'midmarket',risk:0,riskClass:'low',mrr:'$4,314',signals:[],owner:'Carol Davis'},
+  {name:'TechBridge Solutions',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$2,252',signals:[],owner:'Bob Smith'},
+  {name:'EduForward',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$3,340',signals:[],owner:'Alice Johnson'},
+  {name:'Horizon Health',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$2,783',signals:[],owner:'Dave Wilson'},
+  {name:'MediaGroup Digital',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$2,207',signals:[],owner:'Carol Davis'},
+  {name:'DigitalEdge Media',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$2,323',signals:[],owner:'Bob Smith'},
+  {name:'CloudVista',seg:'SMB',segClass:'smb',risk:0,riskClass:'low',mrr:'$770',signals:[],owner:'Eva Martinez'}
+];
+
+const tbody=document.getElementById('riskBody');
+accounts.forEach((a,i)=>{
+  const isLow=a.risk===0;
+  const signalHTML=a.signals.length?a.signals.map(s=>`<span class="signal-chip">${s}</span>`).join(''):'<span style="color:var(--text-muted);font-size:0.75rem">No signals</span>';
+  tbody.innerHTML+=`
+    <tr class="${isLow?'low-risk':''}">
+      <td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem">${i+1}</td>
+      <td style="font-weight:600">${a.name}</td>
+      <td><span class="segment-tag ${a.segClass}">${a.seg}</span></td>
+      <td><span class="risk-score ${a.riskClass}">${a.risk}</span></td>
+      <td class="risk-bar-cell"><div class="risk-bar-bg"><div class="risk-bar-fill ${a.riskClass}" style="width:${a.risk}%"></div></div></td>
+      <td class="mrr-val">${a.mrr}</td>
+      <td><div class="signals">${signalHTML}</div></td>
+      <td style="color:var(--text-dim);font-size:0.8rem">${a.owner}</td>
+    </tr>`;
+});
+
+// Intersection Observer for scroll animations
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.animationPlayState='running'}});
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

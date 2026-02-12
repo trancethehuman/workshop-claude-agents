@@ -25,6 +25,7 @@ Claude Code is not just for writing code. It's an agent that can:
 ## How to Use
 
 When working in this repo, Claude should:
+- **Keep all responses very short and to the point** - no lengthy explanations
 - Be concise and practical
 - Explain what it's doing and why
 - Show which tools it's using
@@ -33,7 +34,7 @@ When working in this repo, Claude should:
 ## Preferences
 
 - Use simple, readable solutions
-- Explain reasoning before taking action
+- Keep answers brief - prefer a few sentences over paragraphs
 - Format outputs as markdown tables when appropriate
 - Ask clarifying questions when requirements are unclear
 

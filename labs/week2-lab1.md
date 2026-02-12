@@ -15,9 +15,9 @@ This lab demonstrates Claude's tool calling loop with database queries.
 │                            Tool Calling Loop                            │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│     ┌──────────┐     ┌──────────────┐     ┌──────────────┐             │
-│     │  THINK   │────▶│ SELECT TOOL  │────▶│   EXECUTE    │             │
-│     └──────────┘     └──────────────┘     └──────────────┘             │
+│     ┌──────────┐     ┌──────────────┐     ┌──────────────┐              │
+│     │  THINK   │────▶│ SELECT TOOL  │────▶│   EXECUTE    │              │
+│     └──────────┘     └──────────────┘     └──────────────┘              │
 │           ▲                                      │                      │
 │           │                                      ▼                      │
 │           │                              ┌──────────────┐               │
@@ -26,10 +26,10 @@ This lab demonstrates Claude's tool calling loop with database queries.
 │                                                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   ┌────────────────────────────────────────────────────────────────┐   │
-│   │                       Data Source                               │   │
-│   │        startup-funding.db (200 startups, 480 rounds)           │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
+│   │                       Data Source                              │    │
+│   │        startup-funding.db (200 startups, 480 rounds)           │    │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -47,6 +47,7 @@ Before starting this lab, verify:
 - [ ] **Claude Code running** - Start with `claude` in the repo directory
 
 **Familiarity helpful but not required:**
+
 - Basic SQL (SELECT, WHERE, GROUP BY)
 - Understanding of startup funding stages (Seed, Series A, B, C)
 
@@ -66,20 +67,21 @@ By the end of this lab, you will:
 
 ## Time Breakdown
 
-| Task | Topic | Time |
-|------|-------|------|
-| 1.1 | Schema Discovery | 5 min |
-| 1.2 | Basic Aggregations | 10 min |
-| 1.3 | Trend Analysis | 15 min |
-| 1.4 | Investor Analysis | 10 min |
-| 1.5 | Analytical Question | 5 min |
-| | **TOTAL** | **45 min** |
+| Task | Topic               | Time       |
+| ---- | ------------------- | ---------- |
+| 1.1  | Schema Discovery    | 5 min      |
+| 1.2  | Basic Aggregations  | 10 min     |
+| 1.3  | Trend Analysis      | 15 min     |
+| 1.4  | Investor Analysis   | 10 min     |
+| 1.5  | Analytical Question | 5 min      |
+|      | **TOTAL**           | **45 min** |
 
 ---
 
 ## About the Dataset
 
 The workshop includes `data/startup-funding.db`, a SQLite database with:
+
 - **200 startups** across AI/ML, Fintech, Healthcare, Developer Tools, and more
 - **66 investors** including Y Combinator, Sequoia, a16z
 - **~480 funding rounds** from Pre-Seed through Series C (2018-2025)
@@ -92,6 +94,7 @@ The workshop includes `data/startup-funding.db`, a SQLite database with:
 Start by understanding what data is available.
 
 1. **Ask Claude to explore the database structure:**
+
    ```
    > What tables are in the startup-funding.db database? Show me the schema for each.
    ```
@@ -103,11 +106,11 @@ Start by understanding what data is available.
 
 3. **Record what you find:**
 
-| Table | Key Columns | Row Count |
-|-------|-------------|-----------|
-| startups | | |
-| funding_rounds | | |
-| investors | | |
+| Table          | Key Columns | Row Count |
+| -------------- | ----------- | --------- |
+| startups       |             |           |
+| funding_rounds |             |           |
+| investors      |             |           |
 
 ---
 
@@ -116,6 +119,7 @@ Start by understanding what data is available.
 Practice translating business questions into SQL queries.
 
 1. **Ask Claude to answer these questions:**
+
    ```
    > From startup-funding.db, answer these questions:
    > 1. How many funding rounds happened each year? Break down by stage.
@@ -129,6 +133,7 @@ Practice translating business questions into SQL queries.
    - Formats output for readability
 
 3. **Example SQL patterns Claude might use:**
+
    ```sql
    -- Rounds by year and stage
    SELECT strftime('%Y', funding_date) as year, stage, COUNT(*)
@@ -146,11 +151,11 @@ Practice translating business questions into SQL queries.
 
 4. **Record your findings:**
 
-| Question | Key Finding |
-|----------|-------------|
-| Rounds by year/stage | |
-| Total by industry | |
-| Highest avg deal size | |
+| Question              | Key Finding |
+| --------------------- | ----------- |
+| Rounds by year/stage  |             |
+| Total by industry     |             |
+| Highest avg deal size |             |
 
 ---
 
@@ -159,6 +164,7 @@ Practice translating business questions into SQL queries.
 Dive deeper with time-series analysis.
 
 1. **Run this analysis prompt:**
+
    ```
    > Analyze monthly funding trends for AI/ML companies from 2023 onwards.
    > Show me:
@@ -169,6 +175,7 @@ Dive deeper with time-series analysis.
    ```
 
 2. **The SQL pattern for this:**
+
    ```sql
    SELECT
      strftime('%Y-%m', funding_date) as month,
@@ -195,6 +202,7 @@ Dive deeper with time-series analysis.
 Understand who the key players are.
 
 1. **Ask Claude:**
+
    ```
    > Who are the top 15 investors by portfolio size?
    > For each, show:
@@ -205,6 +213,7 @@ Understand who the key players are.
    ```
 
 2. **The SQL pattern:**
+
    ```sql
    SELECT
      i.name as investor,
@@ -229,6 +238,7 @@ Understand who the key players are.
 Apply the full Data Analysis Loop.
 
 1. **Ask Claude this prediction question:**
+
    ```
    > Which AI coding tools raised Series A in 2024-2025?
    > Rank them by likelihood of getting Series B based on:
@@ -247,8 +257,8 @@ Apply the full Data Analysis Loop.
 3. **Record Claude's prediction:**
 
 | Company | Series A Amount | Lead Investor | Prediction | Confidence |
-|---------|-----------------|---------------|------------|------------|
-| | | | | |
+| ------- | --------------- | ------------- | ---------- | ---------- |
+|         |                 |               |            |            |
 
 ---
 
@@ -256,12 +266,12 @@ Apply the full Data Analysis Loop.
 
 ### SQL Query Issues
 
-| Problem | Solution |
-|---------|----------|
-| Syntax error | Check quote escaping, SQLite uses single quotes for strings |
-| No results | Verify table and column names match schema |
-| Date filtering issues | Use format `'YYYY-MM-DD'` for dates |
-| NULL handling | Use `COALESCE(column, 0)` or `IFNULL(column, 0)` |
+| Problem               | Solution                                                    |
+| --------------------- | ----------------------------------------------------------- |
+| Syntax error          | Check quote escaping, SQLite uses single quotes for strings |
+| No results            | Verify table and column names match schema                  |
+| Date filtering issues | Use format `'YYYY-MM-DD'` for dates                         |
+| NULL handling         | Use `COALESCE(column, 0)` or `IFNULL(column, 0)`            |
 
 ### Common SQL Patterns
 
@@ -296,12 +306,12 @@ Before proceeding to Lab 2, verify:
 
 **Record your key findings:**
 
-| Metric | Your Finding |
-|--------|--------------|
-| Most active funding year | |
-| Top industry by total funding | |
-| Top investor by portfolio size | |
-| AI coding tool most likely to raise Series B | |
+| Metric                                       | Your Finding |
+| -------------------------------------------- | ------------ |
+| Most active funding year                     |              |
+| Top industry by total funding                |              |
+| Top investor by portfolio size               |              |
+| AI coding tool most likely to raise Series B |              |
 
 ---
 

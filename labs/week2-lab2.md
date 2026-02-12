@@ -15,23 +15,23 @@ This lab combines structured database queries with web research tools.
 │                         Research Workflow                               │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   ┌────────────────────────────────────────────────────────────────┐   │
-│   │                       Available Tools                           │   │
-│   ├────────────────────────────────────────────────────────────────┤   │
-│   │  Bash (sqlite3)  │  WebSearch  │  WebFetch  │  Read  │  Write  │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
+│   │                       Available Tools                          │    │
+│   ├────────────────────────────────────────────────────────────────┤    │
+│   │  Bash (sqlite3)  │  WebSearch  │  WebFetch  │  Read  │  Write  │    │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│   ┌────────────────────────────────────────────────────────────────┐   │
-│   │                         Data Sources                            │   │
-│   ├────────────────────────────────────────────────────────────────┤   │
-│   │     startup-funding.db      │        Web (news, sites)         │   │
-│   │   (200 startups, 480 rounds) │   (company info, market data)   │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
+│   │                         Data Sources                           │    │
+│   ├────────────────────────────────────────────────────────────────┤    │
+│   │     startup-funding.db      │        Web (news, sites)         │    │
+│   │   (200 startups, 480 rounds) │   (company info, market data)   │    │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│   ┌────────────────────────────────────────────────────────────────┐   │
-│   │                    Data Analysis Loop                           │   │
-│   │        MONITOR → EXPLORE → CRAFT STORY → IMPACT                │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
+│   │                    Data Analysis Loop                          │    │
+│   │        MONITOR → EXPLORE → CRAFT STORY → IMPACT                │    │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -64,13 +64,13 @@ By the end of this lab, you will:
 
 ## Time Breakdown
 
-| Task | Topic | Time |
-|------|-------|------|
-| 2.1 | Database Foundation | 10 min |
-| 2.2 | Web Enrichment | 15 min |
-| 2.3 | Synthesize Analysis | 15 min |
-| 2.4 | Connect to Broader Market | 5 min |
-| | **TOTAL** | **45 min** |
+| Task | Topic                     | Time       |
+| ---- | ------------------------- | ---------- |
+| 2.1  | Database Foundation       | 10 min     |
+| 2.2  | Web Enrichment            | 15 min     |
+| 2.3  | Synthesize Analysis       | 15 min     |
+| 2.4  | Connect to Broader Market | 5 min      |
+|      | **TOTAL**                 | **45 min** |
 
 ---
 
@@ -85,6 +85,7 @@ You're analyzing AI coding tools for an investment memo. You'll combine database
 Start with structured data.
 
 1. **Query the database for AI coding startups:**
+
    ```
    > From startup-funding.db, find all AI/ML startups in the Developer Tools or IDEs sub-industry.
    > Show me their funding history, investors, and latest valuation.
@@ -94,10 +95,10 @@ Start with structured data.
 2. **Record the companies found:**
 
 | Company | Stage | Total Raised | Lead Investor |
-|---------|-------|--------------|---------------|
-| | | | |
-| | | | |
-| | | | |
+| ------- | ----- | ------------ | ------------- |
+|         |       |              |               |
+|         |       |              |               |
+|         |       |              |               |
 
 ---
 
@@ -106,6 +107,7 @@ Start with structured data.
 Add context from the web.
 
 1. **Research 3 companies from your results:**
+
    ```
    > For Cursor, Replit, and Codeium:
    > 1. Search for their latest funding news
@@ -122,10 +124,10 @@ Add context from the web.
 3. **Record your comparison:**
 
 | Company | Latest News | Employees | Recent Product |
-|---------|-------------|-----------|----------------|
-| Cursor | | | |
-| Replit | | | |
-| Codeium | | | |
+| ------- | ----------- | --------- | -------------- |
+| Cursor  |             |           |                |
+| Replit  |             |           |                |
+| Codeium |             |           |                |
 
 ---
 
@@ -134,6 +136,7 @@ Add context from the web.
 Apply the Data Analysis Loop to create a brief.
 
 1. **Ask Claude to create an investment brief:**
+
    ```
    > Based on the database data and web research, create an investment brief:
    >
@@ -157,6 +160,7 @@ Apply the Data Analysis Loop to create a brief.
 Put findings in context.
 
 1. **Ask Claude to compare:**
+
    ```
    > Compare the AI coding tools funding to the broader Developer Tools category.
    > - How does their average deal size compare?
@@ -174,19 +178,19 @@ Put findings in context.
 
 ### Web Tool Issues
 
-| Problem | Solution |
-|---------|----------|
-| WebSearch returns no results | Try different search terms, be more specific |
-| WebFetch fails | Site may block bots, try a different source |
-| Outdated information | Add year to search query (e.g., "Cursor funding 2024") |
-| Rate limiting | Wait a moment between web requests |
+| Problem                      | Solution                                               |
+| ---------------------------- | ------------------------------------------------------ |
+| WebSearch returns no results | Try different search terms, be more specific           |
+| WebFetch fails               | Site may block bots, try a different source            |
+| Outdated information         | Add year to search query (e.g., "Cursor funding 2024") |
+| Rate limiting                | Wait a moment between web requests                     |
 
 ### File Output Issues
 
-| Problem | Solution |
-|---------|----------|
-| File not created | Check the output/ directory exists |
-| Permission denied | Verify write access to the directory |
+| Problem            | Solution                             |
+| ------------------ | ------------------------------------ |
+| File not created   | Check the output/ directory exists   |
+| Permission denied  | Verify write access to the directory |
 | Content incomplete | Ask Claude to continue or regenerate |
 
 ---
@@ -215,12 +219,12 @@ Before completing this lab, verify:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-| Phase | What To Do | Example |
-|-------|------------|---------|
-| **Monitor** | Run recurring queries, check metrics | "Deal count by month for AI/ML" |
-| **Explore** | Dig into anomalies, segment data | "Why did Q3 spike? Check by sub-industry" |
-| **Craft** | Synthesize 3-5 insights with evidence | "Series A sizes growing 20% YoY because..." |
-| **Impact** | Recommend actions, size opportunities | "Invest in X because of factors A, B, C" |
+| Phase       | What To Do                            | Example                                     |
+| ----------- | ------------------------------------- | ------------------------------------------- |
+| **Monitor** | Run recurring queries, check metrics  | "Deal count by month for AI/ML"             |
+| **Explore** | Dig into anomalies, segment data      | "Why did Q3 spike? Check by sub-industry"   |
+| **Craft**   | Synthesize 3-5 insights with evidence | "Series A sizes growing 20% YoY because..." |
+| **Impact**  | Recommend actions, size opportunities | "Invest in X because of factors A, B, C"    |
 
 ---
 
