@@ -485,13 +485,14 @@ Complete **Part 2** of the Week 2 Lab.
    - **Craft:** Write 3-5 insights with supporting data
    - **Impact:** Make one concrete prediction or recommendation
 
-3. Create an analysis document with:
-   - Your SQL queries (with explanations)
-   - Key findings with data
-   - One insight enriched with web research
-   - Your prediction and confidence level
+3. Build a pure HTML dashboard that visualizes your findings:
+   - Key metrics displayed as cards or summary stats
+   - At least one chart or visual (use inline CSS/JS, no external dependencies)
+   - Your insights and predictions presented clearly
+   - One section enriched with web research context
+   - Make it look good - get creative with layout, colors, and design!
 
-4. Save to `output/week2-homework-[your-domain].md`
+4. Save to `output/week2-homework-[your-domain].html`
 
 ### Next Week Preview
 

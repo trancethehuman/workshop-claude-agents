@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI/ML Funding Pulse</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Chakra+Petch:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --neon-pink: #ff2d8a;
+    --neon-cyan: #00f0ff;
+    --neon-green: #39ff14;
+    --neon-yellow: #ffe600;
+    --neon-purple: #bf5af2;
+    --neon-orange: #ff6d00;
+    --bg-void: #05020e;
+    --bg-glass: rgba(15, 5, 30, 0.65);
+    --bg-glass-hover: rgba(25, 10, 50, 0.75);
+    --border-glow: rgba(0, 240, 255, 0.2);
+    --text: #f0eaff;
+    --text-dim: #8a7faa;
+    --font-display: 'Dela Gothic One', sans-serif;
+    --font-tech: 'Orbitron', sans-serif;
+    --font-body: 'Chakra Petch', sans-serif;
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-void);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ══════ ANIMATED PLASMA BACKGROUND ══════ */
+  .plasma {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .plasma-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    animation: drift 12s ease-in-out infinite alternate;
+    opacity: 0.35;
+  }
+
+  .plasma-orb:nth-child(1) {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--neon-pink), transparent 70%);
+    top: -15%; left: -10%;
+    animation-duration: 14s;
+  }
+
+  .plasma-orb:nth-child(2) {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+    top: 30%; right: -12%;
+    animation-duration: 10s;
+    animation-delay: -3s;
+  }
+
+  .plasma-orb:nth-child(3) {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+    bottom: -20%; left: 20%;
+    animation-duration: 16s;
+    animation-delay: -6s;
+  }
+
+  .plasma-orb:nth-child(4) {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--neon-green), transparent 70%);
+    top: 50%; left: 60%;
+    animation-duration: 11s;
+    animation-delay: -2s;
+    opacity: 0.18;
+  }
+
+  @keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(60px, -40px) scale(1.1); }
+    66% { transform: translate(-40px, 50px) scale(0.9); }
+    100% { transform: translate(30px, 30px) scale(1.05); }
+  }
+
+  /* ══════ SPARKLE PARTICLES ══════ */
+  .sparkles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .spark {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: sparkle-float linear infinite;
+    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
+  }
+
+  @keyframes sparkle-float {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; transform: translateY(90vh) scale(1); }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+  }
+
+  /* ══════ SCAN LINE ══════ */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.04) 2px,
+      rgba(0, 0, 0, 0.04) 4px
+    );
+  }
+
+  /* ══════ MAIN LAYOUT ══════ */
+  .dash {
+    position: relative;
+    z-index: 2;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  /* ══════ HEADER ══════ */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: header-arrive 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes header-arrive {
+    from { opacity: 0; transform: translateY(-40px) scale(0.9); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  .header h1 {
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan), var(--neon-green), var(--neon-yellow), var(--neon-pink));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow-shift 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.3));
+    position: relative;
+  }
+
+  @keyframes rainbow-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .header .sub {
+    font-family: var(--font-tech);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--neon-cyan);
+    margin-top: 0.8rem;
+    text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px rgba(0, 240, 255, 0.3);
+    animation: flicker 3s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.3; }
+    94% { opacity: 1; }
+    96% { opacity: 0.5; }
+    97% { opacity: 1; }
+  }
+
+  .header .divider {
+    width: 200px;
+    height: 2px;
+    margin: 1.2rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-cyan), transparent);
+    animation: divider-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes divider-glow {
+    from { box-shadow: 0 0 10px var(--neon-pink), 0 0 30px rgba(255, 45, 138, 0.2); }
+    to { box-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0, 240, 255, 0.2); }
+  }
+
+  /* ══════ GLASS CARD ══════ */
+  .glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid var(--border-glow);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan), var(--neon-purple), var(--neon-green));
+    background-size: 300% 300%;
+    animation: rainbow-shift 6s ease-in-out infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+
+  .glass:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 60px rgba(0, 240, 255, 0.15), 0 0 40px rgba(255, 45, 138, 0.1);
+  }
+
+  .glass:hover::before { opacity: 0.8; }
+
+  /* ══════ KPI ROW ══════ */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .kpi {
+    padding: 1.5rem;
+    text-align: center;
+    animation: kpi-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .kpi:nth-child(1) { animation-delay: 0.2s; }
+  .kpi:nth-child(2) { animation-delay: 0.35s; }
+  .kpi:nth-child(3) { animation-delay: 0.5s; }
+  .kpi:nth-child(4) { animation-delay: 0.65s; }
+
+  @keyframes kpi-pop {
+    from { opacity: 0; transform: translateY(30px) scale(0.8); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  .kpi-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    animation: icon-bounce 2s ease-in-out infinite;
+  }
+
+  .kpi:nth-child(2) .kpi-icon { animation-delay: -0.5s; }
+  .kpi:nth-child(3) .kpi-icon { animation-delay: -1s; }
+  .kpi:nth-child(4) .kpi-icon { animation-delay: -1.5s; }
+
+  @keyframes icon-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .kpi-label {
+    font-family: var(--font-tech);
+    font-size: 0.52rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-val {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    line-height: 1;
+    animation: neon-breathe 3s ease-in-out infinite;
+  }
+
+  .kpi:nth-child(1) .kpi-val {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0, 240, 255, 0.4), 0 0 60px rgba(0, 240, 255, 0.1);
+  }
+  .kpi:nth-child(2) .kpi-val {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink), 0 0 30px rgba(255, 45, 138, 0.4), 0 0 60px rgba(255, 45, 138, 0.1);
+    animation-delay: -0.75s;
+  }
+  .kpi:nth-child(3) .kpi-val {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green), 0 0 30px rgba(57, 255, 20, 0.4), 0 0 60px rgba(57, 255, 20, 0.1);
+    animation-delay: -1.5s;
+  }
+  .kpi:nth-child(4) .kpi-val {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px var(--neon-yellow), 0 0 30px rgba(255, 230, 0, 0.4), 0 0 60px rgba(255, 230, 0, 0.1);
+    animation-delay: -2.25s;
+  }
+
+  @keyframes neon-breathe {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+  }
+
+  .kpi-note {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 0.35rem;
+  }
+
+  /* ══════ SECTION GRID ══════ */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .grid-full {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card {
+    padding: 1.8rem;
+    animation: card-slide 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .card.d1 { animation-delay: 0.3s; }
+  .card.d2 { animation-delay: 0.45s; }
+  .card.d3 { animation-delay: 0.6s; }
+  .card.d4 { animation-delay: 0.75s; }
+  .card.d5 { animation-delay: 0.9s; }
+
+  @keyframes card-slide {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(6px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-family: var(--font-tech);
+    font-size: 0.48rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+  }
+
+  .tag-pink { background: rgba(255, 45, 138, 0.15); color: var(--neon-pink); border: 1px solid rgba(255, 45, 138, 0.3); text-shadow: 0 0 10px rgba(255, 45, 138, 0.5); }
+  .tag-cyan { background: rgba(0, 240, 255, 0.12); color: var(--neon-cyan); border: 1px solid rgba(0, 240, 255, 0.3); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+  .tag-green { background: rgba(57, 255, 20, 0.12); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3); text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); }
+  .tag-yellow { background: rgba(255, 230, 0, 0.12); color: var(--neon-yellow); border: 1px solid rgba(255, 230, 0, 0.3); text-shadow: 0 0 10px rgba(255, 230, 0, 0.5); }
+  .tag-purple { background: rgba(191, 90, 242, 0.12); color: var(--neon-purple); border: 1px solid rgba(191, 90, 242, 0.3); text-shadow: 0 0 10px rgba(191, 90, 242, 0.5); }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    background: linear-gradient(90deg, var(--text), var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ══════ LEADERBOARD TABLE ══════ */
+  .leaderboard { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; }
+
+  .leaderboard thead th {
+    font-family: var(--font-tech);
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    padding: 0.4rem 1rem;
+    text-align: left;
+  }
+
+  .leaderboard tbody tr {
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .leaderboard tbody tr:hover {
+    background: rgba(0, 240, 255, 0.06);
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.1), inset 0 0 25px rgba(0, 240, 255, 0.03);
+    transform: scale(1.01);
+  }
+
+  .leaderboard tbody td {
+    padding: 0.9rem 1rem;
+    font-size: 0.78rem;
+    vertical-align: middle;
+  }
+
+  .leaderboard tbody tr td:first-child { border-radius: 10px 0 0 10px; }
+  .leaderboard tbody tr td:last-child { border-radius: 0 10px 10px 0; }
+
+  .rank {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    width: 2.5rem;
+    text-align: center;
+  }
+
+  .leaderboard tr:nth-child(1) .rank {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 15px rgba(255, 230, 0, 0.6);
+    animation: neon-breathe 2s ease-in-out infinite;
+  }
+
+  .leaderboard tr:nth-child(2) .rank {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+  }
+
+  .leaderboard tr:nth-child(3) .rank {
+    color: var(--neon-pink);
+    text-shadow: 0 0 12px rgba(255, 45, 138, 0.5);
+  }
+
+  .leaderboard tr:nth-child(4) .rank, .leaderboard tr:nth-child(5) .rank {
+    color: var(--text-dim);
+  }
+
+  .deal-name {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .deal-stage {
+    font-family: var(--font-tech);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    display: inline-block;
+  }
+
+  .stage-c { background: rgba(255, 45, 138, 0.15); color: var(--neon-pink); border: 1px solid rgba(255, 45, 138, 0.25); }
+  .stage-b { background: rgba(0, 240, 255, 0.12); color: var(--neon-cyan); border: 1px solid rgba(0, 240, 255, 0.25); }
+  .stage-a { background: rgba(57, 255, 20, 0.12); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.25); }
+
+  .deal-amount {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    text-align: right;
+  }
+
+  .leaderboard tr:nth-child(1) .deal-amount {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px rgba(255, 230, 0, 0.5);
+  }
+
+  .leaderboard tr:nth-child(2) .deal-amount { color: var(--neon-cyan); }
+  .leaderboard tr:nth-child(3) .deal-amount { color: var(--neon-pink); }
+  .leaderboard tr:nth-child(4) .deal-amount, .leaderboard tr:nth-child(5) .deal-amount { color: var(--text); }
+
+  .deal-date {
+    font-family: var(--font-tech);
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* ══════ RESPONSIVE ══════ */
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .header h1 { font-size: 2.2rem; }
+    .kpi-val { font-size: 1.7rem; }
+  }
+
+  @media (max-width: 500px) {
+    .dash { padding: 1.2rem 0.8rem 3rem; }
+    .kpis { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+  }
+
+  /* ══════ SCROLLBAR ══════ */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-void); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--neon-pink), var(--neon-cyan));
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--neon-pink);
+  }
+</style>
+</head>
+<body>
+
+<!-- Plasma BG -->
+<div class="plasma">
+  <div class="plasma-orb"></div>
+  <div class="plasma-orb"></div>
+  <div class="plasma-orb"></div>
+  <div class="plasma-orb"></div>
+</div>
+
+<!-- Sparkle particles -->
+<div class="sparkles" id="sparkles"></div>
+
+<div class="dash">
+  <header class="header">
+    <h1>AI/ML Funding Pulse</h1>
+    <div class="sub">Monthly trends from 2023 onwards</div>
+    <div class="divider"></div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi glass">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-label">Total Deals</div>
+      <div class="kpi-val">19</div>
+      <div class="kpi-note">announced rounds</div>
+    </div>
+    <div class="kpi glass">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Total Funding</div>
+      <div class="kpi-val">$476M</div>
+      <div class="kpi-note">capital deployed</div>
+    </div>
+    <div class="kpi glass">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-label">Avg Deal Size</div>
+      <div class="kpi-val">$25.1M</div>
+      <div class="kpi-note">per round</div>
+    </div>
+    <div class="kpi glass">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-label">Biggest Deal</div>
+      <div class="kpi-val">$282M</div>
+      <div class="kpi-note">BitBase Series C</div>
+    </div>
+  </div>
+
+  <!-- Chart 1: Deal Count -->
+  <div class="grid-full">
+    <div class="card glass d1">
+      <span class="card-tag tag-pink">Deal Flow</span>
+      <div class="card-title">Deal Count Per Month</div>
+      <canvas id="dealCountChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Charts 2 & 3 -->
+  <div class="grid-2">
+    <div class="card glass d2">
+      <span class="card-tag tag-cyan">Capital Waves</span>
+      <div class="card-title">Total Funding Per Month</div>
+      <canvas id="fundingChart" height="260"></canvas>
+    </div>
+    <div class="card glass d3">
+      <span class="card-tag tag-green">Deal Magnitude</span>
+      <div class="card-title">Average Deal Size Per Month</div>
+      <canvas id="avgDealChart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="grid-full">
+    <div class="card glass d5">
+      <span class="card-tag tag-yellow">Hall of Fame</span>
+      <div class="card-title">Top 5 AI/ML Deals Since 2023</div>
+      <table class="leaderboard">
+        <thead>
+          <tr><th>#</th><th>Company</th><th>Stage</th><th>Date</th><th style="text-align:right">Amount</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1</td>
+            <td class="deal-name">BitBase</td>
+            <td><span class="deal-stage stage-c">Series C</span></td>
+            <td class="deal-date">2023-11-05</td>
+            <td class="deal-amount">$281.7M</td>
+          </tr>
+          <tr>
+            <td class="rank">2</td>
+            <td class="deal-name">Continue</td>
+            <td><span class="deal-stage stage-b">Series B</span></td>
+            <td class="deal-date">2025-06-04</td>
+            <td class="deal-amount">$74.2M</td>
+          </tr>
+          <tr>
+            <td class="rank">3</td>
+            <td class="deal-name">Codegen</td>
+            <td><span class="deal-stage stage-b">Series B</span></td>
+            <td class="deal-date">2024-04-05</td>
+            <td class="deal-amount">$39.2M</td>
+          </tr>
+          <tr>
+            <td class="rank">4</td>
+            <td class="deal-name">CoreEdge</td>
+            <td><span class="deal-stage stage-a">Series A</span></td>
+            <td class="deal-date">2023-07-31</td>
+            <td class="deal-amount">$15.2M</td>
+          </tr>
+          <tr>
+            <td class="rank">5</td>
+            <td class="deal-name">Continue</td>
+            <td><span class="deal-stage stage-a">Series A</span></td>
+            <td class="deal-date">2024-06-09</td>
+            <td class="deal-amount">$11.6M</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Sparkle particles ──
+const sparkleContainer = document.getElementById('sparkles');
+for (let i = 0; i < 40; i++) {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.animationDuration = (6 + Math.random() * 10) + 's';
+  s.style.animationDelay = (-Math.random() * 16) + 's';
+  s.style.width = s.style.height = (1.5 + Math.random() * 3) + 'px';
+  const hue = [0, 180, 280, 60, 120][Math.floor(Math.random() * 5)];
+  s.style.background = `hsl(${hue}, 100%, 75%)`;
+  s.style.boxShadow = `0 0 ${4 + Math.random() * 8}px hsl(${hue}, 100%, 65%)`;
+  sparkleContainer.appendChild(s);
+}
+
+// ── Chart config ──
+Chart.defaults.color = '#8a7faa';
+Chart.defaults.borderColor = 'rgba(0, 240, 255, 0.08)';
+Chart.defaults.font.family = "'Chakra Petch', sans-serif";
+Chart.defaults.font.size = 10;
+
+const months = ['Jan 23','Mar 23','Jun 23','Jul 23','Nov 23','Dec 23','Mar 24','Apr 24','May 24','Jun 24','Sep 24','Dec 24','Jan 25','Feb 25','Apr 25','Jun 25','Dec 25','Jan 26'];
+const deals = [1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1];
+const fundingM = [2.5,1.5,4.8,15.2,281.7,2.7,0.8,39.2,1.2,11.6,6.8,0.7,6.9,7.6,2.0,74.2,5.8,11.1];
+const avgM = [2.5,1.5,4.8,15.2,281.7,2.7,0.8,39.2,1.2,11.6,3.4,0.7,6.9,7.6,2.0,74.2,5.8,11.1];
+
+const neonTooltip = {
+  backgroundColor: 'rgba(5, 2, 14, 0.9)',
+  borderColor: 'rgba(0, 240, 255, 0.4)',
+  borderWidth: 1,
+  titleFont: { family: "'Dela Gothic One', sans-serif", size: 12 },
+  bodyFont: { family: "'Chakra Petch', sans-serif", size: 11 },
+  padding: 12,
+  cornerRadius: 10,
+  displayColors: false
+};
+
+// ── Chart 1: Deal Count ──
+new Chart(document.getElementById('dealCountChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [{
+      data: deals,
+      backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+        g.addColorStop(0, 'rgba(255, 45, 138, 0.8)');
+        g.addColorStop(1, 'rgba(191, 90, 242, 0.3)');
+        return g;
+      },
+      borderColor: 'rgba(255, 45, 138, 0.6)',
+      borderWidth: 1,
+      borderRadius: 6,
+      hoverBackgroundColor: 'rgba(255, 45, 138, 0.95)',
+      barThickness: 18
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...neonTooltip, callbacks: { label: c => `${c.raw} deal${c.raw > 1 ? 's' : ''}` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 45 } },
+      y: { grid: { color: 'rgba(255, 45, 138, 0.06)' }, ticks: { stepSize: 1, font: { size: 9 } }, suggestedMax: 3 }
+    },
+    animation: { duration: 1200, easing: 'easeOutQuart', delay: c => c.dataIndex * 50 }
+  }
+});
+
+// ── Chart 2: Total Funding ──
+const fundingCtx = document.getElementById('fundingChart').getContext('2d');
+const fundGrad = fundingCtx.createLinearGradient(0, 0, 0, 350);
+fundGrad.addColorStop(0, 'rgba(0, 240, 255, 0.5)');
+fundGrad.addColorStop(0.5, 'rgba(0, 240, 255, 0.1)');
+fundGrad.addColorStop(1, 'rgba(0, 240, 255, 0)');
+
+new Chart(fundingCtx, {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      data: fundingM,
+      borderColor: '#00f0ff',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#00f0ff',
+      pointBorderColor: '#05020e',
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#00f0ff',
+      pointHoverBorderWidth: 3,
+      tension: 0.35,
+      fill: true,
+      backgroundColor: fundGrad
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...neonTooltip, borderColor: 'rgba(0, 240, 255, 0.5)', callbacks: { label: c => `$${c.raw.toFixed(1)}M funded` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 8.5 }, maxRotation: 50 } },
+      y: { grid: { color: 'rgba(0, 240, 255, 0.06)' }, ticks: { font: { size: 9 }, callback: v => `$${v}M` } }
+    },
+    animation: { duration: 1500, easing: 'easeOutQuart' }
+  }
+});
+
+// ── Chart 3: Avg Deal Size ──
+new Chart(document.getElementById('avgDealChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [{
+      data: avgM,
+      backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 350);
+        g.addColorStop(0, 'rgba(57, 255, 20, 0.7)');
+        g.addColorStop(1, 'rgba(57, 255, 20, 0.1)');
+        return g;
+      },
+      borderColor: 'rgba(57, 255, 20, 0.5)',
+      borderWidth: 1,
+      borderRadius: 4,
+      hoverBackgroundColor: 'rgba(57, 255, 20, 0.9)',
+      barThickness: 14
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...neonTooltip, borderColor: 'rgba(57, 255, 20, 0.4)', callbacks: { label: c => `$${c.raw.toFixed(1)}M avg deal` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 8.5 }, maxRotation: 50 } },
+      y: { grid: { color: 'rgba(57, 255, 20, 0.06)' }, ticks: { font: { size: 9 }, callback: v => `$${v}M` } }
+    },
+    animation: { duration: 1200, easing: 'easeOutQuart', delay: c => c.dataIndex * 40 }
+  }
+});
+</script>
+</body>
+</html>
