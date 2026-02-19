@@ -3,355 +3,698 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Startup Funding Dashboard</title>
+<title>STARTUP_FUNDING // CYBERDECK</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #111110;
-    --bg-raised: #1a1a18;
-    --bg-inset: #0c0c0b;
-    --border: #2a2a26;
-    --text: #e8e5df;
-    --text-dim: #8a8780;
-    --text-faint: #4a4844;
-    --sand: #c4b998;
-    --amber: #e5a93a;
-    --teal: #5bb8a6;
-    --coral: #d96853;
-    --slate: #7889a0;
-    --violet: #9b8ec4;
-    --mono: 'DM Mono', monospace;
-    --display: 'Fraunces', serif;
+    --bg: #0a0a0f;
+    --bg2: #0d0d14;
+    --card: #0f1018;
+    --card-border: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-yellow: #f0ff00;
+    --neon-green: #00ff88;
+    --neon-purple: #b400ff;
+    --neon-orange: #ff6600;
+    --text: #e0e0f0;
+    --text-dim: #5a5a7a;
+    --text-muted: #3a3a5a;
+    --glow-cyan: 0 0 10px #00f0ff40, 0 0 30px #00f0ff15;
+    --glow-magenta: 0 0 10px #ff00aa40, 0 0 30px #ff00aa15;
+    --display: 'Orbitron', sans-serif;
+    --mono: 'Share Tech Mono', monospace;
+    --body: 'Rajdhani', sans-serif;
   }
 
-  html { font-size: 15px; }
+  html { font-size: 14px; scroll-behavior: smooth; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--mono);
+    font-family: var(--body);
+    font-weight: 400;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
   }
 
-  .dash {
-    max-width: 1280px;
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 240, 255, 0.015) 2px,
+      rgba(0, 240, 255, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Grid background */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .dashboard {
+    max-width: 1260px;
     margin: 0 auto;
-    padding: 2.5rem 2rem 4rem;
-  }
-
-  /* ── Header ── */
-  .head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1.2rem;
-    margin-bottom: 2rem;
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .head h1 {
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: 1.8rem;
-    font-optical-sizing: auto;
-    color: var(--text);
-    letter-spacing: -0.02em;
-  }
-
-  .head .meta {
-    font-size: 0.65rem;
-    color: var(--text-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-  }
-
-  /* ── KPI Row ── */
-  .kpis {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-    animation: slideUp 0.5s ease-out 0.1s both;
-  }
-
-  .kpi {
-    background: var(--bg-raised);
-    padding: 1.3rem 1.5rem;
+    padding: 2.5rem 2.5rem 4rem;
     position: relative;
   }
 
-  .kpi-label {
-    font-size: 0.58rem;
+  /* Header */
+  .header {
+    margin-bottom: 2.5rem;
+    animation: glitchIn 0.8s ease-out;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent 50%, var(--neon-magenta));
+    opacity: 0.5;
+  }
+
+  .header h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    letter-spacing: 0.15em;
+    line-height: 1.2;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--text-faint);
+    text-shadow: 0 0 20px #00f0ff60, 0 0 60px #00f0ff20;
     margin-bottom: 0.5rem;
   }
 
-  .kpi-val {
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: 2rem;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-
-  .kpi:nth-child(1) .kpi-val { color: var(--amber); }
-  .kpi:nth-child(2) .kpi-val { color: var(--teal); }
-  .kpi:nth-child(3) .kpi-val { color: var(--sand); }
-  .kpi:nth-child(4) .kpi-val { color: var(--coral); }
-
-  .kpi-note {
-    font-size: 0.6rem;
+  .header .subtitle {
+    font-family: var(--mono);
+    font-size: 0.75rem;
     color: var(--text-dim);
-    margin-top: 0.35rem;
+    letter-spacing: 0.08em;
   }
 
-  /* ── Grid ── */
-  .row {
+  .header .subtitle span {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px #ff00aa40;
+    margin: 0 0.4rem;
+  }
+
+  /* KPI Row */
+  .kpis {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
     margin-bottom: 1.5rem;
   }
 
-  .row.full { grid-template-columns: 1fr; }
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    padding: 1.3rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out both;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+  }
+
+  .kpi::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--neon-cyan);
+    opacity: 0.3;
+  }
+
+  .kpi:nth-child(1) { animation-delay: 0.05s; }
+  .kpi:nth-child(2) { animation-delay: 0.1s; }
+  .kpi:nth-child(3) { animation-delay: 0.15s; }
+  .kpi:nth-child(4) { animation-delay: 0.2s; }
+
+  .kpi:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan);
+  }
+
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px #00f0ff50;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .kpi:nth-child(2) .kpi-value { color: var(--neon-magenta); text-shadow: 0 0 15px #ff00aa50; }
+  .kpi:nth-child(3) .kpi-value { color: var(--neon-green); text-shadow: 0 0 15px #00ff8850; }
+  .kpi:nth-child(4) .kpi-value { color: var(--neon-yellow); text-shadow: 0 0 15px #f0ff0050; }
+
+  .kpi:nth-child(2)::before { background: linear-gradient(90deg, var(--neon-magenta), var(--neon-purple)); }
+  .kpi:nth-child(3)::before { background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); }
+  .kpi:nth-child(4)::before { background: linear-gradient(90deg, var(--neon-yellow), var(--neon-orange)); }
+
+  .kpi:nth-child(2)::after { background: var(--neon-magenta); }
+  .kpi:nth-child(3)::after { background: var(--neon-green); }
+  .kpi:nth-child(4)::after { background: var(--neon-yellow); }
+
+  .kpi:nth-child(2):hover { border-color: var(--neon-magenta); box-shadow: var(--glow-magenta); }
+  .kpi:nth-child(3):hover { border-color: var(--neon-green); box-shadow: 0 0 10px #00ff8840; }
+  .kpi:nth-child(4):hover { border-color: var(--neon-yellow); box-shadow: 0 0 10px #f0ff0040; }
+
+  .kpi-sub {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .grid-full { margin-bottom: 1rem; }
 
   .card {
-    background: var(--bg-raised);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.6rem;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    padding: 1.5rem 1.6rem;
+    position: relative;
     animation: slideUp 0.5s ease-out both;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
-  .card:nth-child(1) { animation-delay: 0.2s; }
-  .card:nth-child(2) { animation-delay: 0.3s; }
-
-  .card-tag {
-    display: inline-block;
-    font-size: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    padding: 0.2rem 0.6rem;
-    border-radius: 3px;
-    margin-bottom: 0.6rem;
-    font-weight: 500;
+  .card:hover {
+    border-color: #2a2a4e;
   }
-
-  .tag-q1 { background: #e5a93a15; color: var(--amber); border: 1px solid #e5a93a25; }
-  .tag-q2 { background: #5bb8a615; color: var(--teal); border: 1px solid #5bb8a625; }
-  .tag-q3 { background: #d9685315; color: var(--coral); border: 1px solid #d9685325; }
 
   .card-title {
     font-family: var(--display);
-    font-weight: 700;
-    font-size: 1.05rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
     margin-bottom: 1.2rem;
-    letter-spacing: -0.01em;
+    text-shadow: 0 0 10px #00f0ff30;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
 
-  .chart-box {
+  .card-title::before {
+    content: '//';
+    color: var(--neon-magenta);
+    font-family: var(--mono);
+    text-shadow: 0 0 8px #ff00aa40;
+  }
+
+  .chart-wrap {
     position: relative;
     width: 100%;
   }
 
-  /* ── Answer callout ── */
-  .answer {
-    display: inline-block;
-    margin-top: 1rem;
-    font-size: 0.62rem;
-    color: var(--text-dim);
-    background: var(--bg-inset);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    border-left: 2px solid;
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
   }
 
-  .answer strong { color: var(--text); font-weight: 500; }
-  .answer.a-amber { border-color: var(--amber); }
-  .answer.a-teal { border-color: var(--teal); }
-  .answer.a-coral { border-color: var(--coral); }
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    font-weight: 400;
+    padding: 0 0 0.7rem 0;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+  }
 
-  /* ── Animations ── */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  thead th:last-child { text-align: right; }
+
+  tbody td {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #12121e;
+    vertical-align: middle;
+    font-family: var(--body);
+    font-weight: 500;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background 0.2s; }
+  tbody tr:hover { background: #12121e; }
+
+  .name-col {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    font-weight: 400;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1px;
+    border: 1px solid var(--card-border);
+    color: var(--neon-cyan);
+    letter-spacing: 0.04em;
+    background: transparent;
+  }
+
+  .tag-magenta {
+    color: var(--neon-magenta);
+    border-color: #ff00aa30;
+  }
+
+  .amount-col {
+    text-align: right;
+    font-weight: 600;
+    color: var(--neon-green);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-shadow: 0 0 8px #00ff8830;
+  }
+
+  .count-col {
+    text-align: right;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+  }
+
+  /* AI Coding Tools Section */
+  .coding-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .tool-card {
+    background: #0c0c16;
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    padding: 1rem 1.2rem;
+    position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .tool-card:hover {
+    border-color: var(--neon-magenta);
+    box-shadow: var(--glow-magenta);
+  }
+
+  .tool-card .tool-name {
+    font-family: var(--display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tool-card .tool-sub {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tool-rounds {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .tool-round {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.2rem 0;
+  }
+
+  .tool-round .stage-label {
+    color: var(--text-dim);
+  }
+
+  .tool-round .stage-label.active {
+    color: var(--neon-green);
+    text-shadow: 0 0 6px #00ff8830;
+  }
+
+  .tool-round .stage-amount {
+    color: var(--neon-cyan);
+  }
+
+  .tool-round .stage-investor {
+    color: var(--text-muted);
+    font-size: 0.58rem;
+  }
+
+  .series-a-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    text-shadow: 0 0 6px #00ff8840;
+    border-radius: 1px;
+  }
+
+  .series-b-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--neon-magenta);
+    color: var(--neon-magenta);
+    text-shadow: 0 0 6px #ff00aa40;
+    border-radius: 1px;
+  }
+
+  .early-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
+    border-radius: 1px;
+  }
+
+  /* Location pills */
+  .locations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .loc-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 1px;
+    padding: 0.3rem 0.65rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    transition: all 0.2s;
+  }
+
+  .loc-pill:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 8px #00f0ff20;
+  }
+
+  .loc-count {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 6px #00f0ff30;
+  }
+
+  .loc-name {
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .footer span {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 6px #00f0ff30;
+  }
+
+  /* Animations */
+  @keyframes glitchIn {
+    0% { opacity: 0; transform: translateY(-10px); filter: blur(4px); }
+    50% { opacity: 0.8; transform: translateY(2px) skewX(-1deg); }
+    100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Responsive ── */
+  /* Responsive */
   @media (max-width: 900px) {
-    .row { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
     .kpis { grid-template-columns: 1fr 1fr; }
-    .kpi-val { font-size: 1.6rem; }
+    .dashboard { padding: 2rem 1.2rem 3rem; }
   }
 
   @media (max-width: 500px) {
-    .dash { padding: 1.2rem 1rem 3rem; }
     .kpis { grid-template-columns: 1fr; }
-    .head h1 { font-size: 1.3rem; }
+    .header h1 { font-size: 1.2rem; }
+    .kpi-value { font-size: 1.4rem; }
+    .dashboard { padding: 1.5rem 1rem 2rem; }
   }
 
-  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
 </style>
 </head>
 <body>
 
-<div class="dash">
-  <header class="head">
-    <h1>Startup Funding Dashboard</h1>
-    <span class="meta">454 rounds · 8 industries · 2018–2025</span>
+<div class="dashboard">
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Startup Funding // Cyberdeck</h1>
+    <p class="subtitle">202 startups <span>&bull;</span> 454 rounds <span>&bull;</span> 66 investors <span>&bull;</span> $9.6B deployed</p>
   </header>
 
+  <!-- KPI Row -->
   <div class="kpis">
     <div class="kpi">
-      <div class="kpi-label">Total Rounds</div>
-      <div class="kpi-val">454</div>
-      <div class="kpi-note">announced deals</div>
+      <div class="kpi-label">// Total Capital</div>
+      <div class="kpi-value">$9.6B</div>
+      <div class="kpi-sub">across all rounds</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Total Funding</div>
-      <div class="kpi-val">$9.6B</div>
-      <div class="kpi-note">capital deployed</div>
+      <div class="kpi-label">// Avg Deal Size</div>
+      <div class="kpi-value">$21.1M</div>
+      <div class="kpi-sub">per funding round</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Industries</div>
-      <div class="kpi-val">8</div>
-      <div class="kpi-note">verticals tracked</div>
+      <div class="kpi-label">// Active Startups</div>
+      <div class="kpi-value">202</div>
+      <div class="kpi-sub">8 industries tracked</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Highest Avg Deal</div>
-      <div class="kpi-val">$192M</div>
-      <div class="kpi-note">Series C average</div>
+      <div class="kpi-label">// Lead Investors</div>
+      <div class="kpi-value">66</div>
+      <div class="kpi-sub">VCs + corporates + seed</div>
     </div>
   </div>
 
-  <div class="row full">
-    <div class="card" style="animation-delay:0.15s">
-      <span class="card-tag tag-q1">Question 1</span>
-      <div class="card-title">Funding Rounds by Year & Stage</div>
-      <div class="chart-box">
-        <canvas id="yearStageChart" height="280"></canvas>
-      </div>
-      <div class="answer a-amber">2024 had the most activity with <strong>89 rounds</strong>. Later stages grew steadily from 2020 onward.</div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="card">
-      <span class="card-tag tag-q2">Question 2</span>
-      <div class="card-title">Total Funding by Industry</div>
-      <div class="chart-box">
+  <!-- Industry + Stage Charts -->
+  <div class="grid-2">
+    <div class="card" style="animation-delay:0.25s">
+      <div class="card-title">Startups by Industry</div>
+      <div class="chart-wrap">
         <canvas id="industryChart" height="280"></canvas>
       </div>
-      <div class="answer a-teal">Developer Tools leads at <strong>$2.6B</strong> across 84 rounds.</div>
     </div>
-
-    <div class="card">
-      <span class="card-tag tag-q3">Question 3</span>
-      <div class="card-title">Average Deal Size by Stage</div>
-      <div class="chart-box">
-        <canvas id="dealSizeChart" height="280"></canvas>
+    <div class="card" style="animation-delay:0.3s">
+      <div class="card-title">Total Funding by Stage</div>
+      <div class="chart-wrap">
+        <canvas id="stageChart" height="280"></canvas>
       </div>
-      <div class="answer a-coral">Series C has the highest average deal at <strong>$192M</strong> across 21 rounds.</div>
     </div>
   </div>
+
+  <!-- Top Investors + Funding by Year -->
+  <div class="grid-2">
+    <div class="card" style="animation-delay:0.35s">
+      <div class="card-title">Top Investors by Deals Led</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Investor</th>
+              <th>Type</th>
+              <th style="text-align:right">Deals Led</th>
+              <th style="text-align:right">Deployed</th>
+            </tr>
+          </thead>
+          <tbody id="investorTable"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="animation-delay:0.4s">
+      <div class="card-title">Funding by Year</div>
+      <div class="chart-wrap">
+        <canvas id="yearChart" height="240"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Coding Tools -->
+  <div class="grid-full">
+    <div class="card" style="animation-delay:0.45s">
+      <div class="card-title">AI Coding Tools // Funding Tracker</div>
+      <div class="coding-tools-grid" id="codingTools"></div>
+    </div>
+  </div>
+
+  <!-- Top Funded Startups -->
+  <div class="grid-full">
+    <div class="card" style="animation-delay:0.5s">
+      <div class="card-title">Top Funded Startups</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Industry</th>
+              <th>Stage</th>
+              <th style="text-align:right">Total Raised</th>
+            </tr>
+          </thead>
+          <tbody id="startupTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Presence -->
+  <div class="grid-full">
+    <div class="card" style="animation-delay:0.55s">
+      <div class="card-title">Global Presence</div>
+      <div class="locations" id="locations"></div>
+    </div>
+  </div>
+
+  <div class="footer">startup_funding.db <span>&bull;</span> 202 entities <span>&bull;</span> 2018&ndash;2026 <span>&bull;</span> cyberdeck_v2.0</div>
+
 </div>
 
 <script>
-Chart.defaults.color = '#8a8780';
-Chart.defaults.borderColor = '#2a2a26';
-Chart.defaults.font.family = "'DM Mono', monospace";
-Chart.defaults.font.size = 10;
+// Chart.js defaults - cyberpunk
+Chart.defaults.color = '#5a5a7a';
+Chart.defaults.borderColor = '#1a1a2e';
+Chart.defaults.font.family = "'Rajdhani', sans-serif";
+Chart.defaults.font.size = 11;
 
-const tooltip = {
-  backgroundColor: '#1a1a18ee',
-  borderColor: '#2a2a26',
+const tooltipStyle = {
+  backgroundColor: '#0f1018',
+  titleColor: '#00f0ff',
+  bodyColor: '#e0e0f0',
+  borderColor: '#1a1a2e',
   borderWidth: 1,
-  titleFont: { family: "'Fraunces', serif", weight: 700, size: 12 },
-  bodyFont: { family: "'DM Mono', monospace", size: 10 },
-  padding: 10,
-  cornerRadius: 6,
+  titleFont: { family: "'Orbitron', sans-serif", weight: 600, size: 11 },
+  bodyFont: { family: "'Share Tech Mono', monospace", size: 11 },
+  padding: 12,
+  cornerRadius: 2,
   displayColors: true,
   boxWidth: 8,
   boxHeight: 8,
   boxPadding: 4
 };
 
-// ── Q1: Stacked bar — Year × Stage ──
-const years = ['2018','2019','2020','2021','2022','2023','2024','2025'];
-const stages = {
-  'Pre-Seed': { data: [8,28,23,25,32,26,38,9], color: '#8a8780' },
-  'Seed':     { data: [0,4,17,23,23,22,15,19], color: '#7889a0' },
-  'Series A': { data: [0,0,4,15,16,16,17,10],  color: '#5bb8a6' },
-  'Series B': { data: [0,0,0,3,7,11,11,10],    color: '#e5a93a' },
-  'Series C': { data: [0,0,0,0,2,6,8,5],       color: '#d96853' }
-};
-
-new Chart(document.getElementById('yearStageChart'), {
-  type: 'bar',
-  data: {
-    labels: years,
-    datasets: Object.entries(stages).map(([name, s]) => ({
-      label: name,
-      data: s.data,
-      backgroundColor: s.color + 'aa',
-      borderColor: s.color,
-      borderWidth: 1,
-      borderRadius: 2
-    }))
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { font: { size: 9.5 }, boxWidth: 10, boxHeight: 8, padding: 14 } },
-      tooltip: { ...tooltip, callbacks: { label: c => `${c.dataset.label}: ${c.raw} rounds` } }
-    },
-    scales: {
-      x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } },
-      y: { stacked: true, grid: { color: '#2a2a2644' }, ticks: { font: { size: 9 } }, title: { display: true, text: 'Rounds', font: { size: 9 }, color: '#4a4844' } }
-    },
-    animation: { duration: 800, easing: 'easeOutQuart' }
-  }
-});
-
-// ── Q2: Horizontal bar — Industry funding ──
-const industries = ['Developer Tools','Healthcare','Cybersecurity','Fintech','Enterprise SaaS','E-commerce','AI/ML','Climate Tech'];
-const fundingB = [2.626, 1.517, 1.508, 1.106, 0.984, 0.875, 0.651, 0.332];
-const rounds =   [84, 69, 49, 55, 54, 47, 52, 44];
-
+// ── Industry Chart (Horizontal Bar) ──
 new Chart(document.getElementById('industryChart'), {
   type: 'bar',
   data: {
-    labels: industries,
+    labels: ['Developer Tools', 'AI/ML', 'Enterprise SaaS', 'Healthcare', 'Climate Tech', 'Fintech', 'E-commerce', 'Cybersecurity'],
     datasets: [{
-      data: fundingB,
+      label: 'Startups',
+      data: [31, 28, 28, 28, 26, 26, 18, 17],
       backgroundColor: [
-        '#5bb8a6cc','#5bb8a6b0','#5bb8a6a0','#5bb8a690',
-        '#5bb8a680','#5bb8a670','#5bb8a658','#5bb8a640'
+        '#00f0ff', '#ff00aa', '#00ff88', '#f0ff00',
+        '#b400ff', '#ff6600', '#00f0ff', '#ff00aa'
       ],
-      borderColor: '#5bb8a644',
-      borderWidth: 1,
-      borderRadius: 3,
-      barThickness: 20
+      hoverBackgroundColor: '#ffffff',
+      borderRadius: 1,
+      barPercentage: 0.55,
+      categoryPercentage: 0.8
     }]
   },
   options: {
@@ -361,37 +704,100 @@ new Chart(document.getElementById('industryChart'), {
     plugins: {
       legend: { display: false },
       tooltip: {
-        ...tooltip,
+        ...tooltipStyle,
         callbacks: {
-          label: (c) => `$${c.raw.toFixed(1)}B · ${rounds[c.dataIndex]} rounds`
+          label: c => `${c.raw} startups`
         }
       }
     },
     scales: {
-      x: { grid: { color: '#2a2a2644' }, ticks: { font: { size: 9 }, callback: v => `$${v}B` } },
-      y: { grid: { display: false }, ticks: { font: { size: 10, family: "'Fraunces', serif", weight: 500 } } }
+      x: {
+        grid: { color: '#1a1a2e60' },
+        ticks: { font: { size: 10, family: "'Share Tech Mono', monospace" } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { size: 11, family: "'Rajdhani', sans-serif", weight: 600 }, color: '#8888aa' }
+      }
     },
-    animation: { duration: 900, easing: 'easeOutQuart', delay: c => c.dataIndex * 60 }
+    animation: { duration: 1200, easing: 'easeOutQuart' }
   }
 });
 
-// ── Q3: Bar — Avg deal size by stage ──
-const dealStages = ['Pre-Seed','Seed','Series A','Series B','Series C'];
-const avgDeal = [1.77, 6.04, 24.79, 60.09, 192.33];
-const dealRounds = [189, 123, 79, 42, 21];
-const barColors = ['#8a878099','#7889a0bb','#5bb8a6cc','#e5a93add','#d96853ee'];
-
-new Chart(document.getElementById('dealSizeChart'), {
+// ── Stage Chart (Horizontal Bar) ──
+new Chart(document.getElementById('stageChart'), {
   type: 'bar',
   data: {
-    labels: dealStages,
+    labels: ['Series C', 'Series B', 'Series A', 'Seed', 'Pre-Seed'],
+    datasets: [
+      {
+        label: 'Total ($M)',
+        data: [4039, 2524, 1958, 743, 335],
+        backgroundColor: ['#ff00aa', '#b400ff', '#00f0ff', '#00ff88', '#f0ff00'],
+        hoverBackgroundColor: '#ffffff',
+        borderRadius: 1,
+        barPercentage: 0.5
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          label: c => {
+            const v = c.raw;
+            return v >= 1000 ? `$${(v/1000).toFixed(2)}B` : `$${v}M`;
+          },
+          afterLabel: function(c) {
+            const deals = [21, 42, 79, 123, 189];
+            const avgs = ['$192M', '$60M', '$25M', '$6M', '$1.8M'];
+            return `${deals[c.dataIndex]} deals // avg ${avgs[c.dataIndex]}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#1a1a2e60' },
+        ticks: {
+          font: { size: 10, family: "'Share Tech Mono', monospace" },
+          callback: v => v >= 1000 ? `$${(v/1000).toFixed(1)}B` : `$${v}M`
+        }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { size: 11, family: "'Rajdhani', sans-serif", weight: 600 }, color: '#8888aa' }
+      }
+    },
+    animation: { duration: 1200, easing: 'easeOutQuart' }
+  }
+});
+
+// ── Funding by Year ──
+new Chart(document.getElementById('yearChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2018','2019','2020','2021','2022','2023','2024','2025'],
     datasets: [{
-      data: avgDeal,
-      backgroundColor: barColors,
-      borderColor: barColors.map(c => c.slice(0,-2)),
-      borderWidth: 1,
-      borderRadius: 3,
-      barThickness: 32
+      label: 'Total Funding',
+      data: [14.9, 62.9, 255.6, 820.9, 1429.2, 2685.6, 2672.6, 2037.1],
+      backgroundColor: ctx => {
+        const chart = ctx.chart;
+        const {ctx: c, chartArea} = chart;
+        if (!chartArea) return '#00f0ff';
+        const g = c.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+        g.addColorStop(0, '#00f0ff30');
+        g.addColorStop(1, '#00f0ff');
+        return g;
+      },
+      hoverBackgroundColor: '#ff00aa',
+      borderRadius: 1,
+      barPercentage: 0.6
     }]
   },
   options: {
@@ -400,19 +806,200 @@ new Chart(document.getElementById('dealSizeChart'), {
     plugins: {
       legend: { display: false },
       tooltip: {
-        ...tooltip,
+        ...tooltipStyle,
         callbacks: {
-          title: (items) => items[0].label,
-          label: (c) => `$${c.raw.toFixed(1)}M avg · ${dealRounds[c.dataIndex]} rounds`
+          label: c => {
+            const v = c.raw;
+            return v >= 1000 ? `$${(v/1000).toFixed(2)}B` : `$${v.toFixed(0)}M`;
+          }
         }
       }
     },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-      y: { grid: { color: '#2a2a2644' }, ticks: { font: { size: 9 }, callback: v => `$${v}M` } }
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 10, family: "'Share Tech Mono', monospace" } }
+      },
+      y: {
+        grid: { color: '#1a1a2e60' },
+        ticks: {
+          font: { size: 10, family: "'Share Tech Mono', monospace" },
+          callback: v => v >= 1000 ? `$${(v/1000).toFixed(1)}B` : `$${v}M`
+        }
+      }
     },
-    animation: { duration: 900, easing: 'easeOutQuart', delay: c => c.dataIndex * 100 }
+    animation: { duration: 1200, easing: 'easeOutQuart' }
   }
+});
+
+// ── Top Investors Table ──
+const investors = [
+  ['Intel Capital', 'Corporate VC', 15, '$284M'],
+  ['Softbank Vision Fund', 'Growth Equity', 14, '$839M'],
+  ['Greylock Partners', 'VC', 13, '$272M'],
+  ['Khosla Ventures', 'VC', 13, '$333M'],
+  ['General Catalyst', 'VC', 12, '$45M'],
+];
+
+const invBody = document.getElementById('investorTable');
+investors.forEach((inv, i) => {
+  const tr = document.createElement('tr');
+  const rankColors = ['#00f0ff', '#ff00aa', '#00ff88', '#f0ff00', '#b400ff'];
+  tr.innerHTML = `
+    <td style="font-family:'Orbitron',sans-serif;font-weight:700;color:${rankColors[i]};font-size:0.7rem;text-shadow:0 0 6px ${rankColors[i]}40">${String(i+1).padStart(2,'0')}</td>
+    <td class="name-col">${inv[0]}</td>
+    <td><span class="tag">${inv[1]}</span></td>
+    <td class="count-col">${inv[2]} deals</td>
+    <td class="amount-col">${inv[3]}</td>
+  `;
+  invBody.appendChild(tr);
+});
+
+// ── AI Coding Tools ──
+const codingTools = [
+  {
+    name: 'Codegen',
+    sub: 'Developer Tools',
+    badge: 'series-b',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$1.6M', investor: 'CRV', active: false },
+      { stage: 'Seed', amount: '$5.2M', investor: 'Lowercarbon Capital', active: false },
+      { stage: 'Series A', amount: '$28.9M', investor: 'Index Ventures', active: true },
+      { stage: 'Series B', amount: '$39.2M', investor: 'Google Ventures', active: true },
+    ]
+  },
+  {
+    name: 'Continue',
+    sub: 'IDEs',
+    badge: 'series-b',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$2.6M', investor: 'SV Angel', active: false },
+      { stage: 'Seed', amount: '$4.8M', investor: 'Floodgate', active: false },
+      { stage: 'Series A', amount: '$11.6M', investor: 'Google Ventures', active: true },
+      { stage: 'Series B', amount: '$74.2M', investor: 'Khosla Ventures', active: true },
+    ]
+  },
+  {
+    name: 'Codeium',
+    sub: 'Developer Tools',
+    badge: 'seed',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$1.8M', investor: 'Greylock Partners', active: false },
+      { stage: 'Seed', amount: '$5.5M', investor: 'Google Ventures', active: true },
+    ]
+  },
+  {
+    name: 'Cursor',
+    sub: 'IDEs',
+    badge: 'early',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$1.5M', investor: 'Coatue Management', active: true },
+    ]
+  },
+  {
+    name: 'Replit',
+    sub: 'IDEs',
+    badge: 'seed',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$1.2M', investor: 'Softbank Vision Fund', active: false },
+      { stage: 'Seed', amount: '$7.6M', investor: 'AI Grant', active: true },
+    ]
+  },
+  {
+    name: 'Tabnine',
+    sub: 'Developer Tools',
+    badge: 'early',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$1.8M', investor: 'AI Grant', active: true },
+    ]
+  },
+  {
+    name: 'Sourcegraph Cody',
+    sub: 'Developer Tools',
+    badge: 'seed',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$0.8M', investor: 'Menlo Ventures', active: false },
+      { stage: 'Seed', amount: '$2.0M', investor: 'Radical Ventures', active: true },
+    ]
+  },
+  {
+    name: 'Sweep AI',
+    sub: 'Developer Tools',
+    badge: 'seed',
+    rounds: [
+      { stage: 'Pre-Seed', amount: '$2.4M', investor: 'Khosla Ventures', active: false },
+      { stage: 'Seed', amount: '$5.8M', investor: 'Microsoft M12', active: true },
+    ]
+  },
+];
+
+const toolsGrid = document.getElementById('codingTools');
+codingTools.forEach(tool => {
+  const card = document.createElement('div');
+  card.className = 'tool-card';
+
+  let badgeHtml = '';
+  if (tool.badge === 'series-b') badgeHtml = '<div class="series-b-badge">Series B</div>';
+  else if (tool.badge === 'series-a') badgeHtml = '<div class="series-a-badge">Series A</div>';
+  else if (tool.badge === 'seed') badgeHtml = '<div class="early-badge">Seed</div>';
+  else badgeHtml = '<div class="early-badge">Pre-Seed</div>';
+
+  let roundsHtml = tool.rounds.map(r => `
+    <div class="tool-round">
+      <span class="stage-label ${r.active ? 'active' : ''}">${r.stage}</span>
+      <span class="stage-amount">${r.amount}</span>
+      <span class="stage-investor">${r.investor}</span>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    ${badgeHtml}
+    <div class="tool-name">${tool.name}</div>
+    <div class="tool-sub">${tool.sub}</div>
+    <div class="tool-rounds">${roundsHtml}</div>
+  `;
+  toolsGrid.appendChild(card);
+});
+
+// ── Top Startups Table ──
+const startups = [
+  ['NetFlow', 'Fintech', 'Series C', '$413M'],
+  ['MetaStack', 'Healthcare', 'Series C', '$387M'],
+  ['PureMesh', 'Developer Tools', 'Series C', '$379M'],
+  ['SuperCloud', 'Enterprise SaaS', 'Series C', '$364M'],
+  ['TrueBit', 'Developer Tools', 'Series C', '$359M'],
+  ['BitBase', 'AI/ML', 'Series C', '$348M'],
+  ['QuantumNode', 'Developer Tools', 'Series C', '$338M'],
+  ['LinkPulse', 'Cybersecurity', 'Series C', '$324M'],
+  ['SyncTech', 'Cybersecurity', 'Series C', '$323M'],
+  ['ApexSync', 'Developer Tools', 'Series C', '$304M'],
+];
+
+const stBody = document.getElementById('startupTable');
+startups.forEach(s => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="name-col">${s[0]}</td>
+    <td><span class="tag">${s[1]}</span></td>
+    <td style="font-family:'Share Tech Mono',monospace;color:#5a5a7a;font-size:0.68rem">${s[2]}</td>
+    <td class="amount-col">${s[3]}</td>
+  `;
+  stBody.appendChild(tr);
+});
+
+// ── Global Presence ──
+const locs = [
+  ['San Francisco', 18], ['Miami', 17], ['Austin', 17], ['Atlanta', 17],
+  ['Los Angeles', 16], ['Toronto', 14], ['London', 14], ['Boston', 13],
+  ['Berlin', 13], ['Tel Aviv', 12]
+];
+
+const locWrap = document.getElementById('locations');
+locs.forEach(l => {
+  const pill = document.createElement('div');
+  pill.className = 'loc-pill';
+  pill.innerHTML = `<span class="loc-count">${l[1]}</span><span class="loc-name">${l[0]}</span>`;
+  locWrap.appendChild(pill);
 });
 </script>
 </body>

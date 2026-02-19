@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ST_JOHNS_TEMP // CYBERDECK</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0d0d14;
+    --card: #0f1018;
+    --card-border: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-yellow: #f0ff00;
+    --neon-green: #00ff88;
+    --neon-purple: #b400ff;
+    --neon-orange: #ff6600;
+    --text: #e0e0f0;
+    --text-dim: #5a5a7a;
+    --text-muted: #3a3a5a;
+    --glow-cyan: 0 0 10px #00f0ff40, 0 0 30px #00f0ff15;
+    --glow-magenta: 0 0 10px #ff00aa40, 0 0 30px #ff00aa15;
+    --display: 'Orbitron', sans-serif;
+    --mono: 'Share Tech Mono', monospace;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  html { font-size: 14px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0, 240, 255, 0.015) 2px, rgba(0, 240, 255, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .dashboard {
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 2.5rem 2.5rem 4rem;
+    position: relative;
+  }
+
+  .header {
+    margin-bottom: 2.5rem;
+    animation: glitchIn 0.8s ease-out;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent 50%, var(--neon-magenta));
+    opacity: 0.5;
+  }
+
+  .header h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    letter-spacing: 0.15em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #00f0ff60, 0 0 60px #00f0ff20;
+    margin-bottom: 0.5rem;
+  }
+
+  .header .subtitle {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .header .subtitle span {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px #ff00aa40;
+    margin: 0 0.4rem;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    padding: 1.3rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out both;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+  }
+
+  .kpi::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--neon-cyan);
+    opacity: 0.3;
+  }
+
+  .kpi:nth-child(1) { animation-delay: 0.05s; }
+  .kpi:nth-child(2) { animation-delay: 0.1s; }
+  .kpi:nth-child(3) { animation-delay: 0.15s; }
+  .kpi:nth-child(4) { animation-delay: 0.2s; }
+
+  .kpi:hover { border-color: var(--neon-cyan); box-shadow: var(--glow-cyan); }
+
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px #00f0ff50;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .kpi:nth-child(2) .kpi-value { color: var(--neon-magenta); text-shadow: 0 0 15px #ff00aa50; }
+  .kpi:nth-child(3) .kpi-value { color: var(--neon-green); text-shadow: 0 0 15px #00ff8850; }
+  .kpi:nth-child(4) .kpi-value { color: var(--neon-yellow); text-shadow: 0 0 15px #f0ff0050; }
+
+  .kpi:nth-child(2)::before { background: linear-gradient(90deg, var(--neon-magenta), var(--neon-purple)); }
+  .kpi:nth-child(3)::before { background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); }
+  .kpi:nth-child(4)::before { background: linear-gradient(90deg, var(--neon-yellow), var(--neon-orange)); }
+
+  .kpi:nth-child(2)::after { background: var(--neon-magenta); }
+  .kpi:nth-child(3)::after { background: var(--neon-green); }
+  .kpi:nth-child(4)::after { background: var(--neon-yellow); }
+
+  .kpi:nth-child(2):hover { border-color: var(--neon-magenta); box-shadow: var(--glow-magenta); }
+  .kpi:nth-child(3):hover { border-color: var(--neon-green); box-shadow: 0 0 10px #00ff8840; }
+  .kpi:nth-child(4):hover { border-color: var(--neon-yellow); box-shadow: 0 0 10px #f0ff0040; }
+
+  .kpi-sub {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .grid-full { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    padding: 1.5rem 1.6rem;
+    position: relative;
+    animation: slideUp 0.5s ease-out both;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover { border-color: #2a2a4e; }
+
+  .card-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.2rem;
+    text-shadow: 0 0 10px #00f0ff30;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .card-title::before {
+    content: '//';
+    color: var(--neon-magenta);
+    font-family: var(--mono);
+    text-shadow: 0 0 8px #ff00aa40;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .caveat-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .caveat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 1px;
+    padding: 0.35rem 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+
+  .caveat-pill:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 8px #00f0ff20;
+  }
+
+  .caveat-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-cyan { background: var(--neon-cyan); box-shadow: 0 0 4px var(--neon-cyan); }
+  .dot-magenta { background: var(--neon-magenta); box-shadow: 0 0 4px var(--neon-magenta); }
+  .dot-yellow { background: var(--neon-yellow); box-shadow: 0 0 4px var(--neon-yellow); }
+  .dot-orange { background: var(--neon-orange); box-shadow: 0 0 4px var(--neon-orange); }
+
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .footer span {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 6px #00f0ff30;
+  }
+
+  @keyframes glitchIn {
+    0% { opacity: 0; transform: translateY(-10px); filter: blur(4px); }
+    50% { opacity: 0.8; transform: translateY(2px) skewX(-1deg); }
+    100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .dashboard { padding: 2rem 1.2rem 3rem; }
+  }
+
+  @media (max-width: 500px) {
+    .kpis { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.2rem; }
+    .kpi-value { font-size: 1.4rem; }
+    .dashboard { padding: 1.5rem 1rem 2rem; }
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+  <header class="header">
+    <h1>St. John's Temperature // Cyberdeck</h1>
+    <p class="subtitle">Annual Mean Temperature <span>&bull;</span> 1874&ndash;2025 <span>&bull;</span> 142 years <span>&bull;</span> Environment Canada</p>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-label">// Overall Mean</div>
+      <div class="kpi-value">5.0&deg;C</div>
+      <div class="kpi-sub">142-year average</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">// Warmest Year</div>
+      <div class="kpi-value">2012</div>
+      <div class="kpi-sub">6.98&deg;C annual mean</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">// Coldest Year</div>
+      <div class="kpi-value">1875</div>
+      <div class="kpi-sub">3.23&deg;C annual mean</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">// Warming Trend</div>
+      <div class="kpi-value">+0.06&deg;C</div>
+      <div class="kpi-sub">per decade (linear fit)</div>
+    </div>
+  </div>
+
+  <div class="grid-full">
+    <div class="card" style="animation-delay:0.25s">
+      <div class="card-title">Annual Mean Temperature &mdash; St. John's, NL</div>
+      <div class="chart-wrap">
+        <canvas id="tempChart" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="caveat-bar">
+    <div class="caveat-pill"><span class="dot dot-cyan"></span>6718 Downtown (1874-1941) &mdash; ~0.85&deg;C warm bias vs airport</div>
+    <div class="caveat-pill"><span class="dot dot-magenta"></span>6720 Airport (1942-2012)</div>
+    <div class="caveat-pill"><span class="dot dot-yellow"></span>50089 Airport Modern (2012-2025)</div>
+    <div class="caveat-pill"><span class="dot dot-orange"></span>12&times; duplicate rows per date in source CSVs (deduplicated)</div>
+  </div>
+
+  <div class="footer">env_canada_weather.csv <span>&bull;</span> 3 stations stitched <span>&bull;</span> 1874&ndash;2025 <span>&bull;</span> cyberdeck_v2.0</div>
+
+</div>
+
+<script>
+Chart.defaults.color = '#5a5a7a';
+Chart.defaults.borderColor = '#1a1a2e';
+Chart.defaults.font.family = "'Rajdhani', sans-serif";
+Chart.defaults.font.size = 11;
+
+const tooltipStyle = {
+  backgroundColor: '#0f1018',
+  titleColor: '#00f0ff',
+  bodyColor: '#e0e0f0',
+  borderColor: '#1a1a2e',
+  borderWidth: 1,
+  titleFont: { family: "'Orbitron', sans-serif", weight: 600, size: 11 },
+  bodyFont: { family: "'Share Tech Mono', monospace", size: 11 },
+  padding: 12,
+  cornerRadius: 2,
+  displayColors: false
+};
+
+const DATA = [
+  {year:1874,mean:4.55,days:365,station:"6718"},
+  {year:1875,mean:3.23,days:364,station:"6718"},
+  {year:1876,mean:4.84,days:366,station:"6718"},
+  {year:1877,mean:5.40,days:365,station:"6718"},
+  {year:1878,mean:5.70,days:365,station:"6718"},
+  {year:1879,mean:4.61,days:365,station:"6718"},
+  {year:1880,mean:4.19,days:366,station:"6718"},
+  {year:1881,mean:4.24,days:365,station:"6718"},
+  {year:1882,mean:4.13,days:365,station:"6718"},
+  {year:1883,mean:5.01,days:362,station:"6718"},
+  {year:1884,mean:3.49,days:366,station:"6718"},
+  {year:1885,mean:4.82,days:365,station:"6718"},
+  {year:1886,mean:5.30,days:365,station:"6718"},
+  {year:1887,mean:4.56,days:365,station:"6718"},
+  {year:1888,mean:4.17,days:366,station:"6718"},
+  {year:1889,mean:6.75,days:358,station:"6718"},
+  {year:1890,mean:4.77,days:365,station:"6718"},
+  {year:1891,mean:5.04,days:365,station:"6718"},
+  {year:1892,mean:5.88,days:364,station:"6718"},
+  {year:1893,mean:4.67,days:365,station:"6718"},
+  {year:1894,mean:3.97,days:365,station:"6718"},
+  {year:1895,mean:4.70,days:348,station:"6718"},
+  {year:1896,mean:4.79,days:366,station:"6718"},
+  {year:1897,mean:3.56,days:344,station:"6718"},
+  {year:1898,mean:5.21,days:365,station:"6718"},
+  {year:1899,mean:4.24,days:365,station:"6718"},
+  {year:1900,mean:4.97,days:365,station:"6718"},
+  {year:1901,mean:5.74,days:365,station:"6718"},
+  {year:1902,mean:5.43,days:365,station:"6718"},
+  {year:1903,mean:4.16,days:365,station:"6718"},
+  {year:1904,mean:4.31,days:366,station:"6718"},
+  {year:1905,mean:4.15,days:365,station:"6718"},
+  {year:1906,mean:5.25,days:365,station:"6718"},
+  {year:1907,mean:4.06,days:365,station:"6718"},
+  {year:1908,mean:5.24,days:366,station:"6718"},
+  {year:1909,mean:5.95,days:365,station:"6718"},
+  {year:1910,mean:6.43,days:365,station:"6718"},
+  {year:1911,mean:4.45,days:365,station:"6718"},
+  {year:1912,mean:4.50,days:366,station:"6718"},
+  {year:1913,mean:4.87,days:364,station:"6718"},
+  {year:1914,mean:3.93,days:365,station:"6718"},
+  {year:1915,mean:5.28,days:365,station:"6718"},
+  {year:1916,mean:5.13,days:365,station:"6718"},
+  {year:1917,mean:5.65,days:365,station:"6718"},
+  {year:1918,mean:4.27,days:365,station:"6718"},
+  {year:1919,mean:4.64,days:365,station:"6718"},
+  {year:1920,mean:4.86,days:366,station:"6718"},
+  {year:1921,mean:3.47,days:334,station:"6718"},
+  {year:1923,mean:4.91,days:330,station:"6718"},
+  {year:1928,mean:4.98,days:334,station:"6718"},
+  {year:1932,mean:5.43,days:366,station:"6718"},
+  {year:1935,mean:5.01,days:365,station:"6718"},
+  {year:1936,mean:6.08,days:366,station:"6718"},
+  {year:1937,mean:6.24,days:365,station:"6718"},
+  {year:1938,mean:5.76,days:365,station:"6718"},
+  {year:1939,mean:4.39,days:365,station:"6718"},
+  {year:1940,mean:5.37,days:366,station:"6718"},
+  {year:1941,mean:4.57,days:365,station:"6718"},
+  {year:1942,mean:5.15,days:365,station:"6720"},
+  {year:1943,mean:4.52,days:365,station:"6720"},
+  {year:1944,mean:4.81,days:366,station:"6720"},
+  {year:1945,mean:4.71,days:365,station:"6720"},
+  {year:1946,mean:5.05,days:364,station:"6720"},
+  {year:1947,mean:4.65,days:363,station:"6720"},
+  {year:1948,mean:3.90,days:366,station:"6720"},
+  {year:1949,mean:4.89,days:365,station:"6720"},
+  {year:1950,mean:4.40,days:365,station:"6720"},
+  {year:1951,mean:6.18,days:365,station:"6720"},
+  {year:1952,mean:5.82,days:366,station:"6720"},
+  {year:1953,mean:5.55,days:365,station:"6720"},
+  {year:1954,mean:5.27,days:365,station:"6720"},
+  {year:1955,mean:4.51,days:365,station:"6720"},
+  {year:1956,mean:4.74,days:366,station:"6720"},
+  {year:1957,mean:4.18,days:365,station:"6720"},
+  {year:1958,mean:5.64,days:365,station:"6720"},
+  {year:1959,mean:3.97,days:365,station:"6720"},
+  {year:1960,mean:5.36,days:366,station:"6720"},
+  {year:1961,mean:5.06,days:365,station:"6720"},
+  {year:1962,mean:4.57,days:365,station:"6720"},
+  {year:1963,mean:4.65,days:365,station:"6720"},
+  {year:1964,mean:4.13,days:366,station:"6720"},
+  {year:1965,mean:4.52,days:365,station:"6720"},
+  {year:1966,mean:5.60,days:365,station:"6720"},
+  {year:1967,mean:5.60,days:365,station:"6720"},
+  {year:1968,mean:4.40,days:366,station:"6720"},
+  {year:1969,mean:5.56,days:365,station:"6720"},
+  {year:1970,mean:5.49,days:365,station:"6720"},
+  {year:1971,mean:5.44,days:365,station:"6720"},
+  {year:1972,mean:3.69,days:366,station:"6720"},
+  {year:1973,mean:4.96,days:365,station:"6720"},
+  {year:1974,mean:3.79,days:365,station:"6720"},
+  {year:1975,mean:4.06,days:365,station:"6720"},
+  {year:1976,mean:4.97,days:366,station:"6720"},
+  {year:1977,mean:4.91,days:365,station:"6720"},
+  {year:1978,mean:4.12,days:365,station:"6720"},
+  {year:1979,mean:5.37,days:365,station:"6720"},
+  {year:1980,mean:4.05,days:366,station:"6720"},
+  {year:1981,mean:5.91,days:365,station:"6720"},
+  {year:1982,mean:4.28,days:365,station:"6720"},
+  {year:1983,mean:5.49,days:365,station:"6720"},
+  {year:1984,mean:5.23,days:366,station:"6720"},
+  {year:1985,mean:3.73,days:365,station:"6720"},
+  {year:1986,mean:4.26,days:365,station:"6720"},
+  {year:1987,mean:4.63,days:365,station:"6720"},
+  {year:1988,mean:5.23,days:366,station:"6720"},
+  {year:1989,mean:4.60,days:365,station:"6720"},
+  {year:1990,mean:4.69,days:365,station:"6720"},
+  {year:1991,mean:3.93,days:365,station:"6720"},
+  {year:1992,mean:3.62,days:366,station:"6720"},
+  {year:1993,mean:3.89,days:365,station:"6720"},
+  {year:1994,mean:4.75,days:365,station:"6720"},
+  {year:1995,mean:4.47,days:365,station:"6720"},
+  {year:1996,mean:5.30,days:366,station:"6720"},
+  {year:1997,mean:4.22,days:365,station:"6720"},
+  {year:1998,mean:5.62,days:365,station:"6720"},
+  {year:1999,mean:6.63,days:365,station:"6720"},
+  {year:2000,mean:5.86,days:366,station:"6720"},
+  {year:2001,mean:5.33,days:365,station:"6720"},
+  {year:2002,mean:4.75,days:365,station:"6720"},
+  {year:2003,mean:5.41,days:365,station:"6720"},
+  {year:2004,mean:5.52,days:366,station:"6720"},
+  {year:2005,mean:5.70,days:365,station:"6720"},
+  {year:2006,mean:6.40,days:365,station:"6720"},
+  {year:2007,mean:5.05,days:365,station:"6720"},
+  {year:2008,mean:5.74,days:366,station:"6720"},
+  {year:2009,mean:5.81,days:365,station:"6720"},
+  {year:2010,mean:6.51,days:365,station:"6720"},
+  {year:2011,mean:5.61,days:365,station:"6720"},
+  {year:2012,mean:6.98,days:328,station:"50089/6720"},
+  {year:2013,mean:6.20,days:326,station:"50089"},
+  {year:2014,mean:5.39,days:365,station:"50089"},
+  {year:2015,mean:4.52,days:365,station:"50089"},
+  {year:2016,mean:5.61,days:365,station:"50089"},
+  {year:2017,mean:5.41,days:363,station:"50089"},
+  {year:2018,mean:5.40,days:363,station:"50089"},
+  {year:2019,mean:4.67,days:359,station:"50089"},
+  {year:2020,mean:5.87,days:361,station:"50089"},
+  {year:2021,mean:6.36,days:358,station:"50089"},
+  {year:2022,mean:6.94,days:356,station:"50089"},
+  {year:2023,mean:5.72,days:364,station:"50089"},
+  {year:2024,mean:6.78,days:363,station:"50089"},
+  {year:2025,mean:6.52,days:360,station:"50089"}
+];
+
+const labels = DATA.map(d => d.year);
+const temps = DATA.map(d => d.mean);
+
+// 10-year moving average (centered)
+const movingAvg = temps.map((_, i) => {
+  const half = 5;
+  const start = Math.max(0, i - half);
+  const end = Math.min(temps.length - 1, i + half);
+  const window = temps.slice(start, end + 1);
+  return +(window.reduce((a, b) => a + b, 0) / window.length).toFixed(2);
+});
+
+// Station color mapping for points
+const stationColors = DATA.map(d => {
+  if (d.station === '6718') return '#00f0ff';
+  if (d.station === '6720') return '#ff00aa';
+  return '#f0ff00';
+});
+
+const stationNames = {
+  '6718': 'Downtown (6718)',
+  '6720': 'Airport (6720)',
+  '50089': 'Airport Modern (50089)',
+  '50089/6720': 'Airport Merged (6720+50089)'
+};
+
+new Chart(document.getElementById('tempChart'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Annual Mean',
+        data: temps,
+        borderColor: '#00f0ff40',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBackgroundColor: stationColors,
+        pointBorderColor: stationColors,
+        pointHoverBackgroundColor: '#ffffff',
+        pointHoverBorderColor: '#ffffff',
+        tension: 0.1,
+        order: 2
+      },
+      {
+        label: '10-Year Moving Avg',
+        data: movingAvg,
+        borderColor: '#ff00aa',
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        tension: 0.3,
+        borderDash: [],
+        order: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'end',
+        labels: {
+          font: { family: "'Share Tech Mono', monospace", size: 10 },
+          color: '#5a5a7a',
+          padding: 16,
+          boxWidth: 12,
+          boxHeight: 2,
+          usePointStyle: false
+        }
+      },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          title: (items) => {
+            const idx = items[0].dataIndex;
+            const d = DATA[idx];
+            return `YEAR ${d.year}`;
+          },
+          label: (ctx) => {
+            const idx = ctx.dataIndex;
+            const d = DATA[idx];
+            if (ctx.datasetIndex === 0) {
+              return [
+                `Mean Temp: ${d.mean.toFixed(2)}\u00B0C`,
+                `Days: ${d.days}/365`,
+                `Station: ${stationNames[d.station] || d.station}`
+              ];
+            }
+            return `10yr Avg: ${ctx.raw.toFixed(2)}\u00B0C`;
+          }
+        }
+      },
+      annotation: {
+        annotations: {
+          stationBreak: {
+            type: 'line',
+            xMin: labels.indexOf(1942),
+            xMax: labels.indexOf(1942),
+            borderColor: '#ff660090',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            label: {
+              display: true,
+              content: 'STATION CHANGE 1942',
+              position: 'start',
+              backgroundColor: '#0f1018ee',
+              color: '#ff6600',
+              font: { family: "'Share Tech Mono', monospace", size: 9, weight: 'normal' },
+              padding: { top: 4, bottom: 4, left: 8, right: 8 },
+              borderRadius: 1
+            }
+          },
+          stationBreak2: {
+            type: 'line',
+            xMin: labels.indexOf(2012),
+            xMax: labels.indexOf(2012),
+            borderColor: '#f0ff0050',
+            borderWidth: 1,
+            borderDash: [4, 4],
+            label: {
+              display: true,
+              content: '2012 HANDOFF',
+              position: 'start',
+              backgroundColor: '#0f1018ee',
+              color: '#f0ff00',
+              font: { family: "'Share Tech Mono', monospace", size: 9, weight: 'normal' },
+              padding: { top: 4, bottom: 4, left: 8, right: 8 },
+              borderRadius: 1,
+              yAdjust: 20
+            }
+          },
+          overallMean: {
+            type: 'line',
+            yMin: 5.0,
+            yMax: 5.0,
+            borderColor: '#00ff8830',
+            borderWidth: 1,
+            borderDash: [3, 3],
+            label: {
+              display: true,
+              content: '5.0\u00B0C MEAN',
+              position: 'end',
+              backgroundColor: '#0f1018cc',
+              color: '#00ff88',
+              font: { family: "'Share Tech Mono', monospace", size: 9, weight: 'normal' },
+              padding: { top: 3, bottom: 3, left: 6, right: 6 },
+              borderRadius: 1
+            }
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#1a1a2e40' },
+        ticks: {
+          font: { size: 10, family: "'Share Tech Mono', monospace" },
+          maxTicksLimit: 16,
+          callback: function(val) {
+            const year = this.getLabelForValue(val);
+            return year % 10 === 0 ? year : '';
+          }
+        }
+      },
+      y: {
+        grid: { color: '#1a1a2e60' },
+        ticks: {
+          font: { size: 10, family: "'Share Tech Mono', monospace" },
+          callback: v => v.toFixed(1) + '\u00B0C'
+        },
+        title: {
+          display: true,
+          text: 'ANNUAL MEAN TEMPERATURE (\u00B0C)',
+          font: { family: "'Share Tech Mono', monospace", size: 10 },
+          color: '#3a3a5a'
+        }
+      }
+    },
+    animation: { duration: 1500, easing: 'easeOutQuart' }
+  }
+});
+</script>
+</body>
+</html>

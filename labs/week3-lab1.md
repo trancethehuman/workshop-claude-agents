@@ -74,13 +74,68 @@ By the end of this lab, you will:
 
 | Task | Topic | Time |
 |------|-------|------|
+| Demo | Instructor live demo: Querying a live database | 10 min |
 | Option A | Connect GitHub | 15 min |
 | Option B | Connect Notion | 15 min |
 | Option C | Connect Database | 15 min |
 | Verify | Check connections | 5 min |
-| | **TOTAL (1 option + verify)** | **~20 min** |
+| | **TOTAL (demo + 1 option + verify)** | **~30 min** |
 
 Complete at least one option. Choose based on what tools you use in your work.
+
+---
+
+## Instructor Demo: Querying a Live Supabase Database
+
+Watch as the instructor queries a live hackathon platform (Oatmeal) staging database via the Supabase MCP. This shows what's possible when Claude is connected to a real production-like data source.
+
+The instructor starts by asking Claude to discover the right database:
+```
+> List my Supabase projects. Which one is the Oatmeal staging database?
+```
+
+**What to observe:**
+- How Claude writes SQL from plain English
+- How each query is bounded and specific (context management in action)
+- How JOINs across tables happen naturally
+- How Claude synthesizes multi-query results into insights
+
+### Demo Queries
+
+**1. Platform Overview**
+```
+> How many hackathons are in our staging Supabase oatmeal DB? Break them down by status.
+```
+
+**2. Event Calendar**
+```
+> Show me the hackathon calendar — what's coming up next, what's currently in judging,
+> and are there any scheduling conflicts where events overlap?
+```
+
+**3. Sponsor Analysis**
+```
+> Which sponsors are supporting multiple hackathons?
+> Show me the sponsor tier breakdown across all events.
+```
+
+**4. Engagement Funnel**
+```
+> What's our participant-to-submission rate? Which hackathons have
+> registrations but no submissions yet?
+```
+
+**5. Full Platform Health**
+```
+> Give me a full platform health report: total tenants, hackathons by status,
+> participant counts, submission rates, and which tables are still empty.
+```
+
+**Key takeaways from the demo:**
+- Claude manages context by running aggregations first, not `SELECT *`
+- Real staging data is sparse — that's normal and still useful for analysis
+- MCP handles auth, connection pooling, and query execution behind the scenes
+- Plain English prompts produce complex multi-table SQL with JOINs, GROUP BY, and filters
 
 ---
 
@@ -337,6 +392,58 @@ Before proceeding to Lab 2, verify:
 | **local** | `~/.claude.json` (project path) | No | Personal, sensitive credentials |
 | **project** | `.mcp.json` in repo | Yes (git) | Team-shared services |
 | **user** | `~/.claude.json` (global) | No | Personal tools across projects |
+
+### More MCP Servers to Explore
+
+If you finished early or want to try additional MCPs beyond GitHub/Notion/databases:
+
+**Supabase** — Full Supabase project access (Postgres, migrations, edge functions, storage)
+```bash
+claude mcp add --transport http supabase https://mcp.supabase.com/mcp
+```
+Complete OAuth in the browser, then try: `What tables are in my project?`
+- [Supabase MCP docs](https://supabase.com/docs/guides/getting-started/mcp)
+
+**Google BigQuery** — Query your data warehouse directly from Claude
+```bash
+claude mcp add --transport http bigquery https://bigquery.googleapis.com/mcp
+```
+Prerequisites: Enable BigQuery MCP in your GCP project first:
+```bash
+gcloud beta services mcp enable bigquery.googleapis.com --project=PROJECT_ID
+```
+Required IAM roles: MCP Tool User, BigQuery Job User, BigQuery Data Viewer
+- [BigQuery MCP docs](https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp)
+
+**Sentry** — Query errors, issues, and stack traces. OAuth-based, nothing to install.
+```bash
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+```
+Complete OAuth in the browser, then try: `What are the most frequent unresolved errors?`
+- [Sentry MCP docs](https://docs.sentry.io/product/sentry-mcp/)
+
+**Databricks** — Access Unity Catalog and SQL warehouses via `mcp-remote` bridge
+```bash
+claude mcp add-json databricks '{"command":"npx","args":["mcp-remote","https://<workspace-hostname>/api/2.0/mcp/functions/{catalog}/{schema}","--header","Authorization: Bearer <YOUR_PAT>"]}'
+```
+Replace `<workspace-hostname>` and `<YOUR_PAT>` with your Databricks workspace URL and personal access token.
+- [Databricks MCP docs](https://docs.databricks.com/aws/en/generative-ai/mcp/connect-external-services)
+
+**Tavily** — AI-optimized web search with search, extract, map, and crawl tools. Get a free API key at [tavily.com](https://tavily.com).
+```bash
+claude mcp add --transport http tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<YOUR_KEY>
+```
+Then try: `Search for the latest AI funding trends in 2024`
+- [Tavily MCP docs](https://docs.tavily.com/documentation/mcp)
+
+**Firecrawl** — Scrape, crawl, and extract structured data from any website. Get an API key at [firecrawl.dev](https://www.firecrawl.dev/app/api-keys).
+```bash
+claude mcp add firecrawl -e FIRECRAWL_API_KEY=<YOUR_KEY> -- npx -y firecrawl-mcp
+```
+Then try: `Scrape the homepage of ycombinator.com and summarize it`
+- [Firecrawl MCP docs](https://docs.firecrawl.dev/mcp-server)
+
+**Browse more:** [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — 10,000+ public MCP servers
 
 ---
 

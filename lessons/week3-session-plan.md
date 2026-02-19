@@ -86,6 +86,71 @@ Live demo: Add a GitHub MCP server and query issues.
 claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 ```
 
+### Popular MCP Servers Worth Exploring
+
+Beyond GitHub and Notion, there are MCP servers for major data platforms. These are great options depending on your stack:
+
+#### Data & Infrastructure
+
+| MCP Server | Transport | Setup Command | Use Case |
+|------------|-----------|---------------|----------|
+| **GitHub** | HTTP | `claude mcp add --transport http github https://api.githubcopilot.com/mcp/` | Code repos, issues, PRs |
+| **Notion** | HTTP | `claude mcp add --transport http notion https://mcp.notion.com/mcp` | Docs, wikis, databases |
+| **Supabase** | HTTP | `claude mcp add --transport http supabase https://mcp.supabase.com/mcp` | Postgres DB, auth, storage, edge functions |
+| **Google BigQuery** | HTTP | `claude mcp add --transport http bigquery https://bigquery.googleapis.com/mcp` | Large-scale data warehouse queries |
+| **Vercel** | HTTP | `claude mcp add --transport http vercel https://mcp.vercel.com` | Deployments, logs, project management |
+| **Sentry** | HTTP | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` | Error tracking, issue triage, debugging |
+| **Databricks** | stdio | See config below | Unity Catalog, SQL warehouses, notebooks |
+
+#### Web Search & Scraping
+
+| MCP Server | Transport | Setup Command | Use Case |
+|------------|-----------|---------------|----------|
+| **Tavily** | HTTP | `claude mcp add --transport http tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<KEY>` | AI-optimized web search |
+| **Firecrawl** | stdio | `claude mcp add firecrawl -e FIRECRAWL_API_KEY=<KEY> -- npx -y firecrawl-mcp` | Web scraping, crawling, structured extraction |
+
+**Supabase MCP** — Connects Claude to your Supabase project: query Postgres, manage tables, run migrations, deploy edge functions. Great for full-stack app development.
+- Docs: [supabase.com/docs/guides/getting-started/mcp](https://supabase.com/docs/guides/getting-started/mcp)
+
+**Google BigQuery MCP** — Query BigQuery datasets directly from Claude. Requires Google Cloud project with BigQuery MCP enabled.
+- Enable first: `gcloud beta services mcp enable bigquery.googleapis.com --project=PROJECT_ID`
+- Required IAM roles: MCP Tool User, BigQuery Job User, BigQuery Data Viewer
+- Docs: [docs.cloud.google.com/bigquery/docs/use-bigquery-mcp](https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp)
+
+**Vercel MCP** — View deployments, pull logs, and manage projects. OAuth-based. For project-specific access, use `https://mcp.vercel.com/<team-slug>/<project-slug>`.
+- Docs: [vercel.com/docs/mcp/vercel-mcp](https://vercel.com/docs/mcp/vercel-mcp)
+
+**Sentry MCP** — Query errors, issues, and stack traces from your Sentry projects. OAuth-based, nothing to install.
+- Docs: [docs.sentry.io/product/sentry-mcp](https://docs.sentry.io/product/sentry-mcp/)
+
+**Databricks MCP** — Access Unity Catalog functions and SQL warehouses. Uses `mcp-remote` as a bridge:
+```json
+// Add to .mcp.json or claude_desktop_config.json
+{
+  "mcpServers": {
+    "databricks": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://<workspace-hostname>/api/2.0/mcp/functions/{catalog}/{schema}",
+        "--header",
+        "Authorization: Bearer <YOUR_PAT>"
+      ]
+    }
+  }
+}
+```
+- Docs: [docs.databricks.com/aws/en/generative-ai/mcp/connect-external-services](https://docs.databricks.com/aws/en/generative-ai/mcp/connect-external-services)
+
+**Tavily MCP** — AI-optimized web search with search, extract, map, and crawl tools. Get an API key at [tavily.com](https://tavily.com).
+- Add globally: `claude mcp add --transport http --scope user tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<KEY>`
+- Docs: [docs.tavily.com/documentation/mcp](https://docs.tavily.com/documentation/mcp)
+
+**Firecrawl MCP** — Scrape, crawl, and extract structured data from any website. Get an API key at [firecrawl.dev](https://www.firecrawl.dev/app/api-keys).
+- Docs: [docs.firecrawl.dev/mcp-server](https://docs.firecrawl.dev/mcp-server)
+
+**Tip:** Browse the full MCP ecosystem at [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — there are 10,000+ public servers covering CRMs, analytics, cloud infra, and more.
+
 ---
 
 ## Block 2: Theory - Context Management for Data (30 min)
@@ -180,6 +245,66 @@ Show what happens with good vs. careless queries:
 
 ## Block 3: Lab (Part 1) - Connect External Services (45 min)
 
+### Instructor Live Demo: Querying a Live Supabase Database (10 min)
+
+Before students start the lab, do a live demo querying the Oatmeal staging database via the Supabase MCP. This shows the power of MCP + context management in a real production-like environment.
+
+**Setup:** Supabase MCP should already be connected. If not:
+```bash
+claude mcp add --transport http supabase https://mcp.supabase.com/mcp
+```
+
+**Finding the database:** Ask Claude to list your Supabase projects and pick the Oatmeal staging project:
+```
+> List my Supabase projects. Which one is the Oatmeal staging database?
+```
+Claude will use the Supabase MCP to list all projects and identify the right one. Then all subsequent queries will target that project.
+
+**Demo Script — run these prompts live, one at a time:**
+
+**1. Platform Overview** (warm-up, basic aggregation)
+```
+> How many hackathons are in our staging Supabase oatmeal DB? Break them down by status.
+```
+*Expected: 17 hackathons — 15 published, 2 in judging. Point out how Claude picks the right table and writes a GROUP BY.*
+
+**2. Event Calendar** (date analysis, planning)
+```
+> Show me the hackathon calendar — what's coming up next, what's currently in judging,
+> and are there any scheduling conflicts where events overlap?
+```
+*Expected: Timeline from Feb through June 2026. Two hackathons share Apr 8-10 dates (Climate Tech + Education AI). Good teaching moment — Claude spots the conflict.*
+
+**3. Sponsor Analysis** (joins, business insight)
+```
+> Which sponsors are supporting multiple hackathons?
+> Show me the sponsor tier breakdown across all events.
+```
+*Expected: Tavily sponsors 3 hackathons (gold + 2 none), Anthropic is gold for AI Agents, OpenAI is silver for Climate Tech, Goldman Sachs sponsors FinTech. Demonstrates JOINs across tables.*
+
+**4. Engagement Funnel** (multi-table join, product analytics)
+```
+> What's our participant-to-submission rate? Which hackathons have
+> registrations but no submissions yet?
+```
+*Expected: 7 participants across 4 hackathons, only 1 submission total (FinTech AI Buildathon). Most hackathons have zero engagement — real staging data looks like this. Good context management lesson: Claude should aggregate, not dump all rows.*
+
+**5. Full Platform Health** (synthesis, multiple queries)
+```
+> Give me a full platform health report: total tenants, hackathons by status,
+> participant counts, submission rates, and which tables are still empty.
+```
+*Expected: Claude runs multiple queries, synthesizes into a report. 11 tenants, 17 hackathons, 7 participants, 1 submission. Empty tables: prizes, judging_criteria, scores, judge_assignments, hackathon_results. Shows how Claude manages context across many queries.*
+
+**Key points to highlight during demo:**
+- Claude writes SQL you never had to think about
+- Each query is bounded and specific (good context management)
+- JOINs across tables happen naturally from plain English
+- Real staging data is messy and sparse — that's normal
+- The Supabase MCP handles auth, connection, and query execution
+
+---
+
 **Lab Document:** `labs/week3-lab1.md` or `admin/docx/labs/week3-lab1.docx`
 
 Complete **Part 1** of the Week 3 Lab.
@@ -197,21 +322,22 @@ Complete **Part 1** of the Week 3 Lab.
 
 ---
 
-## Block 4: Lab (Part 2) - Combined Workflow (30 min)
+## Block 4: Lab (Part 2) - Multi-Source Workflow with Vercel + Supabase (30 min)
 
 **Lab Document:** `labs/week3-lab2.md` or `admin/docx/labs/week3-lab2.docx`
 
 Complete **Part 2** of the Week 3 Lab.
 
 **Overview:**
-- Funding + Web Research (AI coding tools comparison)
-- Funding + GitHub (if connected)
-- Data-Driven Research with multiple sources
+- Connect Vercel MCP (5 min)
+- Explore Vercel deployment data — logs, status, history (10 min)
+- Multi-source analysis combining Vercel + Supabase (15 min)
 
 **Success criteria:**
-- Completed multi-source analysis using database + external service
-- Created comparison table with findings
-- Documented combined workflow
+- Vercel MCP connected alongside Supabase
+- Queried deployment logs and project status from Vercel
+- Combined Vercel + Supabase data in a single analysis
+- Produced a multi-source staging health report
 
 ---
 
