@@ -445,6 +445,8 @@ Then try: `Scrape the homepage of ycombinator.com and summarize it`
 
 **Browse more:** [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — 10,000+ public MCP servers
 
+**Finding trusted MCPs:** The [github.com/mcp](https://github.com/mcp) organization is the official home for MCP on GitHub — use it to find verified servers, SDKs, and community-maintained registries.
+
 ---
 
 **End of Lab 1**

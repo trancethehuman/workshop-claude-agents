@@ -151,6 +151,8 @@ Beyond GitHub and Notion, there are MCP servers for major data platforms. These 
 
 **Tip:** Browse the full MCP ecosystem at [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — there are 10,000+ public servers covering CRMs, analytics, cloud infra, and more.
 
+**Finding trusted MCPs:** The [github.com/mcp](https://github.com/mcp) organization is the official home for MCP on GitHub. Use it to find verified servers, SDKs, and community-maintained registries.
+
 ---
 
 ## Block 2: Theory - Context Management for Data (30 min)
