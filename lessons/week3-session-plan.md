@@ -1,6 +1,7 @@
 # Week 3: MCP Integration - Connecting to External Services
 
 ## Session Goals
+
 - Understand MCP (Model Context Protocol) architecture
 - Configure MCP servers for various services
 - Learn context management for data-heavy applications
@@ -13,6 +14,7 @@
 ### The Problem MCP Solves
 
 Before MCP, connecting AI agents to external services required:
+
 - Custom API integrations for each service
 - OAuth flows and token management
 - Tool definitions for every endpoint
@@ -43,6 +45,7 @@ The protocol re-uses ideas from the Language Server Protocol (LSP) that powers c
 **Current scale:** Over 10,000 public MCP servers. 97 million monthly SDK downloads. Enterprise deployment support from AWS, Google Cloud, and Azure.
 
 **References:**
+
 - [Anthropic: Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol)
 - [Anthropic: Donating MCP to the Agentic AI Foundation](https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation)
 - [GitHub Blog: MCP Joins the Linux Foundation](https://github.blog/open-source/maintainers/mcp-joins-the-linux-foundation-what-this-means-for-developers-building-the-next-era-of-ai-tools-and-agents/)
@@ -52,31 +55,32 @@ The protocol re-uses ideas from the Language Server Protocol (LSP) that powers c
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   Claude Code   │────▶│   MCP Server    │────▶│ External Service│
-│                 │◀────│   (adapter)     │◀────│ (GitHub, DB,    │
+│                 │◀────│                 │◀────│ (GitHub, DB,    │
 │                 │     │                 │     │  Notion, etc.)  │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
 **MCP Server:** A lightweight adapter that:
+
 - Exposes tools Claude can use
 - Handles authentication
 - Translates requests to service-specific APIs
 
 ### Transport Types
 
-| Transport | Use Case | Command |
-|-----------|----------|---------|
-| **HTTP** | Cloud-hosted services | `claude mcp add --transport http` |
-| **SSE** | Real-time services (deprecated) | `claude mcp add --transport sse` |
-| **stdio** | Local tools, CLI wrappers | `claude mcp add --transport stdio` |
+| Transport | Use Case                        | Command                            |
+| --------- | ------------------------------- | ---------------------------------- |
+| **HTTP**  | Cloud-hosted services           | `claude mcp add --transport http`  |
+| **SSE**   | Real-time services (deprecated) | `claude mcp add --transport sse`   |
+| **stdio** | Local tools, CLI wrappers       | `claude mcp add --transport stdio` |
 
 ### Scopes
 
-| Scope | Location | Shared? | Use Case |
-|-------|----------|---------|----------|
-| **local** | `~/.claude.json` (project path) | No | Personal, sensitive credentials |
-| **project** | `.mcp.json` in repo | Yes (git) | Team-shared services |
-| **user** | `~/.claude.json` (global) | No | Personal tools across projects |
+| Scope       | Location                        | Shared?   | Use Case                        |
+| ----------- | ------------------------------- | --------- | ------------------------------- |
+| **local**   | `~/.claude.json` (project path) | No        | Personal, sensitive credentials |
+| **project** | `.mcp.json` in repo             | Yes (git) | Team-shared services            |
+| **user**    | `~/.claude.json` (global)       | No        | Personal tools across projects  |
 
 ### Demo
 
@@ -92,38 +96,43 @@ Beyond GitHub and Notion, there are MCP servers for major data platforms. These 
 
 #### Data & Infrastructure
 
-| MCP Server | Transport | Setup Command | Use Case |
-|------------|-----------|---------------|----------|
-| **GitHub** | HTTP | `claude mcp add --transport http github https://api.githubcopilot.com/mcp/` | Code repos, issues, PRs |
-| **Notion** | HTTP | `claude mcp add --transport http notion https://mcp.notion.com/mcp` | Docs, wikis, databases |
-| **Supabase** | HTTP | `claude mcp add --transport http supabase https://mcp.supabase.com/mcp` | Postgres DB, auth, storage, edge functions |
-| **Google BigQuery** | HTTP | `claude mcp add --transport http bigquery https://bigquery.googleapis.com/mcp` | Large-scale data warehouse queries |
-| **Vercel** | HTTP | `claude mcp add --transport http vercel https://mcp.vercel.com` | Deployments, logs, project management |
-| **Sentry** | HTTP | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` | Error tracking, issue triage, debugging |
-| **Databricks** | stdio | See config below | Unity Catalog, SQL warehouses, notebooks |
+| MCP Server          | Transport | Setup Command                                                                  | Use Case                                   |
+| ------------------- | --------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
+| **GitHub**          | HTTP      | `claude mcp add --transport http github https://api.githubcopilot.com/mcp/`    | Code repos, issues, PRs                    |
+| **Notion**          | HTTP      | `claude mcp add --transport http notion https://mcp.notion.com/mcp`            | Docs, wikis, databases                     |
+| **Supabase**        | HTTP      | `claude mcp add --transport http supabase https://mcp.supabase.com/mcp`        | Postgres DB, auth, storage, edge functions |
+| **Google BigQuery** | HTTP      | `claude mcp add --transport http bigquery https://bigquery.googleapis.com/mcp` | Large-scale data warehouse queries         |
+| **Vercel**          | HTTP      | `claude mcp add --transport http vercel https://mcp.vercel.com`                | Deployments, logs, project management      |
+| **Sentry**          | HTTP      | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp`            | Error tracking, issue triage, debugging    |
+| **Databricks**      | stdio     | See config below                                                               | Unity Catalog, SQL warehouses, notebooks   |
 
 #### Web Search & Scraping
 
-| MCP Server | Transport | Setup Command | Use Case |
-|------------|-----------|---------------|----------|
-| **Tavily** | HTTP | `claude mcp add --transport http tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<KEY>` | AI-optimized web search |
-| **Firecrawl** | stdio | `claude mcp add firecrawl -e FIRECRAWL_API_KEY=<KEY> -- npx -y firecrawl-mcp` | Web scraping, crawling, structured extraction |
+| MCP Server    | Transport | Setup Command                                                                           | Use Case                                      |
+| ------------- | --------- | --------------------------------------------------------------------------------------- | --------------------------------------------- |
+| **Tavily**    | HTTP      | `claude mcp add --transport http tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<KEY>` | AI-optimized web search                       |
+| **Firecrawl** | stdio     | `claude mcp add firecrawl -e FIRECRAWL_API_KEY=<KEY> -- npx -y firecrawl-mcp`           | Web scraping, crawling, structured extraction |
 
 **Supabase MCP** — Connects Claude to your Supabase project: query Postgres, manage tables, run migrations, deploy edge functions. Great for full-stack app development.
+
 - Docs: [supabase.com/docs/guides/getting-started/mcp](https://supabase.com/docs/guides/getting-started/mcp)
 
 **Google BigQuery MCP** — Query BigQuery datasets directly from Claude. Requires Google Cloud project with BigQuery MCP enabled.
+
 - Enable first: `gcloud beta services mcp enable bigquery.googleapis.com --project=PROJECT_ID`
 - Required IAM roles: MCP Tool User, BigQuery Job User, BigQuery Data Viewer
 - Docs: [docs.cloud.google.com/bigquery/docs/use-bigquery-mcp](https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp)
 
 **Vercel MCP** — View deployments, pull logs, and manage projects. OAuth-based. For project-specific access, use `https://mcp.vercel.com/<team-slug>/<project-slug>`.
+
 - Docs: [vercel.com/docs/mcp/vercel-mcp](https://vercel.com/docs/mcp/vercel-mcp)
 
 **Sentry MCP** — Query errors, issues, and stack traces from your Sentry projects. OAuth-based, nothing to install.
+
 - Docs: [docs.sentry.io/product/sentry-mcp](https://docs.sentry.io/product/sentry-mcp/)
 
 **Databricks MCP** — Access Unity Catalog functions and SQL warehouses. Uses `mcp-remote` as a bridge:
+
 ```json
 // Add to .mcp.json or claude_desktop_config.json
 {
@@ -140,13 +149,16 @@ Beyond GitHub and Notion, there are MCP servers for major data platforms. These 
   }
 }
 ```
+
 - Docs: [docs.databricks.com/aws/en/generative-ai/mcp/connect-external-services](https://docs.databricks.com/aws/en/generative-ai/mcp/connect-external-services)
 
 **Tavily MCP** — AI-optimized web search with search, extract, map, and crawl tools. Get an API key at [tavily.com](https://tavily.com).
+
 - Add globally: `claude mcp add --transport http --scope user tavily https://mcp.tavily.com/mcp/?tavilyApiKey=<KEY>`
 - Docs: [docs.tavily.com/documentation/mcp](https://docs.tavily.com/documentation/mcp)
 
 **Firecrawl MCP** — Scrape, crawl, and extract structured data from any website. Get an API key at [firecrawl.dev](https://www.firecrawl.dev/app/api-keys).
+
 - Docs: [docs.firecrawl.dev/mcp-server](https://docs.firecrawl.dev/mcp-server)
 
 **Tip:** Browse the full MCP ecosystem at [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — there are 10,000+ public servers covering CRMs, analytics, cloud infra, and more.
@@ -162,10 +174,12 @@ Beyond GitHub and Notion, there are MCP servers for major data platforms. These 
 When working with data, context management becomes critical. A single query can return massive amounts of data, instantly filling your context window.
 
 **The difference:**
+
 - Reading a 500-line file? Predictable, bounded.
 - `SELECT * FROM users`? Could return 2 million rows.
 
 Without careful management, one careless query can:
+
 - Fill your entire context window
 - Cause Claude to lose track of the conversation
 - Waste tokens on data that doesn't fit
@@ -175,12 +189,14 @@ Without careful management, one careless query can:
 When working with databases or large datasets, follow these rules:
 
 **1. Always use LIMIT for exploration**
+
 ```sql
 -- Always add a limit for exploration queries
 SELECT * FROM funding_rounds LIMIT 100;
 ```
 
 **2. Aggregate first, then drill down**
+
 ```sql
 -- Start with aggregates to understand the data
 SELECT industry, COUNT(*) as count
@@ -193,6 +209,7 @@ SELECT * FROM startups WHERE industry = 'AI/ML' LIMIT 50;
 ```
 
 **3. Be specific about what you need**
+
 ```sql
 -- Bad: grab everything
 SELECT * FROM funding_rounds;
@@ -209,6 +226,7 @@ LIMIT 20;
 **4. Track what you've seen**
 
 When analyzing large datasets, keep mental notes:
+
 - How many total rows exist
 - What subset you've explored
 - What's left to investigate
@@ -217,12 +235,12 @@ When analyzing large datasets, keep mental notes:
 
 Remember the Data Analysis Loop from Week 2? Context management fits into each phase:
 
-| Phase | Context Management Strategy |
-|-------|---------------------------|
-| **Monitor** | Run aggregation queries first (safe, bounded) |
+| Phase       | Context Management Strategy                           |
+| ----------- | ----------------------------------------------------- |
+| **Monitor** | Run aggregation queries first (safe, bounded)         |
 | **Explore** | Drill down with LIMIT, explore segments one at a time |
-| **Craft** | Work with summarized insights, not raw data |
-| **Impact** | Present recommendations, not data dumps |
+| **Craft**   | Work with summarized insights, not raw data           |
+| **Impact**  | Present recommendations, not data dumps               |
 
 ### Demo
 
@@ -252,53 +270,67 @@ Show what happens with good vs. careless queries:
 Before students start the lab, do a live demo querying the Oatmeal staging database via the Supabase MCP. This shows the power of MCP + context management in a real production-like environment.
 
 **Setup:** Supabase MCP should already be connected. If not:
+
 ```bash
 claude mcp add --transport http supabase https://mcp.supabase.com/mcp
 ```
 
 **Finding the database:** Ask Claude to list your Supabase projects and pick the Oatmeal staging project:
+
 ```
 > List my Supabase projects. Which one is the Oatmeal staging database?
 ```
+
 Claude will use the Supabase MCP to list all projects and identify the right one. Then all subsequent queries will target that project.
 
 **Demo Script — run these prompts live, one at a time:**
 
 **1. Platform Overview** (warm-up, basic aggregation)
+
 ```
 > How many hackathons are in our staging Supabase oatmeal DB? Break them down by status.
 ```
-*Expected: 17 hackathons — 15 published, 2 in judging. Point out how Claude picks the right table and writes a GROUP BY.*
+
+_Expected: 17 hackathons — 15 published, 2 in judging. Point out how Claude picks the right table and writes a GROUP BY._
 
 **2. Event Calendar** (date analysis, planning)
+
 ```
 > Show me the hackathon calendar — what's coming up next, what's currently in judging,
 > and are there any scheduling conflicts where events overlap?
 ```
-*Expected: Timeline from Feb through June 2026. Two hackathons share Apr 8-10 dates (Climate Tech + Education AI). Good teaching moment — Claude spots the conflict.*
+
+_Expected: Timeline from Feb through June 2026. Two hackathons share Apr 8-10 dates (Climate Tech + Education AI). Good teaching moment — Claude spots the conflict._
 
 **3. Sponsor Analysis** (joins, business insight)
+
 ```
 > Which sponsors are supporting multiple hackathons?
 > Show me the sponsor tier breakdown across all events.
 ```
-*Expected: Tavily sponsors 3 hackathons (gold + 2 none), Anthropic is gold for AI Agents, OpenAI is silver for Climate Tech, Goldman Sachs sponsors FinTech. Demonstrates JOINs across tables.*
+
+_Expected: Tavily sponsors 3 hackathons (gold + 2 none), Anthropic is gold for AI Agents, OpenAI is silver for Climate Tech, Goldman Sachs sponsors FinTech. Demonstrates JOINs across tables._
 
 **4. Engagement Funnel** (multi-table join, product analytics)
+
 ```
 > What's our participant-to-submission rate? Which hackathons have
 > registrations but no submissions yet?
 ```
-*Expected: 7 participants across 4 hackathons, only 1 submission total (FinTech AI Buildathon). Most hackathons have zero engagement — real staging data looks like this. Good context management lesson: Claude should aggregate, not dump all rows.*
+
+_Expected: 7 participants across 4 hackathons, only 1 submission total (FinTech AI Buildathon). Most hackathons have zero engagement — real staging data looks like this. Good context management lesson: Claude should aggregate, not dump all rows._
 
 **5. Full Platform Health** (synthesis, multiple queries)
+
 ```
 > Give me a full platform health report: total tenants, hackathons by status,
 > participant counts, submission rates, and which tables are still empty.
 ```
-*Expected: Claude runs multiple queries, synthesizes into a report. 11 tenants, 17 hackathons, 7 participants, 1 submission. Empty tables: prizes, judging_criteria, scores, judge_assignments, hackathon_results. Shows how Claude manages context across many queries.*
+
+_Expected: Claude runs multiple queries, synthesizes into a report. 11 tenants, 17 hackathons, 7 participants, 1 submission. Empty tables: prizes, judging_criteria, scores, judge_assignments, hackathon_results. Shows how Claude manages context across many queries._
 
 **Key points to highlight during demo:**
+
 - Claude writes SQL you never had to think about
 - Each query is bounded and specific (good context management)
 - JOINs across tables happen naturally from plain English
@@ -312,12 +344,14 @@ Claude will use the Supabase MCP to list all projects and identify the right one
 Complete **Part 1** of the Week 3 Lab.
 
 **Overview:**
+
 - Connect GitHub MCP (Option A)
 - Connect Notion MCP (Option B)
 - Connect a database MCP (Option C)
 - Verify connections with `/mcp`
 
 **Success criteria:**
+
 - At least 1 MCP server connected
 - Successfully queried the external service
 - Listed tools with `/mcp`
@@ -331,11 +365,13 @@ Complete **Part 1** of the Week 3 Lab.
 Complete **Part 2** of the Week 3 Lab.
 
 **Overview:**
+
 - Connect Vercel MCP (5 min)
 - Explore Vercel deployment data — logs, status, history (10 min)
 - Multi-source analysis combining Vercel + Supabase (15 min)
 
 **Success criteria:**
+
 - Vercel MCP connected alongside Supabase
 - Queried deployment logs and project status from Vercel
 - Combined Vercel + Supabase data in a single analysis
@@ -359,17 +395,18 @@ Complete **Part 2** of the Week 3 Lab.
 
 Add at least 1 more MCP server relevant to your project:
 
-| Project Domain | Useful MCP Servers |
-|----------------|-------------------|
-| GTM/Sales | CRM (HubSpot, Salesforce), Email (Gmail), Notion |
-| Developer Tools | GitHub, PostgreSQL, Sentry, Linear |
-| Content/Marketing | Notion, Google Docs, social APIs |
-| Customer Support | Zendesk, Intercom, Slack |
-| Operations | Google Sheets, Airtable, databases |
+| Project Domain    | Useful MCP Servers                               |
+| ----------------- | ------------------------------------------------ |
+| GTM/Sales         | CRM (HubSpot, Salesforce), Email (Gmail), Notion |
+| Developer Tools   | GitHub, PostgreSQL, Sentry, Linear               |
+| Content/Marketing | Notion, Google Docs, social APIs                 |
+| Customer Support  | Zendesk, Intercom, Slack                         |
+| Operations        | Google Sheets, Airtable, databases               |
 
 **Part 2: Document Your Stack**
 
 Create a brief doc with:
+
 - Which servers you added and why
 - How you configured them (transport, scope)
 - 3 useful queries you can now run
@@ -377,6 +414,7 @@ Create a brief doc with:
 **Part 3: Multi-Source Analysis**
 
 Do one analysis that combines:
+
 - The startup funding database (local queries)
 - At least one external MCP (GitHub, Notion, web research, etc.)
 
@@ -385,6 +423,7 @@ Document your findings and the workflow you used.
 ### Next Week Preview
 
 Week 4: Agent Skills - Teaching Claude new capabilities with SKILL.md files
+
 - Encode domain expertise as reusable skills
 - Create a data analysis skill with guardrails
 - Progressive disclosure and skill organization
@@ -403,6 +442,7 @@ Week 4: Agent Skills - Teaching Claude new capabilities with SKILL.md files
 ### API Key Options for Participants
 
 For live services, participants can:
+
 - Use free tiers (Notion, GitHub have free plans)
 - Work with the local funding database (no accounts needed)
 - Pair up if some have accounts
