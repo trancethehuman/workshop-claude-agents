@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startup Funding Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #0a0b0f;
+    --bg-surface: #12131a;
+    --bg-card: #181a24;
+    --bg-elevated: #1e2030;
+    --border: #252838;
+    --border-subtle: #1c1e2a;
+    --text-primary: #e8e9ed;
+    --text-secondary: #8a8d9b;
+    --text-muted: #555868;
+    --teal: #3ecfb4;
+    --teal-dim: #2a9a84;
+    --teal-glow: rgba(62, 207, 180, 0.12);
+    --amber: #f0a828;
+    --amber-dim: #b07a18;
+    --amber-glow: rgba(240, 168, 40, 0.10);
+    --red: #ef4056;
+    --red-dim: #a82a3c;
+    --red-glow: rgba(239, 64, 86, 0.10);
+    --blue: #5b8af0;
+    --blue-glow: rgba(91, 138, 240, 0.10);
+    --gray: #6b7080;
+    --gray-glow: rgba(107, 112, 128, 0.10);
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'DM Sans', -apple-system, sans-serif;
+    --radius: 10px;
+    --radius-sm: 6px;
+
+    /* Stage colors */
+    --stage-preseed: #6b7080;
+    --stage-seed: #5b8af0;
+    --stage-a: #3ecfb4;
+    --stage-b: #f0a828;
+    --stage-c: #ef4056;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .shell {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  /* --- Header --- */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text-primary);
+  }
+  .header-title em { font-style: italic; color: var(--teal); }
+  .header-meta {
+    text-align: right;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .header-meta strong { color: var(--text-secondary); font-weight: 500; }
+
+  /* --- Metric Cards --- */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .metric-card.teal::before { background: linear-gradient(90deg, var(--teal), transparent); }
+  .metric-card.amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+  .metric-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .metric-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .metric-card:nth-child(1) { animation-delay: 0.08s; }
+  .metric-card:nth-child(2) { animation-delay: 0.14s; }
+  .metric-card:nth-child(3) { animation-delay: 0.20s; }
+  .metric-card:nth-child(4) { animation-delay: 0.26s; }
+  .metric-card:nth-child(5) { animation-delay: 0.32s; }
+  .metric-card:nth-child(6) { animation-delay: 0.38s; }
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .metric-value {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .metric-value.teal { color: var(--teal); }
+  .metric-value.amber { color: var(--amber); }
+  .metric-value.red { color: var(--red); }
+  .metric-value.blue { color: var(--blue); }
+  .metric-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+
+  /* --- Section Titles --- */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .section-title .num {
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-right: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* --- Two Column --- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  /* --- Panel --- */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  /* --- Chart --- */
+  .chart-wrap {
+    position: relative;
+    height: 320px;
+    margin-top: 8px;
+  }
+  .chart-wrap.short { height: 260px; }
+  .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+  /* --- Full-width panel --- */
+  .full-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: 0.35s;
+  }
+
+  /* --- Tables --- */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table thead th {
+    text-align: left;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    padding: 16px 16px;
+    font-weight: 500;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .data-table thead th:hover { color: var(--text-secondary); }
+  .data-table thead th.num-col { text-align: right; }
+  .data-table tbody td {
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: rgba(255,255,255,0.015); }
+  .data-table td.num-col { text-align: right; }
+  .company-name { color: var(--text-primary); font-weight: 600; }
+
+  /* --- Badges --- */
+  .stage-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .stage-badge.pre-seed { background: var(--gray-glow); color: var(--gray); border: 1px solid rgba(107,112,128,0.18); }
+  .stage-badge.seed { background: var(--blue-glow); color: var(--blue); border: 1px solid rgba(91,138,240,0.18); }
+  .stage-badge.series-a { background: var(--teal-glow); color: var(--teal); border: 1px solid rgba(62,207,180,0.18); }
+  .stage-badge.series-b { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(240,168,40,0.18); }
+  .stage-badge.series-c { background: var(--red-glow); color: var(--red); border: 1px solid rgba(239,64,86,0.18); }
+
+  .type-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    background: var(--blue-glow);
+    color: var(--blue);
+    border: 1px solid rgba(91,138,240,0.18);
+  }
+  .type-badge.angel { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(240,168,40,0.18); }
+  .type-badge.cvc { background: var(--teal-glow); color: var(--teal); border: 1px solid rgba(62,207,180,0.18); }
+
+  /* --- Search / Filter Bar --- */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-bar input, .filter-bar select {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-bar input:focus, .filter-bar select:focus {
+    border-color: var(--teal-dim);
+  }
+  .filter-bar input { flex: 1; min-width: 200px; }
+  .filter-bar select { min-width: 140px; }
+  .filter-bar .result-count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    letter-spacing: 0.04em;
+  }
+
+  /* --- Pagination --- */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 0.8rem;
+  }
+  .pagination button {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .pagination button:hover:not(:disabled) {
+    background: var(--bg-card);
+    border-color: var(--teal-dim);
+    color: var(--text-primary);
+  }
+  .pagination button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .pagination .page-info {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Sort indicator */
+  .sort-arrow { font-size: 0.6rem; margin-left: 4px; opacity: 0.5; }
+  .sort-arrow.active { opacity: 1; color: var(--teal); }
+
+  /* --- Footer --- */
+  .footer {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding-top: 32px;
+    border-top: 1px solid var(--border-subtle);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+    animation-delay: 0.85s;
+  }
+
+  /* --- Animations --- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 960px) {
+    .metrics-row { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .header-meta { text-align: left; }
+    .shell { padding: 24px 16px 60px; }
+    .header-title { font-size: 1.9rem; }
+  }
+</style>
+</head>
+<body>
+<script>window.DASHBOARD_DATA = {"overview":{"totalStartups":200,"totalRounds":479,"totalInvestors":66,"totalFunding":9989849514,"avgDealSize":20855636,"avgValuation":198655040,"minDate":"2018-07-19","maxDate":"2026-01-01","topIndustry":"Developer Tools"},"fundingByYearStage":[{"year":"2018","stage":"Pre-Seed","total":14875323,"deals":8},{"year":"2019","stage":"Pre-Seed","total":43921318,"deals":28},{"year":"2019","stage":"Seed","total":18964327,"deals":4},{"year":"2020","stage":"Pre-Seed","total":49480660,"deals":27},{"year":"2020","stage":"Seed","total":122353092,"deals":20},{"year":"2020","stage":"Series A","total":83731733,"deals":4},{"year":"2021","stage":"Pre-Seed","total":44514011,"deals":27},{"year":"2021","stage":"Seed","total":150857977,"deals":24},{"year":"2021","stage":"Series A","total":417071695,"deals":15},{"year":"2021","stage":"Series B","total":208504146,"deals":3},{"year":"2022","stage":"Pre-Seed","total":64920883,"deals":34},{"year":"2022","stage":"Seed","total":132600447,"deals":23},{"year":"2022","stage":"Series A","total":398427675,"deals":17},{"year":"2022","stage":"Series B","total":511244229,"deals":8},{"year":"2022","stage":"Series C","total":321957407,"deals":2},{"year":"2023","stage":"Pre-Seed","total":55555995,"deals":27},{"year":"2023","stage":"Seed","total":142338793,"deals":24},{"year":"2023","stage":"Series A","total":449407621,"deals":18},{"year":"2023","stage":"Series B","total":706742685,"deals":12},{"year":"2023","stage":"Series C","total":1331545294,"deals":6},{"year":"2024","stage":"Pre-Seed","total":62518556,"deals":39},{"year":"2024","stage":"Seed","total":104774556,"deals":15},{"year":"2024","stage":"Series A","total":376491918,"deals":17},{"year":"2024","stage":"Series B","total":761896628,"deals":12},{"year":"2024","stage":"Series C","total":1366940320,"deals":8},{"year":"2025","stage":"Pre-Seed","total":17130827,"deals":10},{"year":"2025","stage":"Seed","total":121186187,"deals":21},{"year":"2025","stage":"Series A","total":284270986,"deals":10},{"year":"2025","stage":"Series B","total":596073255,"deals":10},{"year":"2025","stage":"Series C","total":1018478780,"deals":5},{"year":"2026","stage":"Series A","total":11072190,"deals":1}],"stageDistribution":[{"stage":"Pre-Seed","count":200,"total":352917573,"avg":1764588},{"stage":"Seed","count":131,"total":793075379,"avg":6054011},{"stage":"Series A","count":82,"total":2020473818,"avg":24639925},{"stage":"Series B","count":45,"total":2784460943,"avg":61876910},{"stage":"Series C","count":21,"total":4038921801,"avg":192329610}],"industryBreakdown":[{"industry":"Developer Tools","deals":86,"total":2629639888},{"industry":"Healthcare","deals":74,"total":1646747181},{"industry":"Cybersecurity","deals":52,"total":1523673818},{"industry":"Fintech","deals":60,"total":1193049667},{"industry":"Enterprise SaaS","deals":61,"total":1102321918},{"industry":"E-commerce","deals":47,"total":875022999},{"industry":"AI/ML","deals":54,"total":682259523},{"industry":"Climate Tech","deals":45,"total":337134520}],"topInvestors":[{"name":"Softbank Vision Fund","type":"growth_equity","companies":14,"deals":14,"totalInvested":839262503},{"name":"Sequoia Capital","type":"vc","companies":12,"deals":12,"totalInvested":470601150},{"name":"Microsoft M12","type":"corporate","companies":10,"deals":11,"totalInvested":456432822},{"name":"Felicis Ventures","type":"vc","companies":12,"deals":12,"totalInvested":412164649},{"name":"Initialized Capital","type":"seed_fund","companies":7,"deals":7,"totalInvested":406399396},{"name":"Floodgate","type":"seed_fund","companies":8,"deals":8,"totalInvested":393658898},{"name":"Khosla Ventures","type":"vc","companies":13,"deals":14,"totalInvested":339510024},{"name":"Obvious Ventures","type":"vc","companies":9,"deals":9,"totalInvested":328185014},{"name":"Congruent Ventures","type":"vc","companies":5,"deals":5,"totalInvested":299892045},{"name":"Accel","type":"vc","companies":7,"deals":7,"totalInvested":294993309},{"name":"Intel Capital","type":"corporate","companies":15,"deals":16,"totalInvested":285743862},{"name":"Greylock Partners","type":"vc","companies":12,"deals":13,"totalInvested":271804783},{"name":"Google Ventures","type":"corporate","companies":12,"deals":12,"totalInvested":259261078},{"name":"ARCH Venture Partners","type":"vc","companies":5,"deals":5,"totalInvested":250799923},{"name":"Costanoa Ventures","type":"seed_fund","companies":7,"deals":8,"totalInvested":238357855},{"name":"NEA","type":"vc","companies":10,"deals":11,"totalInvested":234139201},{"name":"SV Angel","type":"seed_fund","companies":10,"deals":10,"totalInvested":220515334},{"name":"Y Combinator","type":"seed_fund","companies":12,"deals":12,"totalInvested":211770499},{"name":"Precursor Ventures","type":"seed_fund","companies":9,"deals":9,"totalInvested":210797138},{"name":"Menlo Ventures","type":"vc","companies":8,"deals":8,"totalInvested":208745637}],"companies":[{"name":"NetFlow","industry":"Fintech","headquarters":"Denver, CO","founded_date":"2019-04-08","rounds":5,"totalFunding":412648052,"latestStage":"Series C","latestValuation":2348484280},{"name":"MetaStack","industry":"Healthcare","headquarters":"Miami, FL","founded_date":"2019-09-13","rounds":5,"totalFunding":386876584,"latestStage":"Series C","latestValuation":2090544800},{"name":"PureMesh","industry":"Developer Tools","headquarters":"London, UK","founded_date":"2019-08-13","rounds":5,"totalFunding":378891197,"latestStage":"Series C","latestValuation":2090983088},{"name":"SuperCloud","industry":"Enterprise SaaS","headquarters":"San Francisco, CA","founded_date":"2018-04-27","rounds":5,"totalFunding":364227586,"latestStage":"Series C","latestValuation":2009681616},{"name":"TrueBit","industry":"Developer Tools","headquarters":"Berlin, Germany","founded_date":"2019-01-29","rounds":5,"totalFunding":358753746,"latestStage":"Series C","latestValuation":2060411776},{"name":"BitBase","industry":"AI/ML","headquarters":"Berlin, Germany","founded_date":"2020-04-24","rounds":5,"totalFunding":348457393,"latestStage":"Series C","latestValuation":2253775592},{"name":"QuantumNode","industry":"Developer Tools","headquarters":"Seattle, WA","founded_date":"2018-10-04","rounds":5,"totalFunding":338476209,"latestStage":"Series C","latestValuation":1642705128},{"name":"LinkPulse","industry":"Cybersecurity","headquarters":"Singapore","founded_date":"2020-10-22","rounds":5,"totalFunding":323683173,"latestStage":"Series C","latestValuation":1800125944},{"name":"SyncTech","industry":"Cybersecurity","headquarters":"London, UK","founded_date":"2019-11-13","rounds":5,"totalFunding":322951558,"latestStage":"Series C","latestValuation":1476683048},{"name":"ApexSync","industry":"Developer Tools","headquarters":"Boston, MA","founded_date":"2018-11-16","rounds":5,"totalFunding":303687432,"latestStage":"Series C","latestValuation":1841984696},{"name":"UltraFlux","industry":"Fintech","headquarters":"Singapore","founded_date":"2020-11-19","rounds":5,"totalFunding":286227588,"latestStage":"Series C","latestValuation":1202172720},{"name":"UltraEdge","industry":"Healthcare","headquarters":"Chicago, IL","founded_date":"2018-03-09","rounds":5,"totalFunding":277929643,"latestStage":"Series C","latestValuation":1612901176},{"name":"CoreBase","industry":"Cybersecurity","headquarters":"New York, NY","founded_date":"2020-09-13","rounds":5,"totalFunding":276468680,"latestStage":"Series C","latestValuation":1467512040},{"name":"SmartForge","industry":"Healthcare","headquarters":"Denver, CO","founded_date":"2019-02-11","rounds":5,"totalFunding":276103357,"latestStage":"Series C","latestValuation":1165145008},{"name":"PrimePulse","industry":"Developer Tools","headquarters":"Denver, CO","founded_date":"2019-12-22","rounds":5,"totalFunding":253638988,"latestStage":"Series C","latestValuation":1133354968},{"name":"DeepSync","industry":"Developer Tools","headquarters":"Berlin, Germany","founded_date":"2019-05-01","rounds":5,"totalFunding":253202585,"latestStage":"Series C","latestValuation":1303558560},{"name":"NeoNet","industry":"E-commerce","headquarters":"Miami, FL","founded_date":"2018-04-26","rounds":5,"totalFunding":251167849,"latestStage":"Series C","latestValuation":962758080},{"name":"CoreFlow","industry":"Enterprise SaaS","headquarters":"Denver, CO","founded_date":"2018-05-01","rounds":5,"totalFunding":238677131,"latestStage":"Series C","latestValuation":1033291160},{"name":"TrueTech","industry":"Cybersecurity","headquarters":"Atlanta, GA","founded_date":"2018-06-26","rounds":5,"totalFunding":200868901,"latestStage":"Series C","latestValuation":924491528},{"name":"LinkFlow","industry":"E-commerce","headquarters":"New York, NY","founded_date":"2019-08-10","rounds":5,"totalFunding":193260821,"latestStage":"Series C","latestValuation":896672488},{"name":"SmartLink","industry":"Enterprise SaaS","headquarters":"Tel Aviv, Israel","founded_date":"2020-01-18","rounds":5,"totalFunding":184208110,"latestStage":"Series C","latestValuation":994136712},{"name":"MetaHub","industry":"Healthcare","headquarters":"Seattle, WA","founded_date":"2021-07-21","rounds":4,"totalFunding":122047812,"latestStage":"Series B","latestValuation":742695860},{"name":"NextCode","industry":"Developer Tools","headquarters":"Los Angeles, CA","founded_date":"2020-10-12","rounds":4,"totalFunding":114923527,"latestStage":"Series B","latestValuation":881652950},{"name":"SmartSync","industry":"E-commerce","headquarters":"Toronto, Canada","founded_date":"2020-09-13","rounds":4,"totalFunding":112936044,"latestStage":"Series B","latestValuation":730897060},{"name":"CoreStack","industry":"Healthcare","headquarters":"San Francisco, CA","founded_date":"2021-04-23","rounds":4,"totalFunding":109841492,"latestStage":"Series B","latestValuation":741016640},{"name":"EdgeData","industry":"Fintech","headquarters":"Berlin, Germany","founded_date":"2018-12-11","rounds":4,"totalFunding":108420207,"latestStage":"Series B","latestValuation":694974470},{"name":"TrueCode","industry":"Developer Tools","headquarters":"Austin, TX","founded_date":"2018-03-27","rounds":4,"totalFunding":101290161,"latestStage":"Series B","latestValuation":752590940},{"name":"PrimeMesh","industry":"Climate Tech","headquarters":"Seattle, WA","founded_date":"2018-06-05","rounds":4,"totalFunding":101029441,"latestStage":"Series B","latestValuation":602322910},{"name":"FastMesh","industry":"Developer Tools","headquarters":"San Francisco, CA","founded_date":"2022-02-20","rounds":4,"totalFunding":96049937,"latestStage":"Series B","latestValuation":529898250},{"name":"FastLabs","industry":"Fintech","headquarters":"Berlin, Germany","founded_date":"2019-08-17","rounds":4,"totalFunding":94507085,"latestStage":"Series B","latestValuation":711046090},{"name":"Continue","industry":"AI/ML","headquarters":"Atlanta, GA","founded_date":"2021-08-24","rounds":4,"totalFunding":93121049,"latestStage":"Series B","latestValuation":741980000},{"name":"TrueFlux","industry":"E-commerce","headquarters":"Singapore","founded_date":"2021-07-29","rounds":4,"totalFunding":92546842,"latestStage":"Series B","latestValuation":670194750},{"name":"QuantumCode","industry":"Cybersecurity","headquarters":"Los Angeles, CA","founded_date":"2018-08-06","rounds":4,"totalFunding":92324364,"latestStage":"Series B","latestValuation":707247440},{"name":"CoreLogic","industry":"Healthcare","headquarters":"Seattle, WA","founded_date":"2019-08-18","rounds":4,"totalFunding":85751265,"latestStage":"Series B","latestValuation":537033640},{"name":"DeepCode","industry":"Fintech","headquarters":"Tel Aviv, Israel","founded_date":"2021-12-14","rounds":4,"totalFunding":79178935,"latestStage":"Series B","latestValuation":394564584},{"name":"FastForge","industry":"Cybersecurity","headquarters":"Los Angeles, CA","founded_date":"2020-01-24","rounds":4,"totalFunding":78483211,"latestStage":"Series B","latestValuation":456664632},{"name":"CoreMesh","industry":"Developer Tools","headquarters":"Boston, MA","founded_date":"2021-12-22","rounds":4,"totalFunding":76947376,"latestStage":"Series B","latestValuation":418231770},{"name":"Codegen","industry":"AI/ML","headquarters":"Seattle, WA","founded_date":"2020-04-26","rounds":4,"totalFunding":74913323,"latestStage":"Series B","latestValuation":392178530},{"name":"SyncSpace","industry":"Healthcare","headquarters":"Austin, TX","founded_date":"2020-10-30","rounds":4,"totalFunding":74085804,"latestStage":"Series B","latestValuation":477503360},{"name":"PrimeLink","industry":"Enterprise SaaS","headquarters":"Miami, FL","founded_date":"2018-12-26","rounds":4,"totalFunding":72374401,"latestStage":"Series B","latestValuation":510891340},{"name":"PureMind","industry":"Cybersecurity","headquarters":"Miami, FL","founded_date":"2020-09-24","rounds":4,"totalFunding":71168516,"latestStage":"Series B","latestValuation":366413810},{"name":"OpenData","industry":"E-commerce","headquarters":"Austin, TX","founded_date":"2019-06-08","rounds":4,"totalFunding":69573914,"latestStage":"Series B","latestValuation":372265030},{"name":"FastNet","industry":"Developer Tools","headquarters":"Miami, FL","founded_date":"2018-12-08","rounds":4,"totalFunding":63726958,"latestStage":"Series B","latestValuation":405197130},{"name":"OpenSpace","industry":"Enterprise SaaS","headquarters":"Singapore","founded_date":"2021-09-26","rounds":4,"totalFunding":62463687,"latestStage":"Series B","latestValuation":313439650},{"name":"QuantumData","industry":"Healthcare","headquarters":"San Francisco, CA","founded_date":"2020-07-09","rounds":4,"totalFunding":57133812,"latestStage":"Series B","latestValuation":405614730},{"name":"OpenEdge","industry":"Developer Tools","headquarters":"Atlanta, GA","founded_date":"2018-03-19","rounds":3,"totalFunding":45733656,"latestStage":"Series A","latestValuation":426080520},{"name":"PrimeNode","industry":"Developer Tools","headquarters":"San Francisco, CA","founded_date":"2022-01-31","rounds":3,"totalFunding":45537431,"latestStage":"Series A","latestValuation":418055652},{"name":"FastWave","industry":"Healthcare","headquarters":"Miami, FL","founded_date":"2022-11-24","rounds":3,"totalFunding":44261323,"latestStage":"Series A","latestValuation":411258756},{"name":"RealEdge","industry":"Climate Tech","headquarters":"Seattle, WA","founded_date":"2022-06-02","rounds":3,"totalFunding":43990156,"latestStage":"Series A","latestValuation":417750744},{"name":"HyperLabs","industry":"Cybersecurity","headquarters":"Tel Aviv, Israel","founded_date":"2022-10-25","rounds":3,"totalFunding":43866303,"latestStage":"Series A","latestValuation":408868932},{"name":"FastFlux","industry":"E-commerce","headquarters":"New York, NY","founded_date":"2019-01-15","rounds":3,"totalFunding":43453585,"latestStage":"Series A","latestValuation":447487464},{"name":"OmniLink","industry":"Enterprise SaaS","headquarters":"Boston, MA","founded_date":"2018-04-26","rounds":3,"totalFunding":42920715,"latestStage":"Series A","latestValuation":432191232},{"name":"SuperCore","industry":"Cybersecurity","headquarters":"Tel Aviv, Israel","founded_date":"2021-10-17","rounds":3,"totalFunding":39989791,"latestStage":"Series A","latestValuation":391022640},{"name":"QuantumNet","industry":"Fintech","headquarters":"Miami, FL","founded_date":"2018-03-14","rounds":3,"totalFunding":39319708,"latestStage":"Series A","latestValuation":339832344},{"name":"SuperAI","industry":"Developer Tools","headquarters":"Denver, CO","founded_date":"2022-02-13","rounds":3,"totalFunding":39077569,"latestStage":"Series A","latestValuation":422515224},{"name":"SyncMind","industry":"Developer Tools","headquarters":"San Francisco, CA","founded_date":"2021-08-26","rounds":3,"totalFunding":38313119,"latestStage":"Series A","latestValuation":358648356},{"name":"SuperPulse","industry":"Climate Tech","headquarters":"Seattle, WA","founded_date":"2022-04-06","rounds":3,"totalFunding":38212531,"latestStage":"Series A","latestValuation":373106976},{"name":"CorePulse","industry":"Climate Tech","headquarters":"Atlanta, GA","founded_date":"2023-03-24","rounds":3,"totalFunding":38045072,"latestStage":"Series A","latestValuation":343441644},{"name":"FluxShift","industry":"Healthcare","headquarters":"Austin, TX","founded_date":"2022-03-17","rounds":3,"totalFunding":36536204,"latestStage":"Series A","latestValuation":330469728},{"name":"ClearSystems","industry":"Developer Tools","headquarters":"Atlanta, GA","founded_date":"2023-03-19","rounds":3,"totalFunding":36430720,"latestStage":"Series A","latestValuation":352085808},{"name":"SuperEdge","industry":"E-commerce","headquarters":"Boston, MA","founded_date":"2018-09-05","rounds":3,"totalFunding":34701754,"latestStage":"Series A","latestValuation":367289424},{"name":"PrimeScale","industry":"Healthcare","headquarters":"Toronto, Canada","founded_date":"2018-04-28","rounds":3,"totalFunding":32590010,"latestStage":"Series A","latestValuation":303075372},{"name":"BitWave","industry":"Healthcare","headquarters":"London, UK","founded_date":"2019-02-01","rounds":3,"totalFunding":31616762,"latestStage":"Series A","latestValuation":296829456},{"name":"NodeSystems","industry":"Fintech","headquarters":"Denver, CO","founded_date":"2021-11-26","rounds":3,"totalFunding":31229276,"latestStage":"Series A","latestValuation":230973144},{"name":"BitShift","industry":"Cybersecurity","headquarters":"Chicago, IL","founded_date":"2018-09-03","rounds":3,"totalFunding":31003919,"latestStage":"Series A","latestValuation":288464100},{"name":"MetaCloud","industry":"Enterprise SaaS","headquarters":"Tel Aviv, Israel","founded_date":"2021-05-05","rounds":3,"totalFunding":27668305,"latestStage":"Series A","latestValuation":285838980},{"name":"MeshSystems","industry":"Climate Tech","headquarters":"Boston, MA","founded_date":"2021-06-13","rounds":3,"totalFunding":24946767,"latestStage":"Series A","latestValuation":161306616},{"name":"HyperPulse","industry":"Enterprise SaaS","headquarters":"New York, NY","founded_date":"2019-08-22","rounds":3,"totalFunding":24844249,"latestStage":"Series A","latestValuation":205645920},{"name":"CoreEdge","industry":"AI/ML","headquarters":"Miami, FL","founded_date":"2021-03-13","rounds":3,"totalFunding":24062834,"latestStage":"Series A","latestValuation":181993980},{"name":"CodeWorks","industry":"Healthcare","headquarters":"Austin, TX","founded_date":"2022-11-10","rounds":3,"totalFunding":21956230,"latestStage":"Series A","latestValuation":133403520},{"name":"ApexBase","industry":"Developer Tools","headquarters":"Los Angeles, CA","founded_date":"2021-03-05","rounds":3,"totalFunding":21433910,"latestStage":"Series A","latestValuation":140096820},{"name":"SmartCode","industry":"Fintech","headquarters":"London, UK","founded_date":"2020-02-20","rounds":3,"totalFunding":21220677,"latestStage":"Series A","latestValuation":173394948},{"name":"SuperShift","industry":"Developer Tools","headquarters":"Austin, TX","founded_date":"2019-10-18","rounds":3,"totalFunding":21157075,"latestStage":"Series A","latestValuation":159534744},{"name":"FastMind","industry":"Healthcare","headquarters":"Singapore","founded_date":"2023-02-18","rounds":3,"totalFunding":21045412,"latestStage":"Series A","latestValuation":162257160},{"name":"MeshStack","industry":"Fintech","headquarters":"Boston, MA","founded_date":"2018-11-28","rounds":3,"totalFunding":20659614,"latestStage":"Series A","latestValuation":131638260},{"name":"ApexGrid","industry":"Fintech","headquarters":"Boston, MA","founded_date":"2021-08-02","rounds":3,"totalFunding":20552913,"latestStage":"Series A","latestValuation":146330520},{"name":"OpenSystems","industry":"AI/ML","headquarters":"Miami, FL","founded_date":"2018-02-13","rounds":3,"totalFunding":20538542,"latestStage":"Series A","latestValuation":143340540},{"name":"CoreSystems","industry":"E-commerce","headquarters":"Boston, MA","founded_date":"2021-07-09","rounds":3,"totalFunding":20378055,"latestStage":"Series A","latestValuation":183201372},{"name":"UltraScale","industry":"Cybersecurity","headquarters":"Toronto, Canada","founded_date":"2022-05-11","rounds":3,"totalFunding":20228600,"latestStage":"Series A","latestValuation":126623484},{"name":"NodeMind","industry":"Enterprise SaaS","headquarters":"Seattle, WA","founded_date":"2020-11-13","rounds":3,"totalFunding":19229989,"latestStage":"Series A","latestValuation":156260280},{"name":"MetaSystems","industry":"Climate Tech","headquarters":"Denver, CO","founded_date":"2020-11-07","rounds":3,"totalFunding":19049654,"latestStage":"Series A","latestValuation":149847852},{"name":"TrueMind","industry":"AI/ML","headquarters":"San Francisco, CA","founded_date":"2021-11-23","rounds":3,"totalFunding":16997340,"latestStage":"Series A","latestValuation":132866280},{"name":"PureWave","industry":"E-commerce","headquarters":"Denver, CO","founded_date":"2019-08-12","rounds":2,"totalFunding":11842038,"latestStage":"Seed","latestValuation":94549720},{"name":"FluxData","industry":"Climate Tech","headquarters":"Austin, TX","founded_date":"2019-03-31","rounds":2,"totalFunding":11410915,"latestStage":"Seed","latestValuation":95789730},{"name":"SyncForge","industry":"Fintech","headquarters":"Miami, FL","founded_date":"2019-02-15","rounds":2,"totalFunding":11208274,"latestStage":"Seed","latestValuation":96831670},{"name":"RealCore","industry":"Healthcare","headquarters":"Atlanta, GA","founded_date":"2021-11-11","rounds":2,"totalFunding":11157062,"latestStage":"Seed","latestValuation":89516600},{"name":"FluxGrid","industry":"Developer Tools","headquarters":"Singapore","founded_date":"2021-02-25","rounds":2,"totalFunding":11151504,"latestStage":"Seed","latestValuation":99264940},{"name":"MetaCode","industry":"AI/ML","headquarters":"New York, NY","founded_date":"2020-10-10","rounds":2,"totalFunding":11125574,"latestStage":"Seed","latestValuation":92748060},{"name":"NodeBase","industry":"AI/ML","headquarters":"Berlin, Germany","founded_date":"2018-09-27","rounds":2,"totalFunding":10539539,"latestStage":"Seed","latestValuation":92148620},{"name":"CoreFlux","industry":"Climate Tech","headquarters":"Seattle, WA","founded_date":"2023-09-27","rounds":2,"totalFunding":10313349,"latestStage":"Seed","latestValuation":97710830},{"name":"OmniAI","industry":"Developer Tools","headquarters":"Atlanta, GA","founded_date":"2024-05-24","rounds":2,"totalFunding":9977270,"latestStage":"Seed","latestValuation":77407000},{"name":"PureAI","industry":"Fintech","headquarters":"Atlanta, GA","founded_date":"2022-10-27","rounds":2,"totalFunding":9738483,"latestStage":"Seed","latestValuation":77090460},{"name":"NextEdge","industry":"AI/ML","headquarters":"Chicago, IL","founded_date":"2023-06-10","rounds":2,"totalFunding":9574046,"latestStage":"Seed","latestValuation":69210380},{"name":"CodeShift","industry":"Cybersecurity","headquarters":"Boston, MA","founded_date":"2020-06-25","rounds":2,"totalFunding":9058822,"latestStage":"Seed","latestValuation":83349210},{"name":"SuperStack","industry":"Healthcare","headquarters":"Atlanta, GA","founded_date":"2020-07-13","rounds":2,"totalFunding":9050700,"latestStage":"Seed","latestValuation":83046600},{"name":"NodeLabs","industry":"Fintech","headquarters":"Toronto, Canada","founded_date":"2018-01-21","rounds":2,"totalFunding":8994172,"latestStage":"Seed","latestValuation":81712200},{"name":"Replit","industry":"AI/ML","headquarters":"Austin, TX","founded_date":"2023-01-05","rounds":2,"totalFunding":8817547,"latestStage":"Seed","latestValuation":75881900},{"name":"NeoFlux","industry":"AI/ML","headquarters":"Austin, TX","founded_date":"2018-10-15","rounds":2,"totalFunding":8772478,"latestStage":"Seed","latestValuation":58674770},{"name":"NeoNode","industry":"E-commerce","headquarters":"London, UK","founded_date":"2021-08-31","rounds":2,"totalFunding":8715269,"latestStage":"Seed","latestValuation":73253510},{"name":"FluxTech","industry":"Fintech","headquarters":"Seattle, WA","founded_date":"2021-08-23","rounds":2,"totalFunding":8604546,"latestStage":"Seed","latestValuation":67391330},{"name":"RealMind","industry":"E-commerce","headquarters":"London, UK","founded_date":"2022-01-19","rounds":2,"totalFunding":8601465,"latestStage":"Seed","latestValuation":66082020},{"name":"BitForge","industry":"Healthcare","headquarters":"Toronto, Canada","founded_date":"2020-10-22","rounds":2,"totalFunding":8533280,"latestStage":"Seed","latestValuation":67833570},{"name":"LinkData","industry":"AI/ML","headquarters":"Seattle, WA","founded_date":"2019-06-18","rounds":2,"totalFunding":8501150,"latestStage":"Seed","latestValuation":69442750},{"name":"BitSystems","industry":"Healthcare","headquarters":"London, UK","founded_date":"2024-01-18","rounds":2,"totalFunding":8334786,"latestStage":"Seed","latestValuation":78107860},{"name":"DeepForge","industry":"Enterprise SaaS","headquarters":"Denver, CO","founded_date":"2023-08-02","rounds":2,"totalFunding":8247511,"latestStage":"Seed","latestValuation":57813980},{"name":"Sweep AI","industry":"AI/ML","headquarters":"Atlanta, GA","founded_date":"2023-05-21","rounds":2,"totalFunding":8135374,"latestStage":"Seed","latestValuation":57580620},{"name":"PrimeMind","industry":"Enterprise SaaS","headquarters":"Denver, CO","founded_date":"2020-06-09","rounds":2,"totalFunding":8110541,"latestStage":"Seed","latestValuation":53468390},{"name":"RealCode","industry":"Fintech","headquarters":"Toronto, Canada","founded_date":"2018-03-24","rounds":2,"totalFunding":8102846,"latestStage":"Seed","latestValuation":53829860},{"name":"OpenMesh","industry":"Enterprise SaaS","headquarters":"Los Angeles, CA","founded_date":"2023-09-17","rounds":2,"totalFunding":7932966,"latestStage":"Seed","latestValuation":71394320},{"name":"CodeStack","industry":"E-commerce","headquarters":"Toronto, Canada","founded_date":"2023-08-02","rounds":2,"totalFunding":7919036,"latestStage":"Seed","latestValuation":71207450},{"name":"NextForge","industry":"Climate Tech","headquarters":"Atlanta, GA","founded_date":"2022-05-27","rounds":2,"totalFunding":7796023,"latestStage":"Seed","latestValuation":48507550},{"name":"EdgeScale","industry":"Climate Tech","headquarters":"London, UK","founded_date":"2023-02-01","rounds":2,"totalFunding":7772610,"latestStage":"Seed","latestValuation":51280140},{"name":"NovaLabs","industry":"Fintech","headquarters":"London, UK","founded_date":"2024-01-23","rounds":2,"totalFunding":7742025,"latestStage":"Seed","latestValuation":64027840},{"name":"QuantumBase","industry":"Fintech","headquarters":"Miami, FL","founded_date":"2023-01-27","rounds":2,"totalFunding":7699255,"latestStage":"Seed","latestValuation":52765830},{"name":"FluxWorks","industry":"Developer Tools","headquarters":"San Francisco, CA","founded_date":"2023-06-10","rounds":2,"totalFunding":7586985,"latestStage":"Seed","latestValuation":63550560},{"name":"Codeium","industry":"AI/ML","headquarters":"Atlanta, GA","founded_date":"2019-12-16","rounds":2,"totalFunding":7265717,"latestStage":"Seed","latestValuation":55024620},{"name":"QuantumLogic","industry":"Healthcare","headquarters":"Toronto, Canada","founded_date":"2022-11-21","rounds":2,"totalFunding":6885743,"latestStage":"Seed","latestValuation":60662590},{"name":"SmartBase","industry":"Cybersecurity","headquarters":"Boston, MA","founded_date":"2023-02-02","rounds":2,"totalFunding":6766929,"latestStage":"Seed","latestValuation":53880820},{"name":"NovaSync","industry":"Healthcare","headquarters":"London, UK","founded_date":"2018-07-17","rounds":2,"totalFunding":6739273,"latestStage":"Seed","latestValuation":57992820},{"name":"NovaMind","industry":"E-commerce","headquarters":"San Francisco, CA","founded_date":"2023-02-23","rounds":2,"totalFunding":6442375,"latestStage":"Seed","latestValuation":40946570},{"name":"PureBit","industry":"AI/ML","headquarters":"Austin, TX","founded_date":"2020-09-24","rounds":2,"totalFunding":6262082,"latestStage":"Seed","latestValuation":43964090},{"name":"FastLink","industry":"Enterprise SaaS","headquarters":"Berlin, Germany","founded_date":"2019-11-20","rounds":2,"totalFunding":6245136,"latestStage":"Seed","latestValuation":46284140},{"name":"OmniShift","industry":"Healthcare","headquarters":"Los Angeles, CA","founded_date":"2020-10-16","rounds":2,"totalFunding":6110128,"latestStage":"Seed","latestValuation":50570330},{"name":"NetHub","industry":"AI/ML","headquarters":"Tel Aviv, Israel","founded_date":"2018-11-14","rounds":2,"totalFunding":5902362,"latestStage":"Seed","latestValuation":38586310},{"name":"HyperBase","industry":"E-commerce","headquarters":"Austin, TX","founded_date":"2023-05-03","rounds":2,"totalFunding":5661271,"latestStage":"Seed","latestValuation":50180740},{"name":"NextLink","industry":"Climate Tech","headquarters":"Miami, FL","founded_date":"2022-12-04","rounds":2,"totalFunding":5539488,"latestStage":"Seed","latestValuation":35793360},{"name":"CodeAI","industry":"Enterprise SaaS","headquarters":"San Francisco, CA","founded_date":"2023-07-14","rounds":2,"totalFunding":4339254,"latestStage":"Seed","latestValuation":26199850},{"name":"CoreWave","industry":"Enterprise SaaS","headquarters":"Los Angeles, CA","founded_date":"2023-11-06","rounds":2,"totalFunding":4041438,"latestStage":"Seed","latestValuation":30610700},{"name":"FastBit","industry":"Climate Tech","headquarters":"Miami, FL","founded_date":"2020-09-09","rounds":2,"totalFunding":3965713,"latestStage":"Seed","latestValuation":20531610},{"name":"MetaForge","industry":"Enterprise SaaS","headquarters":"Miami, FL","founded_date":"2018-11-19","rounds":2,"totalFunding":3924061,"latestStage":"Seed","latestValuation":28299100},{"name":"UltraWave","industry":"Fintech","headquarters":"Boston, MA","founded_date":"2024-05-10","rounds":1,"totalFunding":2983366,"latestStage":"Pre-Seed","latestValuation":23866928},{"name":"DeepWave","industry":"Climate Tech","headquarters":"Berlin, Germany","founded_date":"2022-09-17","rounds":1,"totalFunding":2957361,"latestStage":"Pre-Seed","latestValuation":23658888},{"name":"NovaMesh","industry":"Healthcare","headquarters":"Los Angeles, CA","founded_date":"2020-06-26","rounds":1,"totalFunding":2944216,"latestStage":"Pre-Seed","latestValuation":23553728},{"name":"OpenCode","industry":"Enterprise SaaS","headquarters":"Chicago, IL","founded_date":"2022-11-12","rounds":1,"totalFunding":2919199,"latestStage":"Pre-Seed","latestValuation":23353592},{"name":"PrimeBit","industry":"Climate Tech","headquarters":"Austin, TX","founded_date":"2023-08-09","rounds":1,"totalFunding":2854962,"latestStage":"Pre-Seed","latestValuation":22839696},{"name":"Sourcegraph Cody","industry":"AI/ML","headquarters":"Los Angeles, CA","founded_date":"2023-03-01","rounds":2,"totalFunding":2839690,"latestStage":"Seed","latestValuation":20329850},{"name":"LinkGrid","industry":"Climate Tech","headquarters":"San Francisco, CA","founded_date":"2021-01-28","rounds":1,"totalFunding":2723442,"latestStage":"Pre-Seed","latestValuation":21787536},{"name":"TrueLink","industry":"Enterprise SaaS","headquarters":"Los Angeles, CA","founded_date":"2023-04-04","rounds":1,"totalFunding":2722335,"latestStage":"Pre-Seed","latestValuation":21778680},{"name":"HyperFlow","industry":"AI/ML","headquarters":"Singapore","founded_date":"2021-02-15","rounds":1,"totalFunding":2698995,"latestStage":"Pre-Seed","latestValuation":21591960},{"name":"RealMesh","industry":"Climate Tech","headquarters":"Tel Aviv, Israel","founded_date":"2023-07-24","rounds":1,"totalFunding":2695100,"latestStage":"Pre-Seed","latestValuation":21560800},{"name":"NextSystems","industry":"Enterprise SaaS","headquarters":"Berlin, Germany","founded_date":"2020-09-12","rounds":1,"totalFunding":2673465,"latestStage":"Pre-Seed","latestValuation":21387720},{"name":"RealShift","industry":"Cybersecurity","headquarters":"London, UK","founded_date":"2018-10-11","rounds":1,"totalFunding":2669532,"latestStage":"Pre-Seed","latestValuation":21356256},{"name":"RealGrid","industry":"E-commerce","headquarters":"Tel Aviv, Israel","founded_date":"2023-05-19","rounds":1,"totalFunding":2653942,"latestStage":"Pre-Seed","latestValuation":21231536},{"name":"NetSystems","industry":"AI/ML","headquarters":"San Francisco, CA","founded_date":"2021-10-06","rounds":1,"totalFunding":2522437,"latestStage":"Pre-Seed","latestValuation":20179496},{"name":"FluxMind","industry":"Enterprise SaaS","headquarters":"Chicago, IL","founded_date":"2021-07-26","rounds":1,"totalFunding":2514495,"latestStage":"Pre-Seed","latestValuation":20115960},{"name":"UltraSpace","industry":"Enterprise SaaS","headquarters":"Toronto, Canada","founded_date":"2022-07-06","rounds":1,"totalFunding":2439341,"latestStage":"Pre-Seed","latestValuation":19514728},{"name":"SmartSpace","industry":"AI/ML","headquarters":"Los Angeles, CA","founded_date":"2021-03-20","rounds":1,"totalFunding":2430426,"latestStage":"Pre-Seed","latestValuation":19443408},{"name":"EdgeHub","industry":"Fintech","headquarters":"Boston, MA","founded_date":"2019-12-06","rounds":1,"totalFunding":2426991,"latestStage":"Pre-Seed","latestValuation":19415928},{"name":"CoreMind","industry":"Developer Tools","headquarters":"Boston, MA","founded_date":"2019-11-06","rounds":1,"totalFunding":2418619,"latestStage":"Pre-Seed","latestValuation":19348952},{"name":"NodeHub","industry":"Climate Tech","headquarters":"London, UK","founded_date":"2023-10-02","rounds":1,"totalFunding":2416470,"latestStage":"Pre-Seed","latestValuation":19331760},{"name":"DeepCore","industry":"Enterprise SaaS","headquarters":"Toronto, Canada","founded_date":"2024-05-13","rounds":1,"totalFunding":2402008,"latestStage":"Pre-Seed","latestValuation":19216064},{"name":"NetBase","industry":"Climate Tech","headquarters":"San Francisco, CA","founded_date":"2022-01-22","rounds":1,"totalFunding":2398574,"latestStage":"Pre-Seed","latestValuation":19188592},{"name":"RealData","industry":"Healthcare","headquarters":"Miami, FL","founded_date":"2024-04-22","rounds":1,"totalFunding":2376525,"latestStage":"Pre-Seed","latestValuation":19012200},{"name":"SyncHub","industry":"Fintech","headquarters":"Berlin, Germany","founded_date":"2022-07-18","rounds":1,"totalFunding":2360799,"latestStage":"Pre-Seed","latestValuation":18886392},{"name":"MetaShift","industry":"E-commerce","headquarters":"San Francisco, CA","founded_date":"2018-01-22","rounds":1,"totalFunding":2257150,"latestStage":"Pre-Seed","latestValuation":18057200},{"name":"SmartFlow","industry":"Fintech","headquarters":"London, UK","founded_date":"2021-12-17","rounds":1,"totalFunding":2201395,"latestStage":"Pre-Seed","latestValuation":17611160},{"name":"CoreSpace","industry":"Developer Tools","headquarters":"Los Angeles, CA","founded_date":"2020-02-18","rounds":1,"totalFunding":2175011,"latestStage":"Pre-Seed","latestValuation":17400088},{"name":"SyncLogic","industry":"AI/ML","headquarters":"Toronto, Canada","founded_date":"2020-08-02","rounds":1,"totalFunding":2151949,"latestStage":"Pre-Seed","latestValuation":17215592},{"name":"BitFlow","industry":"Enterprise SaaS","headquarters":"Chicago, IL","founded_date":"2023-11-12","rounds":1,"totalFunding":2141716,"latestStage":"Pre-Seed","latestValuation":17133728},{"name":"BitTech","industry":"Climate Tech","headquarters":"New York, NY","founded_date":"2023-03-25","rounds":1,"totalFunding":2127516,"latestStage":"Pre-Seed","latestValuation":17020128},{"name":"EdgeWorks","industry":"Developer Tools","headquarters":"Austin, TX","founded_date":"2023-02-07","rounds":1,"totalFunding":2122467,"latestStage":"Pre-Seed","latestValuation":16979736},{"name":"CodeLogic","industry":"Cybersecurity","headquarters":"Berlin, Germany","founded_date":"2022-02-16","rounds":1,"totalFunding":2082587,"latestStage":"Pre-Seed","latestValuation":16660696},{"name":"LinkMind","industry":"Fintech","headquarters":"Austin, TX","founded_date":"2024-05-15","rounds":1,"totalFunding":2030397,"latestStage":"Pre-Seed","latestValuation":16243176},{"name":"PrimeSync","industry":"Healthcare","headquarters":"Tel Aviv, Israel","founded_date":"2023-06-14","rounds":1,"totalFunding":1975054,"latestStage":"Pre-Seed","latestValuation":15800432},{"name":"ApexFlow","industry":"Developer Tools","headquarters":"San Francisco, CA","founded_date":"2019-11-19","rounds":1,"totalFunding":1940727,"latestStage":"Pre-Seed","latestValuation":15525816},{"name":"HyperWorks","industry":"Developer Tools","headquarters":"Atlanta, GA","founded_date":"2022-01-14","rounds":1,"totalFunding":1830125,"latestStage":"Pre-Seed","latestValuation":14641000},{"name":"Tabnine","industry":"AI/ML","headquarters":"New York, NY","founded_date":"2020-02-15","rounds":1,"totalFunding":1755732,"latestStage":"Pre-Seed","latestValuation":14045856},{"name":"MetaTech","industry":"Fintech","headquarters":"New York, NY","founded_date":"2020-12-19","rounds":1,"totalFunding":1650356,"latestStage":"Pre-Seed","latestValuation":13202848},{"name":"NovaHub","industry":"E-commerce","headquarters":"Chicago, IL","founded_date":"2024-04-19","rounds":1,"totalFunding":1643184,"latestStage":"Pre-Seed","latestValuation":13145472},{"name":"SmartStack","industry":"Climate Tech","headquarters":"Berlin, Germany","founded_date":"2020-12-27","rounds":1,"totalFunding":1604302,"latestStage":"Pre-Seed","latestValuation":12834416},{"name":"DeepFlux","industry":"Fintech","headquarters":"Toronto, Canada","founded_date":"2023-06-05","rounds":1,"totalFunding":1515162,"latestStage":"Pre-Seed","latestValuation":12121296},{"name":"BitLogic","industry":"Healthcare","headquarters":"New York, NY","founded_date":"2019-05-07","rounds":1,"totalFunding":1497428,"latestStage":"Pre-Seed","latestValuation":11979424},{"name":"Cursor","industry":"AI/ML","headquarters":"Tel Aviv, Israel","founded_date":"2021-09-28","rounds":1,"totalFunding":1495626,"latestStage":"Pre-Seed","latestValuation":11965008},{"name":"ApexNode","industry":"Climate Tech","headquarters":"San Francisco, CA","founded_date":"2023-12-19","rounds":1,"totalFunding":1431574,"latestStage":"Pre-Seed","latestValuation":11452592},{"name":"Aider","industry":"AI/ML","headquarters":"Los Angeles, CA","founded_date":"2021-09-23","rounds":1,"totalFunding":1354262,"latestStage":"Pre-Seed","latestValuation":10834096},{"name":"HyperEdge","industry":"Healthcare","headquarters":"Austin, TX","founded_date":"2023-02-02","rounds":1,"totalFunding":1279714,"latestStage":"Pre-Seed","latestValuation":10237712},{"name":"LinkLabs","industry":"E-commerce","headquarters":"Atlanta, GA","founded_date":"2024-04-15","rounds":1,"totalFunding":1268405,"latestStage":"Pre-Seed","latestValuation":10147240},{"name":"QuantumLink","industry":"Enterprise SaaS","headquarters":"Singapore","founded_date":"2023-04-13","rounds":1,"totalFunding":1248556,"latestStage":"Pre-Seed","latestValuation":9988448},{"name":"SmartShift","industry":"Fintech","headquarters":"Tel Aviv, Israel","founded_date":"2024-04-26","rounds":1,"totalFunding":1222877,"latestStage":"Pre-Seed","latestValuation":9783016},{"name":"OpenBit","industry":"Cybersecurity","headquarters":"Atlanta, GA","founded_date":"2022-12-07","rounds":1,"totalFunding":1158544,"latestStage":"Pre-Seed","latestValuation":9268352},{"name":"SmartWorks","industry":"Enterprise SaaS","headquarters":"Denver, CO","founded_date":"2023-07-06","rounds":1,"totalFunding":1150468,"latestStage":"Pre-Seed","latestValuation":9203744},{"name":"CodeHub","industry":"Healthcare","headquarters":"Los Angeles, CA","founded_date":"2024-01-24","rounds":1,"totalFunding":1123179,"latestStage":"Pre-Seed","latestValuation":8985432},{"name":"FluxStack","industry":"Developer Tools","headquarters":"Austin, TX","founded_date":"2018-01-20","rounds":1,"totalFunding":1107491,"latestStage":"Pre-Seed","latestValuation":8859928},{"name":"NextLabs","industry":"Enterprise SaaS","headquarters":"San Francisco, CA","founded_date":"2024-01-20","rounds":1,"totalFunding":980395,"latestStage":"Pre-Seed","latestValuation":7843160},{"name":"CoreLabs","industry":"Healthcare","headquarters":"Toronto, Canada","founded_date":"2020-09-12","rounds":1,"totalFunding":964383,"latestStage":"Pre-Seed","latestValuation":7715064},{"name":"NextShift","industry":"Climate Tech","headquarters":"Austin, TX","founded_date":"2018-07-16","rounds":1,"totalFunding":947029,"latestStage":"Pre-Seed","latestValuation":7576232},{"name":"ClearMesh","industry":"Enterprise SaaS","headquarters":"Chicago, IL","founded_date":"2019-09-15","rounds":1,"totalFunding":918468,"latestStage":"Pre-Seed","latestValuation":7347744},{"name":"FastAI","industry":"Cybersecurity","headquarters":"Atlanta, GA","founded_date":"2024-01-29","rounds":1,"totalFunding":900388,"latestStage":"Pre-Seed","latestValuation":7203104},{"name":"OpenFlow","industry":"Climate Tech","headquarters":"Chicago, IL","founded_date":"2023-10-19","rounds":1,"totalFunding":881534,"latestStage":"Pre-Seed","latestValuation":7052272},{"name":"SuperSpace","industry":"Climate Tech","headquarters":"Berlin, Germany","founded_date":"2018-01-17","rounds":1,"totalFunding":871676,"latestStage":"Pre-Seed","latestValuation":6973408},{"name":"ApexSpace","industry":"Developer Tools","headquarters":"Atlanta, GA","founded_date":"2021-01-19","rounds":1,"totalFunding":799566,"latestStage":"Pre-Seed","latestValuation":6396528},{"name":"OpenBase","industry":"Enterprise SaaS","headquarters":"Los Angeles, CA","founded_date":"2024-03-29","rounds":1,"totalFunding":756392,"latestStage":"Pre-Seed","latestValuation":6051136},{"name":"NetStack","industry":"AI/ML","headquarters":"Miami, FL","founded_date":"2024-03-01","rounds":1,"totalFunding":721653,"latestStage":"Pre-Seed","latestValuation":5773224},{"name":"Cosine","industry":"AI/ML","headquarters":"Miami, FL","founded_date":"2020-03-14","rounds":1,"totalFunding":699035,"latestStage":"Pre-Seed","latestValuation":5592280},{"name":"SmartLogic","industry":"Developer Tools","headquarters":"Tel Aviv, Israel","founded_date":"2018-01-31","rounds":1,"totalFunding":667223,"latestStage":"Pre-Seed","latestValuation":5337784},{"name":"PureData","industry":"Climate Tech","headquarters":"London, UK","founded_date":"2023-03-18","rounds":1,"totalFunding":608614,"latestStage":"Pre-Seed","latestValuation":4868912},{"name":"PureNet","industry":"Fintech","headquarters":"Chicago, IL","founded_date":"2022-06-20","rounds":1,"totalFunding":604668,"latestStage":"Pre-Seed","latestValuation":4837344},{"name":"FluxPulse","industry":"AI/ML","headquarters":"Los Angeles, CA","founded_date":"2019-01-28","rounds":1,"totalFunding":603368,"latestStage":"Pre-Seed","latestValuation":4826944},{"name":"TrueWorks","industry":"Developer Tools","headquarters":"Denver, CO","founded_date":"2024-05-01","rounds":1,"totalFunding":591304,"latestStage":"Pre-Seed","latestValuation":4730432},{"name":"OmniLabs","industry":"Climate Tech","headquarters":"Toronto, Canada","founded_date":"2018-02-18","rounds":1,"totalFunding":544647,"latestStage":"Pre-Seed","latestValuation":4357176}]};</script>
+<div class="shell">
+
+  <!-- Header -->
+  <header class="header" id="header"></header>
+
+  <!-- Metric Cards -->
+  <div class="metrics-row" id="metrics"></div>
+
+  <!-- Funding Trends -->
+  <div class="full-panel" style="animation-delay:0.25s;">
+    <h2 class="section-title"><span class="num">01</span>Funding Trends by Year</h2>
+    <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+  </div>
+
+  <!-- Two Column: Industry + Stage -->
+  <div class="two-col">
+    <div class="panel" style="animation-delay:0.35s;">
+      <h2 class="section-title"><span class="num">02</span>Industry Breakdown</h2>
+      <div class="chart-wrap short"><canvas id="industryChart"></canvas></div>
+    </div>
+    <div class="panel" style="animation-delay:0.4s;">
+      <h2 class="section-title"><span class="num">03</span>Stage Distribution</h2>
+      <div class="chart-wrap short"><canvas id="stageChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Top Investors -->
+  <div class="full-panel" style="animation-delay:0.45s;">
+    <h2 class="section-title"><span class="num">04</span>Top Investors</h2>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="investorTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Investor</th>
+            <th>Type</th>
+            <th class="num-col">Companies</th>
+            <th class="num-col">Deals</th>
+            <th class="num-col">Total Invested</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Company Explorer -->
+  <div class="full-panel" style="animation-delay:0.5s;">
+    <h2 class="section-title"><span class="num">05</span>Company Explorer</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search companies...">
+      <select id="industryFilter"><option value="">All Industries</option></select>
+      <select id="stageFilter"><option value="">All Stages</option></select>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="companyTable">
+        <thead>
+          <tr>
+            <th data-sort="name">Company <span class="sort-arrow" id="sort-name"></span></th>
+            <th data-sort="industry">Industry <span class="sort-arrow" id="sort-industry"></span></th>
+            <th data-sort="headquarters">HQ <span class="sort-arrow" id="sort-headquarters"></span></th>
+            <th data-sort="rounds" class="num-col">Rounds <span class="sort-arrow" id="sort-rounds"></span></th>
+            <th data-sort="totalFunding" class="num-col">Total Funding <span class="sort-arrow" id="sort-totalFunding"></span></th>
+            <th data-sort="latestStage">Latest Stage <span class="sort-arrow" id="sort-latestStage"></span></th>
+            <th data-sort="latestValuation" class="num-col">Valuation <span class="sort-arrow" id="sort-latestValuation"></span></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer" id="footer"></div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.DASHBOARD_DATA;
+  if (!D) return;
+
+  // --- Helpers ---
+  function fmt$(n) {
+    if (n == null) return '—';
+    if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+    return '$' + n.toLocaleString();
+  }
+  function fmtNum(n) { return n != null ? n.toLocaleString() : '—'; }
+  function stageBadgeClass(stage) {
+    if (!stage) return '';
+    return stage.toLowerCase().replace(/\s+/g, '-').replace('/', '-');
+  }
+  function stageColor(stage) {
+    const map = { 'Pre-Seed': '#6b7080', 'Seed': '#5b8af0', 'Series A': '#3ecfb4', 'Series B': '#f0a828', 'Series C': '#ef4056' };
+    return map[stage] || '#6b7080';
+  }
+  function typeBadgeClass(type) {
+    if (!type) return '';
+    if (type.toLowerCase().includes('angel')) return 'angel';
+    if (type.toLowerCase().includes('cvc') || type.toLowerCase().includes('corporate')) return 'cvc';
+    return '';
+  }
+
+  // --- Header ---
+  const o = D.overview;
+  document.getElementById('header').innerHTML = `
+    <h1 class="header-title">Startup <em>Funding</em><br>Dashboard</h1>
+    <div class="header-meta">
+      <strong>Generated</strong> ${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}<br>
+      <strong>Range</strong> ${o.minDate?.slice(0,7)} — ${o.maxDate?.slice(0,7)}<br>
+      <strong>Startups</strong> ${o.totalStartups} &middot; <strong>Rounds</strong> ${o.totalRounds} &middot; <strong>Investors</strong> ${o.totalInvestors}
+    </div>
+  `;
+
+  // --- Metric Cards ---
+  const totalFundingB = (o.totalFunding / 1e9).toFixed(2);
+  const avgDealM = (o.avgDealSize / 1e6).toFixed(1);
+  const avgValM = (o.avgValuation / 1e6).toFixed(1);
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric-card teal">
+      <div class="metric-label">Total Startups</div>
+      <div class="metric-value teal" data-count="${o.totalStartups}" data-suffix="" data-decimals="0">0</div>
+      <div class="metric-sub">unique companies</div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-label">Total Funding</div>
+      <div class="metric-value teal" data-count="${totalFundingB}" data-prefix="$" data-suffix="B" data-decimals="2">0</div>
+      <div class="metric-sub">across all rounds</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Deal Count</div>
+      <div class="metric-value blue" data-count="${o.totalRounds}" data-suffix="" data-decimals="0">0</div>
+      <div class="metric-sub">funding rounds</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Avg Deal Size</div>
+      <div class="metric-value amber" data-count="${avgDealM}" data-prefix="$" data-suffix="M" data-decimals="1">0</div>
+      <div class="metric-sub">per round</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Top Industry</div>
+      <div class="metric-value red" style="font-size:1.5rem;line-height:1.2;">${o.topIndustry}</div>
+      <div class="metric-sub">by total funding</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Avg Valuation</div>
+      <div class="metric-value blue" data-count="${avgValM}" data-prefix="$" data-suffix="M" data-decimals="1">0</div>
+      <div class="metric-sub">at funding</div>
+    </div>
+  `;
+
+  // --- Animated counters ---
+  const duration = 1400;
+  setTimeout(() => {
+    document.querySelectorAll('.metric-value[data-count]').forEach(el => {
+      const target = parseFloat(el.dataset.count);
+      const decimals = el.dataset.decimals !== undefined ? parseInt(el.dataset.decimals) : 1;
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix !== undefined ? el.dataset.suffix : '';
+      const start = performance.now();
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = target * ease;
+        let display = decimals > 0 ? current.toFixed(decimals) : Math.round(current).toLocaleString();
+        el.textContent = prefix + display + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, 500);
+
+  // --- Chart.js defaults ---
+  Chart.defaults.color = '#555868';
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.plugins.legend.display = false;
+  Chart.defaults.scale.grid = { color: 'rgba(255,255,255,0.04)', drawBorder: false };
+
+  // --- Funding Trends (stacked bar) ---
+  const stages = ['Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C'];
+  const yearSet = [...new Set(D.fundingByYearStage.map(r => r.year))].sort();
+  const datasets = stages.map(stage => ({
+    label: stage,
+    data: yearSet.map(y => {
+      const row = D.fundingByYearStage.find(r => r.year === y && r.stage === stage);
+      return row ? row.total / 1e6 : 0;
+    }),
+    backgroundColor: stageColor(stage) + 'cc',
+    borderColor: stageColor(stage),
+    borderWidth: 1,
+    borderRadius: 3,
+  }));
+
+  new Chart(document.getElementById('trendChart'), {
+    type: 'bar',
+    data: { labels: yearSet, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true },
+        y: {
+          stacked: true,
+          ticks: { callback: v => '$' + v + 'M' },
+          title: { display: true, text: 'Funding ($M)', color: '#555868' }
+        }
+      },
+      plugins: {
+        legend: { display: true, position: 'top', labels: { boxWidth: 12, padding: 16, usePointStyle: true, pointStyle: 'rectRounded' } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(1)}M`
+          }
+        }
+      }
+    }
+  });
+
+  // --- Industry Breakdown (horizontal bar) ---
+  const indData = D.industryBreakdown.slice(0, 12);
+  new Chart(document.getElementById('industryChart'), {
+    type: 'bar',
+    data: {
+      labels: indData.map(r => r.industry),
+      datasets: [{
+        data: indData.map(r => r.total / 1e6),
+        backgroundColor: '#3ecfb4aa',
+        borderColor: '#3ecfb4',
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { callback: v => '$' + v + 'M' } },
+        y: { ticks: { font: { size: 10 } } }
+      },
+      plugins: {
+        tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.x.toFixed(1) + 'M (' + indData[ctx.dataIndex].deals + ' deals)' } }
+      }
+    }
+  });
+
+  // --- Stage Distribution (doughnut) ---
+  const stageData = D.stageDistribution;
+  new Chart(document.getElementById('stageChart'), {
+    type: 'doughnut',
+    data: {
+      labels: stageData.map(r => r.stage),
+      datasets: [{
+        data: stageData.map(r => r.count),
+        backgroundColor: stageData.map(r => stageColor(r.stage) + 'cc'),
+        borderColor: stageData.map(r => stageColor(r.stage)),
+        borderWidth: 2,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '55%',
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { boxWidth: 12, padding: 14, usePointStyle: true, pointStyle: 'circle' } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const row = stageData[ctx.dataIndex];
+              return `${row.stage}: ${row.count} rounds — $${(row.total / 1e6).toFixed(1)}M total`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // --- Top Investors Table ---
+  const invTbody = document.querySelector('#investorTable tbody');
+  D.topInvestors.forEach((inv, i) => {
+    const tr = document.createElement('tr');
+    const typeCls = typeBadgeClass(inv.type);
+    tr.innerHTML = `
+      <td style="color:var(--text-muted);font-size:0.78rem;">${i + 1}</td>
+      <td><span class="company-name">${inv.name}</span></td>
+      <td><span class="type-badge ${typeCls}">${inv.type || '—'}</span></td>
+      <td class="num-col">${inv.companies}</td>
+      <td class="num-col">${inv.deals}</td>
+      <td class="num-col">${fmt$(inv.totalInvested)}</td>
+    `;
+    invTbody.appendChild(tr);
+  });
+
+  // --- Company Explorer ---
+  let companies = D.companies.slice();
+  let filtered = companies.slice();
+  let sortCol = 'totalFunding';
+  let sortDir = 'desc';
+  const PAGE_SIZE = 25;
+  let currentPage = 1;
+
+  // Populate filter dropdowns
+  const industries = [...new Set(companies.map(c => c.industry))].sort();
+  const industrySelect = document.getElementById('industryFilter');
+  industries.forEach(ind => {
+    const opt = document.createElement('option');
+    opt.value = ind; opt.textContent = ind;
+    industrySelect.appendChild(opt);
+  });
+  const stageSelect = document.getElementById('stageFilter');
+  stages.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    stageSelect.appendChild(opt);
+  });
+
+  const stageOrder = { 'Pre-Seed': 1, 'Seed': 2, 'Series A': 3, 'Series B': 4, 'Series C': 5 };
+
+  function applyFilters() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const ind = industrySelect.value;
+    const stg = stageSelect.value;
+    filtered = companies.filter(c => {
+      if (q && !c.name.toLowerCase().includes(q) && !(c.industry || '').toLowerCase().includes(q) && !(c.headquarters || '').toLowerCase().includes(q)) return false;
+      if (ind && c.industry !== ind) return false;
+      if (stg && c.latestStage !== stg) return false;
+      return true;
+    });
+    sortCompanies();
+    currentPage = 1;
+    renderCompanyTable();
+  }
+
+  function sortCompanies() {
+    filtered.sort((a, b) => {
+      let av = a[sortCol], bv = b[sortCol];
+      if (sortCol === 'latestStage') { av = stageOrder[av] || 0; bv = stageOrder[bv] || 0; }
+      if (av == null) av = sortCol === 'name' || sortCol === 'industry' || sortCol === 'headquarters' ? '' : 0;
+      if (bv == null) bv = sortCol === 'name' || sortCol === 'industry' || sortCol === 'headquarters' ? '' : 0;
+      if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv || '').toLowerCase(); }
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  function renderCompanyTable() {
+    const tbody = document.querySelector('#companyTable tbody');
+    tbody.innerHTML = '';
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const page = filtered.slice(start, start + PAGE_SIZE);
+    page.forEach(c => {
+      const tr = document.createElement('tr');
+      const cls = stageBadgeClass(c.latestStage);
+      tr.innerHTML = `
+        <td><span class="company-name">${c.name}</span></td>
+        <td>${c.industry || '—'}</td>
+        <td style="font-size:0.78rem;">${c.headquarters || '—'}</td>
+        <td class="num-col">${c.rounds}</td>
+        <td class="num-col">${fmt$(c.totalFunding)}</td>
+        <td><span class="stage-badge ${cls}">${c.latestStage || '—'}</span></td>
+        <td class="num-col">${fmt$(c.latestValuation)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    document.getElementById('resultCount').textContent = `${filtered.length} of ${companies.length} companies`;
+
+    // Update sort arrows
+    document.querySelectorAll('.sort-arrow').forEach(el => {
+      el.textContent = '';
+      el.classList.remove('active');
+    });
+    const activeArrow = document.getElementById('sort-' + sortCol);
+    if (activeArrow) {
+      activeArrow.textContent = sortDir === 'asc' ? ' \u25B2' : ' \u25BC';
+      activeArrow.classList.add('active');
+    }
+
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const pag = document.getElementById('pagination');
+    if (totalPages <= 1) { pag.innerHTML = ''; return; }
+    pag.innerHTML = `
+      <button id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
+      <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+      <button id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+    `;
+    document.getElementById('prevPage').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCompanyTable(); } });
+    document.getElementById('nextPage').addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderCompanyTable(); } });
+  }
+
+  // Sort headers
+  document.querySelectorAll('#companyTable thead th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.sort;
+      if (sortCol === col) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
+      else { sortCol = col; sortDir = col === 'name' || col === 'industry' || col === 'headquarters' ? 'asc' : 'desc'; }
+      sortCompanies();
+      currentPage = 1;
+      renderCompanyTable();
+    });
+  });
+
+  // Filter listeners
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+  industrySelect.addEventListener('change', applyFilters);
+  stageSelect.addEventListener('change', applyFilters);
+
+  // Initial render
+  sortCompanies();
+  renderCompanyTable();
+
+  // --- Footer ---
+  document.getElementById('footer').innerHTML =
+    `Generated by Claude Code &middot; Source: startup-funding.db &middot; ${o.totalStartups} startups &middot; ${o.totalRounds} rounds &middot; ${o.totalInvestors} investors &middot; ${o.minDate?.slice(0,7)} — ${o.maxDate?.slice(0,7)}`;
+});
+</script>
+</body>
+</html>

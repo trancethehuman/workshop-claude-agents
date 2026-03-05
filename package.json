@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "generate-funding-data": "npx tsx scripts/generate-funding-data.ts",
-    "build-mcp": "npx tsx mcp-servers/funding-data/index.ts"
+    "build-mcp": "npx tsx mcp-servers/funding-data/index.ts",
+    "build-dashboard": "npx tsx scripts/build-funding-dashboard.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.0.0"
