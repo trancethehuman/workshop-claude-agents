@@ -2,9 +2,16 @@
 
 An 8-week hands-on workshop teaching you to build AI agents for data analysis, GTM, marketing, and business automation.
 
+## Sub agents rules
+
+Always check if there are sub agents. If the sub agent is more suited for the task, then use that.
+
+For example, startup-funding-agent is for everything funding-related
+
 ## Key Insight
 
 Claude Code is not just for writing code. It's an agent that can:
+
 - Analyze CSV files and datasets
 - Research companies and competitors
 - Draft emails and content
@@ -25,6 +32,7 @@ Claude Code is not just for writing code. It's an agent that can:
 ## How to Use
 
 When working in this repo, Claude should:
+
 - **Keep all responses very short and to the point** - no lengthy explanations
 - Be concise and practical
 - Explain what it's doing and why

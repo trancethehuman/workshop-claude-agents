@@ -165,13 +165,47 @@ Anthropic also launched a directory with skills from commercial partners: Atlass
 
 **Installing and discovering skills:**
 
-The community has built a public directory at [skills.sh](https://skills.sh/) for discovering and sharing skills. You can install published skills directly:
+There are two main places to discover pre-built skills:
 
-```bash
-npx skills add <owner/repo>
-```
+**1. skills.sh — The Open Skills Directory**
 
-Or simply place skill folders in your project's `.claude/skills/` or `.github/skills/` directory. Most agents pick them up automatically.
+[skills.sh](https://skills.sh/) is an open-source skills marketplace built by Vercel. It's the largest public directory for agent skills.
+
+| Feature | Details |
+|---------|---------|
+| Install command | `npx skills add <owner/repo>` |
+| Leaderboard | Ranked by install count (All Time, Trending 24h, Hot) |
+| Supported agents | Claude Code, GitHub Copilot, Cursor, Gemini CLI, VS Code, and 20+ others |
+
+Popular skills on the directory:
+
+| Skill | Installs | What It Does |
+|-------|----------|-------------|
+| find-skills | 333K+ | Discover relevant skills |
+| vercel-react-best-practices | 170K+ | React/frontend conventions |
+| skill-creator | 50K+ | Build new skills interactively |
+| browser-use | 40K+ | Web automation patterns |
+
+You can also just place skill folders directly in your project's `.claude/skills/` or `.github/skills/` directory.
+
+**2. Claude Cowork — Plugins and Skills Marketplace**
+
+Anthropic's Claude app (claude.ai) has its own plugin ecosystem called **Cowork**. Plugins bundle skills, MCP connectors, and department-specific workflows into installable packages.
+
+| Feature | Details |
+|---------|---------|
+| Browse | "Browse plugins" modal in Cowork |
+| Install | Self-service from the catalog, or auto-installed by admins |
+| Enterprise | Private marketplaces for org-specific plugins |
+| Partners | Atlassian, Canva, Cloudflare, Figma, Notion, Ramp, Sentry, WordPress |
+
+Department-specific plugins include:
+- **Finance:** Market research, financial modeling, competitive analysis
+- **HR:** Job descriptions, onboarding materials, offer letters
+- **Design:** Design system workflows, asset management
+- **Operations:** Vendor proposals, compliance, reporting
+
+**Key distinction:** skills.sh is for developer-facing agent skills (Claude Code, Copilot, etc.). Cowork plugins are for knowledge workers using Claude in the browser. Same underlying concept, different audiences.
 
 **References:**
 - [Anthropic: Introducing Agent Skills](https://www.anthropic.com/news/skills)
@@ -180,6 +214,8 @@ Or simply place skill folders in your project's `.claude/skills/` or `.github/sk
 - [GitHub: Agent Skills Repository](https://github.com/anthropics/skills)
 - [Vercel: Agent Skills Explained - An FAQ](https://vercel.com/blog/agent-skills-explained-an-faq)
 - [Skills Directory](https://skills.sh/)
+- [Claude Cowork Plugins](https://claude.com/blog/cowork-plugins-across-enterprise)
+- [Anthropic Knowledge Work Plugins (GitHub)](https://github.com/anthropics/knowledge-work-plugins)
 
 ### Where Skills Fit: Agent Building Blocks
 
@@ -240,19 +276,21 @@ Show a skill in action:
 
 ---
 
-## Block 2: Lab (Part 1) - Your First Skill (30 min)
+## Block 2: Lab (Part 1) - Discover & Build Your First Skill (40 min)
 
 **Lab Document:** `labs/week4-lab1.md` or `admin/docx/labs/week4-lab1.docx`
 
 Complete **Part 1** of the Week 4 Lab.
 
 **Overview:**
+- Browse skills.sh and Claude Cowork plugins to see what's out there
 - Create skill directory structure
 - Write SKILL.md with YAML frontmatter
 - Test that skill triggers correctly
 - Observe structured output
 
 **Success criteria:**
+- Explored skills.sh leaderboard and Cowork plugin catalog
 - Skill created at `.claude/skills/database-profiler/`
 - Claude discovers and asks to use the skill
 - Output follows the four-section structure

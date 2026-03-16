@@ -1,4 +1,4 @@
-digraph GoldenDataset {
+digraph AutoresearchLoop {
     rankdir=TB;
     newrank=true;
     splines=ortho;
@@ -10,39 +10,43 @@ digraph GoldenDataset {
     edge [fontname="Arial", fontsize=9];
 
     // Title
-    label="Golden Dataset Architecture";
+    label="Autoresearch Loop Architecture";
     labelloc="t";
     fontsize=14;
     fontname="Arial Bold";
 
     // Main container
-    subgraph cluster_dataset {
-        label="Golden Dataset Architecture";
+    subgraph cluster_loop {
+        label="Autoresearch Loop Architecture";
         style="rounded,filled";
         fillcolor="#F5F3FF";
         color="#7C3AED";
         fontname="Arial Bold";
         fontsize=12;
 
-        // Golden Dataset container
-        subgraph cluster_tests {
-            label="Golden Dataset";
-            style="rounded,filled";
-            fillcolor="#E0E7FF";
-            color="#6366F1";
-            fontname="Arial Bold";
-            fontsize=11;
+        // Skill node
+        skill [label="Your Skill\n(SKILL.md)" shape=box fillcolor="#E0E7FF" color="#6366F1"];
 
-            node [shape=box fillcolor="#EFF6FF" color="#2563EB"];
-            {rank=same; test1; test2; test3; test4}
+        // Generate node
+        generate [label="Generate N\nOutputs" shape=box fillcolor="#EFF6FF" color="#2563EB"];
 
-            test1 [label="Test 1\nInput\nExpect\nCriteria"];
-            test2 [label="Test 2\nInput\nExpect\nCriteria"];
-            test3 [label="Test 3\nInput\nExpect\nCriteria"];
-            test4 [label="Test 4\nInput\nExpect\nCriteria"];
-        }
+        // Score node
+        score [label="Score Each\nOutput" shape=box fillcolor="#EFF6FF" color="#2563EB"];
+
+        // Analyze node
+        analyze [label="Analyze\nFailures" shape=box fillcolor="#FEE2E2" color="#DC2626"];
+
+        // Mutate node
+        mutate [label="Mutate the\nSkill" shape=box fillcolor="#D1FAE5" color="#059669"];
+
+        // Flow
+        skill -> generate;
+        generate -> score;
+        score -> analyze;
+        analyze -> mutate;
+        mutate -> skill;
 
         // Key Insight
-        insight [label="Key Insight: Golden datasets use binary pass/fail criteria,\nnot subjective 1-10 scales. Each test case is specific and\ntestable." shape=box fillcolor="#FEF3C7" color="#D97706" style="filled"];
+        insight [label="Key Insight: Treat prompt engineering like model training.\nDefine a loss function (eval), run experiments (generate\noutputs), optimize (mutate the prompt). Keep the winners." shape=box fillcolor="#FEF3C7" color="#D97706" style="filled"];
     }
 }

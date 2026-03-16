@@ -362,9 +362,9 @@ async for message in query(
 
 | Model | Use Case | Cost |
 |-------|----------|------|
-| `claude-sonnet-4-5-20250514` | Most agent work (default) | $$ |
-| `claude-opus-4-5-20250514` | Complex reasoning | $$$$ |
-| `claude-haiku-3-5-20241022` | Fast, simple tasks | $ |
+| `claude-sonnet-4-6` | Most agent work (default) | $$ |
+| `claude-opus-4-6` | Complex reasoning | $$$$ |
+| `claude-haiku-4-5-20251001` | Fast, simple tasks | $ |
 
 ---
 

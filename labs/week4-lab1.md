@@ -1,8 +1,8 @@
 # Week 4 Lab 1: Your First Skill - Database Profiler
 
 **Course:** Claude Agents Workshop  
-**Duration:** 30 minutes  
-**Focus:** Creating your first SKILL.md file to encode a database profiling workflow
+**Duration:** 40 minutes
+**Focus:** Exploring existing skills ecosystems and creating your first SKILL.md file
 
 **Windows users:** Shell commands in this lab use Unix syntax. See [`references/windows-setup.md`](../references/windows-setup.md) for the Windows equivalents, or use WSL2.
 
@@ -71,10 +71,11 @@ By the end of this lab, you will:
 
 | Task | Topic | Time |
 |------|-------|------|
+| 1.0 | Explore Existing Skills (skills.sh + Cowork) | 10 min |
 | 1.1 | Create Skill Directory | 5 min |
 | 1.2 | Write SKILL.md File | 15 min |
 | 1.3 | Test the Skill | 10 min |
-| | **TOTAL** | **30 min** |
+| | **TOTAL** | **40 min** |
 
 ---
 
@@ -83,6 +84,42 @@ By the end of this lab, you will:
 A skill is a folder with a SKILL.md file that teaches Claude a specific workflow. When your request matches a skill's description, Claude asks permission to use it and follows your instructions.
 
 **Key concept:** Skills change how Claude thinks, not just what it can do. They load new instructions into Claude's context.
+
+---
+
+## Task 1.0: Explore Existing Skills (10 min)
+
+Before building your own skill, explore what's already out there. This gives you a feel for what good skills look like and what's available to install.
+
+### Browse skills.sh
+
+1. **Open [skills.sh](https://skills.sh/)** in your browser
+2. **Browse the leaderboard** — check "All Time", "Trending", and "Hot" tabs
+3. **Search for skills relevant to your domain** (e.g., "data", "sales", "marketing", "react")
+4. **Pick one skill and read its SKILL.md** — note the structure, description, and instructions
+
+| What to Look For | Why It Matters |
+|-------------------|---------------|
+| How the `description` is written | Good descriptions trigger automatically |
+| How instructions are structured | Step-by-step vs. reference style |
+| Whether it uses `references/` | Progressive disclosure pattern |
+| `allowed-tools` restrictions | Scoping what the skill can do |
+
+### Browse Claude Cowork Plugins
+
+1. **Open [claude.ai](https://claude.ai)** and go to the Cowork interface
+2. **Click "Browse plugins"** to open the plugin catalog
+3. **Explore plugins by department** — look at Finance, HR, Design, Operations
+4. **Pick one plugin relevant to your role** and read its description
+
+**Note:** Cowork plugins are for knowledge workers in the Claude app. The skills we'll build today are for Claude Code (developer-facing). Same concept, different audience.
+
+### Record what you found:
+
+| Source | Skill/Plugin Name | What It Does | What You Liked About It |
+|--------|-------------------|-------------|------------------------|
+| skills.sh | | | |
+| Cowork | | | |
 
 ---
 
