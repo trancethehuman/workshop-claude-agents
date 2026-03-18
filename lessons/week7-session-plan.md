@@ -18,6 +18,20 @@ Skills are prompts. Prompts are inherently noisy. The same skill file can produc
 
 Without evals, you're guessing. You tweak a prompt, run it once, it looks better, you ship it. But did it actually improve? Or did you just get lucky on that one run?
 
+### Why Agents Are Fundamentally Different From Traditional Software
+
+Traditional software has a finite, constrained input space. Users click buttons, fill forms, navigate predetermined paths. Your test suite can cover 80-90% of code paths. When something breaks, you look at stack traces.
+
+Agents are different in two critical ways:
+
+**1. Infinite input space.** Agents accept natural language — there's no fixed set of valid inputs. The same intent ("I want a refund") can be phrased countless ways. You cannot fully predict how your agent will be used until real users interact with it.
+
+**2. LLMs are not robust to small changes.** Even subtle variations in phrasing can lead to different outputs. A prompt that works reliably in testing might fail on edge cases you never encountered. Behavior in development may not match production.
+
+![Traditional Software vs Agent — predictable enumerable paths vs open-ended unpredictable input space](images/week7-traditional-software-vs-agent.png)
+
+This is why "just test it manually a few times" doesn't work. The input space is too large and the model behavior is too variable. You need systematic evaluation.
+
 ### Why Off-the-Shelf Evals Don't Work
 
 You might think: "Can't I just use some eval framework that scores my agent automatically?"
@@ -351,6 +365,54 @@ Your eval is only as good as your criteria.
 
 Spend more time on defining good criteria than on automation infrastructure.
 
+### Looking Ahead: Production Evals and Observability
+
+Everything we've covered so far is about **pre-deployment** evals — testing before you ship. But what happens after your agent is in production?
+
+In production, you face a scaling problem: human reviewers can meaningfully assess 50-100 traces per hour, but at 1,000+ requests/day, full manual review is impossible. Teams solving this use two complementary approaches:
+
+**1. Annotation Queues (Structured Human Review)**
+
+Instead of reviewing everything, route specific traces for review — runs with negative feedback, high-cost interactions, or edge cases. Define review rubrics so reviewers know exactly what to evaluate. This is especially valuable for understanding new failure modes and building training data for automated evaluators.
+
+**2. Online Evaluators (LLM-as-Judge at Scale)**
+
+Run automated evaluators on production traffic (typically sampled at 10-20%) to check quality metrics, safety/compliance, format validation, and topic classification. This catches degradation from model updates, data drift, or new user patterns.
+
+| Tradeoff | Detail |
+|----------|--------|
+| Latency | Adds seconds per trace — OK for async, not for real-time feedback |
+| Cost | Evaluating all traces gets expensive — sample 10-20% |
+| Accuracy | Off-the-shelf evaluators may not reflect what "good" means for your app |
+| Drift | As production traffic shifts, evaluators may need retuning |
+
+**The Production Improvement Loop:**
+
+```
+1. Production traces → reveal failure cases or edge cases
+2. Annotation queues → let you review and label them
+3. Datasets → incorporate these examples for testing
+4. Experiments → test whether fixes improve behavior
+5. Online evaluations → validate the fix in production
+```
+
+This is essentially the autoresearch loop applied to production data. The connection: your `evals.md` criteria become the foundation for both pre-deployment testing AND production monitoring.
+
+**Who's Involved?** Agent evals are cross-functional — not just engineers:
+
+![Agent Engineering — cross-functional teams including Product, Engineering, Data Science, and Subject Matter Experts](images/week7-agent-engineering-team.png)
+
+| Role | Eval Responsibility |
+|------|-------------------|
+| Product | Define what "good" means, scope the agent's job, write eval criteria |
+| Engineering | Build tools, instrument traces, run experiments |
+| Data Science | Analyze usage patterns, measure performance, build evaluators |
+| Subject Matter Experts | Review accuracy and quality in specialized domains |
+
+> **For this workshop:** We focus on the pre-deployment loop (autoresearch). But know that the same eval criteria you write today can power production monitoring tomorrow.
+
+*Source: [LangChain Blog — "You don't know what your agent will do until it's in production"](https://blog.langchain.com/you-dont-know-what-your-agent-will-do-until-its-in-production/) (Feb 2026)*
+
 ---
 
 ## Block 4: Lab (Part 2) - Run the Eval Script (40 min)
@@ -477,7 +539,7 @@ It should require synthesis across multiple data points. "Which company will rai
 
 - Block 1 (Theory): The autoresearch section and evals.md convention are the new material. Spend about 10 minutes on the evals.md convention and autoresearch loop. The rest of Block 1 covers eval design principles.
 - Block 2 (Lab 1): Give full 45 min. The mutation and re-scoring steps take longer than people expect. Push students to start scoring early rather than spending all time on criteria design.
-- Block 3 (Theory): Show both options (manual and automated), but emphasize that manual autoresearch from Lab 1 is the foundation.
+- Block 3 (Theory): Show both options (manual and automated), but emphasize that manual autoresearch from Lab 1 is the foundation. The new "Production Evals and Observability" section is a forward-looking teaser — spend 5 min max on it. The goal is to show students that their eval criteria have value beyond this workshop.
 - Block 4 (Lab 2): Hands-on iteration is the most valuable part.
 
 ### If People Finish Early
@@ -495,6 +557,7 @@ Have them:
 - [Karpathy's Autoresearch](https://github.com/karpathy/autoresearch) - The original methodology
 - [Claude Agent SDK Docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk/overview) - For custom automation scripts
 - [Claude Code CLI Docs](https://docs.anthropic.com/en/docs/claude-code) - For understanding CLI flags
+- [LangChain: "You don't know what your agent will do until it's in production"](https://blog.langchain.com/you-dont-know-what-your-agent-will-do-until-its-in-production/) - Production agent observability and scaling evals
 
 **Workshop Eval Resources:**
 - `data/evals/funding-analysis-evals.json` - Machine-readable eval set (16 test cases)
